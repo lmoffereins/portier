@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Guard\n"
+"POT-Creation-Date: 2012-10-16 14:18+0100\n"
+"PO-Revision-Date: 2012-10-16 17:01+0100\n"
+"Last-Translator: Laurens Offereins\n"
+"Language-Team: \n"
+"Language: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../guard.php:103
+msgid "Access Settings"
+msgstr "Instellingen toegang"
+
+#: ../guard.php:104
+msgid "Additional Settings"
+msgstr "Overige instellingen"
+
+#: ../guard.php:106
+msgid "Protect my site"
+msgstr "Bescherm mijn site"
+
+#: ../guard.php:109
+msgid "Allowed users"
+msgstr "Toegestane gebruikers"
+
+#: ../guard.php:112
+msgid "Custom login message"
+msgstr "Speciaal loginbericht"
+
+#: ../guard.php:117
+msgid ""
+"Here you enable the Guard plugin. By checking the <em>Protect my site</em> "
+"input, this site will only be accessible for admins and allowed users, "
+"specified by you in the select option below. No other shall pass!"
+msgstr ""
+"Stel hier de Guard plugin in werking. Door de <em>Bescherm mijn site</em> "
+"optie aan te vinken, zal deze site alleen toegankelijk zijn voor admins en "
+"toegestande gebruikers, speciaal geselecteerd in de optie hieronder. Niemand "
+"anders komt er langs!"
+
+#: ../guard.php:121
+msgid "Below you can set additional Guard options."
+msgstr "Stel hieronder overige Guard instellingen in."
+
+#: ../guard.php:125
+msgid "Enable site protection."
+msgstr "Activeer site bescherming."
+
+#: ../guard.php:134
+msgid "Select a user"
+msgstr "Selecteer een gebruiker"
+
+#: ../guard.php:139
+msgid "Select which users you want to have access."
+msgstr "Selecteer welke gebruikers je toegang wilt geven."
+
+#: ../guard.php:147
+#, php-format
+msgid ""
+"Serve site guests a nice heads up on the login page. Leave empty if not "
+"applicable.<br> This message will only be shown if <strong>Protect my site</"
+"strong> is activated.<br/>Allowed HTML tags %s, %s and %s."
+msgstr ""
+"Stel sitebezoekers op de hoogte van de afscherming. Houdt dit leeg als je "
+"geen extra bericht wilt.<br> Dit bericht wordt getoond als <strong>Berscherm "
+"mijn site</strong> is aangevinkt.<br/> Toegestane HTML tags zijn %s, %s en "
+"%s."
+
+#: ../guard.php:167
+msgid "Settings"
+msgstr "Instellingen"
