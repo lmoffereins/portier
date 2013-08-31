@@ -43,7 +43,7 @@ msgid ""
 msgstr ""
 "Stel hier de Guard plugin in werking. Door de <em>Bescherm mijn site</em> "
 "optie aan te vinken, zal deze site alleen toegankelijk zijn voor admins en "
-"toegestande gebruikers, speciaal geselecteerd in de optie hieronder. Niemand "
+"toegestane gebruikers, speciaal geselecteerd in de optie hieronder. Niemand "
 "anders komt er langs!"
 
 #: ../guard.php:121
