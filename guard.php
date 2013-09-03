@@ -13,7 +13,7 @@
  * Plugin URI:  http://www.offereinspictures.nl/wp-plugins/guard/
  * Author:      Laurens Offereins
  * Author URI:  http://www.offereinspictures.nl
- * Version:     0.1
+ * Version:     0.2
  * Text Domain: guard
  * Domain Path: /languages/
  */
@@ -409,7 +409,7 @@ function guard_load_textdomain() {
 /**
  * Clean up when this plugin is deleted
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses delete_option()
  */
@@ -429,7 +429,7 @@ function guard_uninstall() {
 /**
  * Ensure Guard is only used for the network
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses remove_action()
  * @uses remove_filter()
@@ -448,7 +448,7 @@ function guard_network_only() {
 /**
  * Redirect user if network is protected
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses is_user_logged_in() To check if the user is logged in
  * @uses guard_network_user_is_allowed() To check if the network user is allowed
@@ -468,7 +468,7 @@ function guard_network_protect() {
 /**
  * Returns whether the current network user is allowed to enter
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook 
  *                        for plugins to override the access granted
@@ -492,7 +492,7 @@ function guard_network_user_is_allowed() {
 /**
  * Redirect users to network main site if sub site is protected
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses get_site_option()
  */
@@ -510,7 +510,7 @@ function guard_network_redirect() {
 /**
  * Remove user blogs that are not allowed for given user
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses switch_to_blog()
  * @uses guard_user_is_allowed()
@@ -545,7 +545,7 @@ function guard_network_blogs_of_user( $blogs, $user_id, $all ) {
 /**
  * Modify the admin bar for protected sites
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses guard_network_hide_my_sites()
  * @uses WP_Admin_Bar::remove_menu()
@@ -561,7 +561,7 @@ function guard_network_admin_bar( $wp_admin_bar ) {
 /**
  * Modify the admin menu for protected sites
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses guard_network_hide_my_sites()
  * @uses remove_submenu_page()
@@ -577,7 +577,7 @@ function guard_network_admin_menu() {
 /**
  * Return whether to hide "My Sites" for the current user
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses get_site_option()
  * @uses get_blogs_of_user()
@@ -601,7 +601,7 @@ function guard_network_hide_my_sites() {
 /**
  * Create the plugin network admin page menu item
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses add_options_page() To add the menu to the options pane
  * @uses add_action() To enable functions hooking into admin page
@@ -624,7 +624,7 @@ function guard_network_menu() {
 /**
  * Output plugin network admin page contents
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses screen_icon() To output the screen icon
  * @uses settings_fields() To output the form validation inputs
@@ -649,7 +649,7 @@ function guard_network_page() {
 /**
  * Setup the plugin network settings
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @uses add_settings_section() To create the settings sections
  * @uses add_settings_field() To create a setting with it's field
@@ -679,7 +679,7 @@ function guard_register_network_settings() {
 /**
  * Output network access settings section information header
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_access_settings_info() {
 	?>
@@ -692,7 +692,7 @@ function guard_network_access_settings_info() {
 /**
  * Output network additional settings section information header
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_additional_settings_info() {
 	?>
@@ -705,7 +705,7 @@ function guard_network_additional_settings_info() {
 /**
  * Output the network only input field
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_setting_network_only() {
 	?>
@@ -721,7 +721,7 @@ function guard_network_setting_network_only() {
 /**
  * Output the enable network protection input field
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_setting_network_protect() {
 	?>
@@ -737,7 +737,7 @@ function guard_network_setting_network_protect() {
 /**
  * Output the redirect to main site input field
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_setting_network_redirect() {
 	?>
@@ -753,7 +753,7 @@ function guard_network_setting_network_redirect() {
 /**
  * Output the hide my sites input field
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_setting_network_hide_my_sites() {
 	?>
@@ -769,7 +769,7 @@ function guard_network_setting_network_hide_my_sites() {
 /**
  * Output the allowed network users input field
  *
- * @since 0.x
+ * @since 0.2
  * 
  * @todo Does get_users() fetch all network users?
  * 
@@ -794,7 +794,7 @@ function guard_network_setting_allow_users() {
 	/**
 	 * Return array of all network users
 	 *
-	 * @since 0.x
+	 * @since 0.2
 	 *
 	 * @uses get_current_user_id()
 	 * @uses get_blogs_of_user()
@@ -824,7 +824,7 @@ function guard_network_setting_allow_users() {
 /**
  * Output the custom network message input field
  * 
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_setting_custom_message() {
 	$value = get_site_option( '_guard_network_custom_message' );
@@ -835,7 +835,7 @@ function guard_network_setting_custom_message() {
 /**
  * Handle updating network settings
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses update_site_option()
  */
@@ -872,7 +872,7 @@ function guard_network_settings_api() {
 /**
  * Output network settings update message
  *
- * @since 0.x
+ * @since 0.2
  */
 function guard_network_admin_notice() {
 	if ( ! guard_is_network_page() )
@@ -888,7 +888,7 @@ function guard_network_admin_notice() {
 /**
  * Return whether we are on the plugin network page
  *
- * @since 0.x
+ * @since 0.2
  *
  * @global string $hook_suffix
  * @return boolean This is the network page
@@ -905,7 +905,7 @@ function guard_is_network_page() {
 /**
  * Clean up when this plugin is deleted
  *
- * @since 0.x
+ * @since 0.2
  *
  * @uses delete_site_option()
  */
