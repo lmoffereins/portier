@@ -8,14 +8,15 @@
  */
 
 /**
- * Plugin Name: Guard
- * Description: Prevent people from visiting your (multi)site
- * Plugin URI:  https://github.com/lmoffereins/guard/
- * Author:      Laurens Offereins
- * Author URI:  https://github.com/lmoffereins
- * Version:     0.2
- * Text Domain: guard
- * Domain Path: /languages/
+ * Plugin Name:       Guard
+ * Description:       Prevent people from visiting your (multi)site
+ * Plugin URI:        https://github.com/lmoffereins/guard
+ * Author:            Laurens Offereins
+ * Author URI:        https://github.com/lmoffereins
+ * Version:           0.2
+ * Text Domain:       guard
+ * Domain Path:       /languages/
+ * GitHub Plugin URI: lmoffereins/guard
  */
 
 // Exit if accessed directly
@@ -38,12 +39,13 @@ register_uninstall_hook( __FILE__, 'guard_uninstall'            );
 if ( is_multisite() ) {
 	add_action( 'plugins_loaded',      'guard_network_only'                 );
 	add_action( 'admin_init',          'guard_register_network_settings'    );
-	add_action( 'network_admin_menu',  'guard_network_menu'                 );
+	add_action( 'network_admin_menu',  'guard_network_admin_menu'           );
 	add_action( 'template_redirect',   'guard_network_protect',       0     );
 	add_action( 'guard_site_protect',  'guard_network_redirect'             );
 	add_action( 'get_blogs_of_user',   'guard_network_blogs_of_user', 10, 3 );
 	add_action( 'admin_bar_menu',      'guard_network_admin_bar',     99    );
-	add_action( 'admin_menu',          'guard_network_admin_menu',    99    );
+	add_action( 'admin_menu',          'guard_network_admin_menus',   99    );
+	add_filter( 'user_has_cap',        'guard_network_user_has_cap',  10, 3 );
 	register_uninstall_hook( __FILE__, 'guard_network_uninstall'            );
 }
 
@@ -330,7 +332,6 @@ function guard_setting_allow_users() {
 		$users = array();
 
 	?>
-
 		<select id="_guard_allowed_users" class="chzn-select" name="_guard_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e('Select a user', 'guard'); ?>">
 		<?php foreach ( get_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
@@ -348,7 +349,7 @@ function guard_setting_allow_users() {
  */
 function guard_setting_custom_message() {
 	?>
-		<textarea name="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea> ';
+		<textarea name="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
 		<span class="description float"><?php printf( __('Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard'), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
 	<?php
 }
@@ -365,7 +366,7 @@ function guard_setting_allow_users_sanitize( $input ) {
 	if ( empty( $input ) )
 		return array();
 
-	return array_unique( array_map( 'intval', $input ) );
+	return array_unique( array_map( 'intval', (array) $input ) );
 }
 
 /**
@@ -542,11 +543,12 @@ function guard_network_user_is_allowed() {
 }
 
 /**
- * Redirect users to network main site if sub site is protected
+ * Redirect users to network home site if sub site is protected
  *
  * @since 0.2
  *
  * @uses get_site_option()
+ * @uses network_home_url()
  */
 function guard_network_redirect() {
 
@@ -554,8 +556,8 @@ function guard_network_redirect() {
 	if ( ! get_site_option( '_guard_network_redirect' ) )
 		return;
 
-	// Redirect user to main site
-	wp_redirect( get_site_url( 1 ) );
+	// Redirect user to network home site
+	wp_redirect( network_home_url() );
 	exit;
 }
 
@@ -618,24 +620,54 @@ function guard_network_admin_bar( $wp_admin_bar ) {
  * @uses guard_network_hide_my_sites()
  * @uses remove_submenu_page()
  */
-function guard_network_admin_menu() {
-	if ( guard_network_hide_my_sites() ) {
+function guard_network_admin_menus() {
 
-		// Only removes menu item, not admin page itself
+	// Only removes menu item, not admin page itself
+	if ( guard_network_hide_my_sites() ) {
 		remove_submenu_page( 'index.php', 'my-sites.php' );
 	}
 }
 
 /**
- * Return whether to hide "My Sites" for the current user
+ * Modify the user capabilities by filtering 'user_has_cap'
+ *
+ * @since 0.x
+ *
+ * @uses guard_network_hide_my_sites()
+ * 
+ * @param array $allcaps All user caps
+ * @param array $caps Required caps
+ * @param array $args User ID and function arguments
+ * @return array $allcaps
+ */
+function guard_network_user_has_cap( $allcaps, $caps, $args ) {
+
+	// Prevent access to "My Sites" admin page by blocking user cap
+	if (   is_admin() 
+		&& function_exists( 'get_current_screen' )
+		&& is_object( get_current_screen() )
+		&& 'my-sites' == get_current_screen()->id 
+		&& guard_network_hide_my_sites() 
+		&& in_array( 'read', $caps )
+		) {
+			$allcaps['read'] = false;
+	}
+
+	return $allcaps;
+}
+
+/**
+ * Return whether to hide "My Sites" page for the current user
  *
  * @since 0.2
  *
  * @uses get_site_option()
+ * @uses get_current_user_id()
+ * @uses is_super_admin()
  * @uses get_blogs_of_user()
  * @uses get_current_user_id()
  * 
- * @return boolean Hide "My Sites"
+ * @return boolean Hide "My Sites" page
  */
 function guard_network_hide_my_sites() {
 	if ( ! get_site_option( '_guard_network_hide_my_sites' ) )
@@ -659,7 +691,7 @@ function guard_network_hide_my_sites() {
  * @uses add_action() To enable functions hooking into admin page
  *                     head en footer
  */
-function guard_network_menu() {
+function guard_network_admin_menu() {
 	$hook = add_submenu_page(
 		'settings.php',
 		__('Guard Network Settings', 'guard'),
@@ -682,18 +714,42 @@ function guard_network_menu() {
  * @uses settings_fields() To output the form validation inputs
  * @uses do_settings_section() To output all form fields
  * @uses submit_button() To output the form submit button
+ * @uses guard_network_page_sites()
+ * @uses do_action() Calls 'guard_network_page' with the tab
  */
 function guard_network_page() {
+
+	// Fetch tab
+	$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main'; 
+
 	?>
 		<div class="wrap">
 			<?php screen_icon('options-general'); ?>
 			<h2><?php _e('Guard Network Settings', 'guard'); ?></h2>
 
+			<?php switch ( $tab ) :
+
+				// Main settings page
+				case 'main' :
+				?>
 			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
 				<?php settings_fields( 'guard_network' ); ?>
 				<?php do_settings_sections( 'guard_network' ); ?>
 				<?php submit_button(); ?>
 			</form>
+				<?php break;
+
+				// Sites settings page
+				case 'sites' : 
+					guard_network_page_sites(); 
+					break; 
+
+				// Hookable settings page
+				default :
+					do_action( 'guard_network_page', $tab );
+					break;
+
+			endswitch; ?>
 		</div>
 	<?php
 }
@@ -808,8 +864,9 @@ function guard_register_network_settings() {
 	 * 
 	 * @link http://core.trac.wordpress.org/ticket/15691
 	 */
-	add_action( 'network_admin_edit_guard_network', 'guard_network_settings_api' );
-	add_action( 'network_admin_notices',            'guard_network_admin_notice' );
+	add_action( 'network_admin_edit_guard_network',       'guard_network_settings_api'       );
+	add_action( 'network_admin_edit_guard_network_sites', 'guard_network_sites_settings_api' );
+	add_action( 'network_admin_notices',                  'guard_network_admin_notice'       );
 }
 
 /**
@@ -989,6 +1046,7 @@ function guard_network_setting_custom_message() {
  *
  * @since 0.2
  *
+ * @uses wp_verify_nonce()
  * @uses guard_network_settings()
  * @uses update_site_option()
  * @uses wp_redirect()
@@ -1009,7 +1067,7 @@ function guard_network_settings_api() {
 	}
 
 	// Build redirect url string
-	$args = array( 'page' => 'guard_network', 'settings-updated' => 'true' ); // Always true?
+	$args = array( 'page' => 'guard_network', 'settings-updated' => 'true' ); // Allways true?
 	wp_redirect( add_query_arg( $args, network_admin_url('settings.php') ) );
 	exit;
 }
@@ -1068,3 +1126,83 @@ function guard_network_uninstall() {
 
 /** Multisite Manage Sites ***************************************/
 
+/**
+ * Output network sites management admin panel
+ *
+ * @since 0.x
+ *
+ * @uses get_blog_list() To get all the blogs details. Deprecated.
+ * @uses settings_fields()
+ * @uses switch_to_blog()
+ * @uses do_settings_section()
+ * @uses restore_current_blog()
+ * @uses submit_button()
+ *
+ * @todo Require distinct field ids and input names per blog
+ * @todo Enable blog list paging like '&paged=2'
+ */
+function guard_network_page_sites() {
+
+	// Fetch all blogs
+	$blogs = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
+	usort( $blogs, 'guard_network_blog_order' );
+
+	?>
+			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
+				<?php settings_fields( 'guard_network_sites' ); ?>
+				<?php foreach ( $blogs as $details ) : switch_to_blog( $details['blog_id'] ); ?>
+
+					<h2><?php printf( __('%1$s at <a href="%2$s">%3$s</a>', 'guard'), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
+					<?php do_settings_sections( 'guard' ); ?>
+					<hr />
+
+				<?php restore_current_blog(); endforeach; ?>
+				<?php submit_button(); ?>
+			</form>
+	<?php
+}
+
+	/**
+	 * Compare blogs to order an array by blog_id
+	 *
+	 * @since 0.x
+	 * 
+	 * @param array $a Blog to compare
+	 * @param array $b Blog to compare
+	 * @return int Move position
+	 */
+	function guard_network_blog_order( $a, $b ) {
+		return $a['blog_id'] > $b['blog_id'];
+	}
+
+/**
+ * Update network sites settings
+ *
+ * @since 0.x
+ *
+ * @uses wp_verify_nonce()
+ * @uses wp_redirect()
+ */
+function guard_network_sites_settings_api() {
+	if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites-options' ) )
+		return;
+
+	var_dump( $_POST );
+	exit;
+
+	// Loop all network settings to update
+	foreach ( $sites_settings as $blog_id => $settings ) {
+		// if ( ! isset( $_POST[$option] ) )
+			// $_POST[$option] = apply_filters( 'guard_network_settings_default', 0, $option );
+
+		// $value = call_user_func_array( $args['sanitize_cb'], array( $_POST[$option] ) );
+
+		// Don't catch retval since both non-updates and errors return false
+		// update_site_option( $option, $value );
+	}
+
+	// Build redirect url string
+	$args = array( 'page' => 'guard_network', 'tab' => 'sites', 'settings-updated' => 'true' ); // Allways true?
+	wp_redirect( add_query_arg( $args, network_admin_url('settings.php') ) );
+	exit;
+}
