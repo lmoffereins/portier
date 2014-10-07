@@ -106,7 +106,7 @@ function guard_user_is_allowed() {
  */
 function guard_admin_menu() {
 	$hook = add_options_page(
-		__('Guard Settings', 'guard'),
+		__( 'Guard Settings', 'guard' ),
 		'Guard',
 		'manage_options',
 		'guard',
@@ -224,7 +224,7 @@ function guard_settings() {
 
 		// Site protect switch
 		'_guard_site_protect', array(
-			'label'       => __('Protect my site', 'guard'),
+			'label'       => __( 'Protect my site', 'guard' ),
 			'field_cb'    => 'guard_setting_protect_site',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard',
@@ -233,7 +233,7 @@ function guard_settings() {
 
 		// Allowed users
 		'_guard_allowed_users', array(
-			'label'       => __('Allowed users', 'guard'),
+			'label'       => __( 'Allowed users', 'guard' ),
 			'field_cb'    => 'guard_setting_allow_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard',
@@ -244,7 +244,7 @@ function guard_settings() {
 
 		// Custom login message
 		'_guard_custom_message', array(
-			'label'       => __('Custom login message', 'guard'),
+			'label'       => __( 'Custom login message', 'guard' ),
 			'field_cb'    => 'guard_setting_custom_message',
 			'section'     => 'guard-options-additional',
 			'page'        => 'guard',
@@ -266,8 +266,8 @@ function guard_settings() {
  * @uses register_setting() To enable the setting being saved to the DB
  */
 function guard_register_settings() {
-	add_settings_section( 'guard-options-access',     __('Access Settings',     'guard'), 'guard_access_settings_info',     'guard' );
-	add_settings_section( 'guard-options-additional', __('Additional Settings', 'guard'), 'guard_additional_settings_info', 'guard' );
+	add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), 'guard_access_settings_info',     'guard' );
+	add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), 'guard_additional_settings_info', 'guard' );
 
 	// Loop all settings to register
 	foreach ( guard_settings() as $setting => $args ) {
@@ -284,7 +284,7 @@ function guard_register_settings() {
 function guard_access_settings_info() {
 	?>
 		<p>
-			<?php _e('Here you enable the Guard plugin. By checking the <em>Protect my site</em> input, this site will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard'); ?>
+			<?php _e( 'Here you enable the Guard plugin. By checking the <em>Protect my site</em> input, this site will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?>
 		</p>
 	<?php
 }
@@ -297,7 +297,7 @@ function guard_access_settings_info() {
 function guard_additional_settings_info() {
 	?>
 		<p>
-			<?php _e('Below you can set additional Guard options.', 'guard'); ?>
+			<?php _e( 'Below you can set additional Guard options.', 'guard' ); ?>
 		</p>
 	<?php
 }
@@ -312,7 +312,7 @@ function guard_setting_protect_site() {
 		<p>
 			<label>
 				<input type="checkbox" name="_guard_site_protect" <?php checked( get_option( '_guard_site_protect' ), 1 ) ?> value="1" />
-				<span class="description"><?php _e('Enable site protection.', 'guard'); ?></span>
+				<span class="description"><?php _e( 'Enable site protection.', 'guard' ); ?></span>
 			</label>
 		</p>
 	<?php
@@ -332,13 +332,13 @@ function guard_setting_allow_users() {
 		$users = array();
 
 	?>
-		<select id="_guard_allowed_users" class="chzn-select" name="_guard_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e('Select a user', 'guard'); ?>">
+		<select id="_guard_allowed_users" class="chzn-select" name="_guard_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
 		<?php foreach ( get_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
 		<?php endforeach; ?>
 
 		</select>
-		<span class="description float"><?php _e('Select which users you want to have access.', 'guard'); ?></span>
+		<span class="description float"><?php _e( 'Select which users you want to have access.', 'guard' ); ?></span>
 	<?php
 }
 
@@ -350,7 +350,7 @@ function guard_setting_allow_users() {
 function guard_setting_custom_message() {
 	?>
 		<textarea name="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
-		<span class="description float"><?php printf( __('Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard'), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
+		<span class="description float"><?php printf( __( 'Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
 	<?php
 }
 
@@ -402,7 +402,7 @@ function guard_settings_link( $links, $file ) {
 
 	// Only add settings link for our plugin
 	if ( plugin_basename( __FILE__ ) == $file ) {
-		$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __('Settings') . '</a>';
+		$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings') . '</a>';
 	}
 
 	return $links;
@@ -694,8 +694,8 @@ function guard_network_hide_my_sites() {
 function guard_network_admin_menu() {
 	$hook = add_submenu_page(
 		'settings.php',
-		__('Guard Network Settings', 'guard'),
-		__('Guard Network',          'guard'),
+		__( 'Guard Network Settings', 'guard' ),
+		__( 'Guard Network',          'guard' ),
 		'manage_network',
 		'guard_network',
 		'guard_network_page'
@@ -725,7 +725,7 @@ function guard_network_page() {
 	?>
 		<div class="wrap">
 			<?php screen_icon('options-general'); ?>
-			<h2><?php _e('Guard Network Settings', 'guard'); ?></h2>
+			<h2><?php _e( 'Guard Network Settings', 'guard' ); ?></h2>
 
 			<?php switch ( $tab ) :
 
@@ -778,7 +778,7 @@ function guard_network_settings() {
 
 		// Network only
 		'_guard_network_only' => array(
-			'label'       => __('Network only', 'guard'),
+			'label'       => __( 'Network only', 'guard' ),
 			'field_cb'    => 'guard_network_setting_network_only',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
@@ -787,7 +787,7 @@ function guard_network_settings() {
 
 		// Network redirect
 		'_guard_network_redirect' => array(
-			'label'       => __('Redirect to main site', 'guard'),
+			'label'       => __( 'Redirect to main site', 'guard' ),
 			'field_cb'    => 'guard_network_setting_network_redirect',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
@@ -796,7 +796,7 @@ function guard_network_settings() {
 
 		// Hide "My Sites"
 		'_guard_network_hide_my_sites' => array(
-			'label'       => __('Hide "My Sites"', 'guard'),
+			'label'       => __( 'Hide "My Sites"', 'guard' ),
 			'field_cb'    => 'guard_network_setting_network_hide_my_sites',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
@@ -807,7 +807,7 @@ function guard_network_settings() {
 
 		// Network protect switch
 		'_guard_network_protect' => array(
-			'label'       => __('Protect this network', 'guard'),
+			'label'       => __( 'Protect this network', 'guard' ),
 			'field_cb'    => 'guard_network_setting_network_protect',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard_network',
@@ -816,7 +816,7 @@ function guard_network_settings() {
 
 		// Allowed network users
 		'_guard_network_allowed_users' => array(
-			'label'       => __('Allowed network users', 'guard'),
+			'label'       => __( 'Allowed network users', 'guard' ),
 			'field_cb'    => 'guard_network_setting_allow_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard_network',
@@ -827,7 +827,7 @@ function guard_network_settings() {
 
 		// Custom network login message
 		'_guard_network_custom_message' => array(
-			'label'       => __('Custom login message', 'guard'),
+			'label'       => __( 'Custom login message', 'guard' ),
 			'field_cb'    => 'guard_network_setting_custom_message',
 			'section'     => 'guard-options-additional',
 			'page'        => 'guard_network',
@@ -849,9 +849,9 @@ function guard_network_settings() {
  * @uses register_setting() To enable the setting being saved to the DB
  */
 function guard_register_network_settings() {
-	add_settings_section( 'guard-options-main',       __('Network Main Settings',       'guard'), 'guard_network_main_settings_info',       'guard_network' );
-	add_settings_section( 'guard-options-access',     __('Network Access Settings',     'guard'), 'guard_network_access_settings_info',     'guard_network' );
-	add_settings_section( 'guard-options-additional', __('Additional Network Settings', 'guard'), 'guard_network_additional_settings_info', 'guard_network' );
+	add_settings_section( 'guard-options-main',       __( 'Network Main Settings',       'guard' ), 'guard_network_main_settings_info',       'guard_network' );
+	add_settings_section( 'guard-options-access',     __( 'Network Access Settings',     'guard' ), 'guard_network_access_settings_info',     'guard_network' );
+	add_settings_section( 'guard-options-additional', __( 'Additional Network Settings', 'guard' ), 'guard_network_additional_settings_info', 'guard_network' );
 
 	// Loop all network settings to register
 	foreach ( guard_network_settings() as $setting => $args ) {
@@ -877,7 +877,7 @@ function guard_register_network_settings() {
 function guard_network_main_settings_info() {
 	?>
 		<p>
-			<?php _e('Here you activate the main network functionality of Guard. For activating the network protection, see the Network Access Settings.', 'guard'); ?>
+			<?php _e( 'Here you activate the main network functionality of Guard. For activating the network protection, see the Network Access Settings.', 'guard' ); ?>
 		</p>
 	<?php
 }
@@ -890,7 +890,7 @@ function guard_network_main_settings_info() {
 function guard_network_access_settings_info() {
 	?>
 		<p>
-			<?php _e('Here you activate your network protection. By checking the <em>Protect this network</em> input, this network will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard'); ?>
+			<?php _e( 'Here you activate your network protection. By checking the <em>Protect this network</em> input, this network will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?>
 		</p>
 	<?php
 }
@@ -903,7 +903,7 @@ function guard_network_access_settings_info() {
 function guard_network_additional_settings_info() {
 	?>
 		<p>
-			<?php _e('Below you can set additional Network Guard options.', 'guard'); ?>
+			<?php _e( 'Below you can set additional Network Guard options.', 'guard' ); ?>
 		</p>
 	<?php
 }
@@ -918,7 +918,7 @@ function guard_network_setting_network_only() {
 		<p>
 			<label>
 				<input type="checkbox" name="_guard_network_only" <?php checked( get_site_option( '_guard_network_only' ), 1 ) ?> value="1" />
-				<span class="description"><?php _e('Disable this plugin for individual sites.', 'guard'); ?></span>
+				<span class="description"><?php _e( 'Disable this plugin for individual sites.', 'guard' ); ?></span>
 			</label>
 		</p>
 	<?php
@@ -934,7 +934,7 @@ function guard_network_setting_network_protect() {
 		<p>
 			<label>
 				<input type="checkbox" name="_guard_network_protect" <?php checked( get_site_option( '_guard_network_protect' ), 1 ) ?> value="1" />
-				<span class="description"><?php _e('Enable network protection.', 'guard'); ?></span>
+				<span class="description"><?php _e( 'Enable network protection.', 'guard' ); ?></span>
 			</label>
 		</p>
 	<?php
@@ -950,7 +950,7 @@ function guard_network_setting_network_redirect() {
 		<p>
 			<label>
 				<input type="checkbox" name="_guard_network_redirect" <?php checked( get_site_option( '_guard_network_redirect' ), 1 ) ?> value="1" />
-				<span class="description"><?php _e('Redirect users from protected sites to the main site.', 'guard'); ?></span>
+				<span class="description"><?php _e( 'Redirect users from protected sites to the main site.', 'guard' ); ?></span>
 			</label>
 		</p>
 	<?php
@@ -966,7 +966,7 @@ function guard_network_setting_network_hide_my_sites() {
 		<p>
 			<label>
 				<input type="checkbox" name="_guard_network_hide_my_sites" <?php checked( get_site_option( '_guard_network_hide_my_sites' ), 1 ) ?> value="1" />
-				<span class="description"><?php _e('Hide "My Sites" links and page when a user has access to only one site.', 'guard'); ?></span>
+				<span class="description"><?php _e( 'Hide "My Sites" links and page when a user has access to only one site.', 'guard' ); ?></span>
 			</label>
 		</p>
 	<?php
@@ -988,14 +988,14 @@ function guard_network_setting_allow_users() {
 		$users = array();
 
 	?>
-		<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e('Select a user', 'guard'); ?>">
+		<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
 
 		<?php foreach ( guard_get_network_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
 		<?php endforeach; ?>
 
 		</select>
-		<span class="description float"><?php _e('Select which network users you want to have access.', 'guard'); ?></span>
+		<span class="description float"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></span>
 	<?php
 }
 
@@ -1037,7 +1037,7 @@ function guard_network_setting_allow_users() {
 function guard_network_setting_custom_message() {
 	?>
 		<textarea name="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
-		<span class="description float"><?php printf( __('Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard'), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
+		<span class="description float"><?php printf( __( 'Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
 	<?php
 }
 
@@ -1086,9 +1086,9 @@ function guard_network_admin_notice() {
 	if ( isset( $_GET['settings-updated'] ) ) {
 		$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 		if ( 'updated' == $type )
-			$message = __('Settings saved.');
+			$message = __( 'Settings saved.');
 		else
-			$message = apply_filters( 'guard_network_admin_notice', __('Something went wrong', 'guard'), $_GET['settings-updated'] );
+			$message = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong', 'guard' ), $_GET['settings-updated'] );
 
 		echo '<div class="message ' . $type . '"><p>' . $message . '</p></div>';
 	}
@@ -1152,7 +1152,7 @@ function guard_network_page_sites() {
 				<?php settings_fields( 'guard_network_sites' ); ?>
 				<?php foreach ( $blogs as $details ) : switch_to_blog( $details['blog_id'] ); ?>
 
-					<h2><?php printf( __('%1$s at <a href="%2$s">%3$s</a>', 'guard'), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
+					<h2><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
 					<?php do_settings_sections( 'guard' ); ?>
 					<hr />
 
