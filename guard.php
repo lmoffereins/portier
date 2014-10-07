@@ -294,7 +294,7 @@ final class Guard {
 	</style>
 
 	<script type="text/javascript">
-		jQuery('.chzn-select').chosen();
+		jQuery( '.chzn-select' ).chosen();
 	</script>
 		<?php
 			do_action( 'guard_admin_footer' );
@@ -481,7 +481,7 @@ final class Guard {
 	 */
 	public function setting_custom_message_sanitize( $input ) {
 		return wp_unslash( wp_kses( $input, array(
-			'a'      => array('href'),
+			'a'      => array( 'href' ),
 			'em'     => array(),
 			'strong' => array()
 		) ) );
@@ -502,7 +502,7 @@ final class Guard {
 
 		// Only add settings link for our plugin
 		if ( plugin_basename( __FILE__ ) == $file ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings') . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings' ) . '</a>';
 		}
 
 		return $links;
@@ -824,7 +824,7 @@ final class Guard {
 
 		?>
 			<div class="wrap">
-				<?php screen_icon('options-general'); ?>
+				<?php screen_icon( 'options-general' ); ?>
 				<h2><?php _e( 'Guard Network Settings', 'guard' ); ?></h2>
 
 				<?php switch ( $tab ) :
@@ -1168,7 +1168,7 @@ final class Guard {
 
 		// Build redirect url string
 		$args = array( 'page' => 'guard_network', 'settings-updated' => 'true' ); // Allways true?
-		wp_redirect( add_query_arg( $args, network_admin_url('settings.php') ) );
+		wp_redirect( add_query_arg( $args, network_admin_url( 'settings.php' ) ) );
 		exit;
 	}
 
@@ -1186,7 +1186,7 @@ final class Guard {
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type )
-				$message = __( 'Settings saved.');
+				$message = __( 'Settings saved.' );
 			else
 				$message = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong', 'guard' ), $_GET['settings-updated'] );
 
@@ -1303,7 +1303,7 @@ final class Guard {
 
 		// Build redirect url string
 		$args = array( 'page' => 'guard_network', 'tab' => 'sites', 'settings-updated' => 'true' ); // Allways true?
-		wp_redirect( add_query_arg( $args, network_admin_url('settings.php') ) );
+		wp_redirect( add_query_arg( $args, network_admin_url( 'settings.php' ) ) );
 		exit;
 	}
 
