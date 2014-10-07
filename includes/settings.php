@@ -388,7 +388,7 @@ function guard_network_setting_allow_users() {
 
 		<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
 
-			<?php foreach ( $this->get_network_users() as $user ) : ?>
+			<?php foreach ( guard_get_network_users() as $user ) : ?>
 				<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
 			<?php endforeach; ?>
 
@@ -396,37 +396,6 @@ function guard_network_setting_allow_users() {
 		<span class="description float"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></span>
 
 	<?php
-}
-
-/**
- * Return array of all network users
- *
- * @since 0.2
- *
- * @uses get_current_user_id()
- * @uses get_blogs_of_user()
- * @uses switch_to_blog()
- * @uses get_users()
- * @uses restore_current_blog()
- *
- * @return array Network users
- */
-function guard_get_network_users() {
-	$users = array();
-	$user_id = get_current_user_id(); // Always super admin?
-
-	foreach ( get_blogs_of_user( $user_id ) as $blog_id => $details ) {
-		switch_to_blog( $blog_id );
-
-		// array( 0 => WP_User ) becomes array( $user_id => WP_User )
-		foreach ( get_users() as $user ) {
-			$users[$user->ID] = $user;
-		}
-
-		restore_current_blog();
-	}
-
-	return apply_filters( 'guard_get_network_users', $users );
 }
 
 /**

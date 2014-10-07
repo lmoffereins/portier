@@ -87,7 +87,7 @@ final class Guard_MS {
 	 * @since 0.2
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses Guard_MS::network_user_is_allowed() To check if the network user is allowed
+	 * @uses guard_network_user_is_allowed() To check if the network user is allowed
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function network_protect() {
@@ -97,32 +97,8 @@ final class Guard_MS {
 			return;
 
 		// Redirect user if not logged in or if not allowed
-		if ( ! is_user_logged_in() || ! $this->network_user_is_allowed() )
+		if ( ! is_user_logged_in() || ! guard_network_user_is_allowed() )
 			auth_redirect();
-	}
-
-	/**
-	 * Returns whether the current network user is allowed to enter
-	 *
-	 * @since 0.2
-	 *
-	 * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook
-	 *                        for plugins to override the access granted
-	 * @uses is_super_admin() To check if the current user is super admin
-	 *
-	 * @return boolean The user is allowed
-	 */
-	public function network_user_is_allowed() {
-		global $current_user;
-
-		// Get allowed users array
-		$allowed = (array) get_site_option( '_guard_network_allowed_users', array() );
-
-		// Filter if user is in it
-		$allow = apply_filters( 'guard_network_user_is_allowed', in_array( $current_user->ID, $allowed ) );
-
-		// Super admins are ALLWAYS allowed
-		return is_super_admin( $current_user->ID ) || $allow;
 	}
 
 	/**
@@ -190,7 +166,9 @@ final class Guard_MS {
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function network_admin_bar( $wp_admin_bar ) {
-		if ( $this->network_hide_my_sites() ) {
+
+		// Remove admin bar menu top item
+		if ( guard_network_hide_my_sites() ) {
 			$wp_admin_bar->remove_menu( 'my-sites' );
 		}
 	}
@@ -206,7 +184,7 @@ final class Guard_MS {
 	public function network_admin_menus() {
 
 		// Only removes menu item, not admin page itself
-		if ( $this->network_hide_my_sites() ) {
+		if ( guard_network_hide_my_sites() ) {
 			remove_submenu_page( 'index.php', 'my-sites.php' );
 		}
 	}
@@ -230,39 +208,13 @@ final class Guard_MS {
 			&& function_exists( 'get_current_screen' )
 			&& is_object( get_current_screen() )
 			&& 'my-sites' == get_current_screen()->id
-			&& $this->network_hide_my_sites()
+			&& guard_network_hide_my_sites()
 			&& in_array( 'read', $caps )
 		) {
 			$allcaps['read'] = false;
 		}
 
 		return $allcaps;
-	}
-
-	/**
-	 * Return whether to hide "My Sites" page for the current user
-	 *
-	 * @since 0.2
-	 *
-	 * @uses get_site_option()
-	 * @uses get_current_user_id()
-	 * @uses is_super_admin()
-	 * @uses get_blogs_of_user()
-	 * @uses get_current_user_id()
-	 *
-	 * @return boolean Hide "My Sites" page
-	 */
-	public function network_hide_my_sites() {
-		if ( ! get_site_option( '_guard_network_hide_my_sites' ) )
-			return false;
-
-		$user_id = get_current_user_id();
-		if ( is_super_admin( $user_id ) )
-			return false;
-
-		$blogs = get_blogs_of_user( $user_id );
-
-		return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ) );
 	}
 
 	/** Admin ********************************************************/

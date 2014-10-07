@@ -177,7 +177,7 @@ final class Guard {
 	 * @since 0.1
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses guard_users_is_allowed() To check if the user is allowed
+	 * @uses guard_user_is_allowed() To check if the user is allowed
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function site_protect() {
@@ -187,34 +187,10 @@ final class Guard {
 			return;
 
 		// Redirect user if not logged in or if not allowed
-		if ( ! is_user_logged_in() || ! $this->user_is_allowed() ) {
+		if ( ! is_user_logged_in() || ! guard_user_is_allowed() ) {
 			do_action( 'guard_site_protect' );
 			auth_redirect();
 		}
-	}
-
-	/**
-	 * Returns whether the current user is allowed to enter
-	 *
-	 * @since 0.1
-	 *
-	 * @uses apply_filters() To call 'guard_user_is_allowed' for
-	 *                        plugins to override the access granted
-	 * @uses current_user_can() To check if the current user is admin
-	 *
-	 * @return boolean The user is allowed
-	 */
-	public function user_is_allowed() {
-		global $current_user;
-
-		// Get allowed users array
-		$allowed = (array) get_option( '_guard_allowed_users', array() );
-
-		// Filter if user is in it
-		$allow = apply_filters( 'guard_user_is_allowed', in_array( $current_user->ID, $allowed ) );
-
-		// Admins are ALLWAYS allowed
-		return current_user_can( 'administrator' ) || $allow;
 	}
 
 	/**
