@@ -109,7 +109,7 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function includes() {
-		require( $this->includes . 'class-guard-ms.php' );
+		require( $this->includes . 'guard-multisite.php' );
 	}
 
 	/**
@@ -556,8 +556,11 @@ final class Guard {
 	 * @uses delete_option()
 	 */
 	public function uninstall() {
-		foreach ( $this->settings() as $option => $args )
+
+		// Delete all settings
+		foreach ( $this->settings() as $option => $args ) {
 			delete_option( $option );
+		}
 	}
 }
 
