@@ -347,7 +347,7 @@ final class Guard_MS {
 	 * }
 	 */
 	public function network_settings() {
-		$settings = array(
+		return apply_filters( 'guard_network_settings', array(
 
 			/** Main Settings ************************************************/
 
@@ -409,9 +409,7 @@ final class Guard_MS {
 			    'sanitize_cb' => array( $this, 'setting_custom_message_sanitize' )
 			),
 
-		);
-
-		return apply_filters( 'guard_network_settings', $settings );
+		) );
 	}
 
 	/**

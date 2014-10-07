@@ -308,7 +308,7 @@ final class Guard {
 	 * }
 	 */
 	public function settings() {
-		$settings = array(
+		return apply_filters( 'guard_settings', array(
 
 			/** Access Settings **********************************************/
 
@@ -340,9 +340,7 @@ final class Guard {
 				'page'        => 'guard',
 				'sanitize_cb' => array( $this, 'setting_custom_message_sanitize' )
 			)
-		);
-
-		return apply_filters( 'guard_settings', $settings );
+		) );
 	}
 
 	/**
@@ -491,7 +489,7 @@ final class Guard {
 	public function settings_link( $links, $file ) {
 
 		// Only add settings link for our plugin
-		if ( $file == $this->basename ) {
+		if ( $this->basename == $file ) {
 			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings' ) . '</a>';
 		}
 
