@@ -20,7 +20,7 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Setup all plugin actions and filters
@@ -53,7 +53,7 @@ if ( is_multisite() ) {
  * Redirect users on accessing a page of your site
  *
  * @since 0.1
- * 
+ *
  * @uses is_user_logged_in() To check if the user is logged in
  * @uses guard_users_is_allowed() To check if the user is allowed
  * @uses auth_redirect() To log the user out and redirect to wp-login.php
@@ -75,11 +75,11 @@ function guard_site_protect() {
  * Returns whether the current user is allowed to enter
  *
  * @since 0.1
- * 
+ *
  * @uses apply_filters() To call 'guard_user_is_allowed' for
  *                        plugins to override the access granted
  * @uses current_user_can() To check if the current user is admin
- * 
+ *
  * @return boolean The user is allowed
  */
 function guard_user_is_allowed() {
@@ -99,18 +99,18 @@ function guard_user_is_allowed() {
  * Create the plugin admin page menu item
  *
  * @since 0.1
- * 
+ *
  * @uses add_options_page() To add the menu to the options pane
  * @uses add_action() To enable functions hooking into admin page
  *                     head en footer
  */
 function guard_admin_menu() {
-	$hook = add_options_page( 
-		__('Guard Settings', 'guard'), 
-		'Guard', 
-		'manage_options', 
-		'guard', 
-		'guard_admin_page' 
+	$hook = add_options_page(
+		__('Guard Settings', 'guard'),
+		'Guard',
+		'manage_options',
+		'guard',
+		'guard_admin_page'
 	);
 
 	add_action( "admin_head-$hook",   'guard_admin_head'   );
@@ -121,7 +121,7 @@ function guard_admin_menu() {
  * Output plugin admin page contents
  *
  * @since 0.1
- * 
+ *
  * @uses screen_icon() To output the screen icon
  * @uses settings_fields() To output the form validation inputs
  * @uses do_settings_section() To output all form fields
@@ -147,7 +147,7 @@ function guard_admin_page() {
  * Enqueue script and style in plugin admin page head
  *
  * @since 0.1
- * 
+ *
  * @uses wp_script_is() To check if the script is already registered
  * @uses wp_style_is() To check if the style is already registered
  */
@@ -170,7 +170,7 @@ function guard_admin_head() {
  * Some restyling of chosen elements in the admin page and a
  * float class for description spans to display well with inputs
  * and a lines to initialize the chosen script.
- * 
+ *
  * @since 0.1
  */
 function guard_admin_footer() {
@@ -196,7 +196,7 @@ function guard_admin_footer() {
 <script type="text/javascript">
 	jQuery('.chzn-select').chosen();
 </script>
-	<?php 
+	<?php
 		do_action( 'guard_admin_footer' );
 }
 
@@ -206,7 +206,7 @@ function guard_admin_footer() {
  * @since 0.x
  *
  * @uses apply_filters() Calls 'guard_settings' hook on the settings
- * 
+ *
  * @return array $settings {
  *  @type array Setting ID {
  *   @type string $label Setting label
@@ -221,34 +221,34 @@ function guard_settings() {
 	$settings = array(
 
 		/** Access Settings **********************************************/
-		
+
 		// Site protect switch
 		'_guard_site_protect', array(
-			'label'       => __('Protect my site', 'guard'), 
-			'field_cb'    => 'guard_setting_protect_site',   
+			'label'       => __('Protect my site', 'guard'),
+			'field_cb'    => 'guard_setting_protect_site',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard',
-			'sanitize_cb' => 'intval' 
+			'sanitize_cb' => 'intval'
 		),
 
 		// Allowed users
 		'_guard_allowed_users', array(
-			'label'       => __('Allowed users', 'guard'), 
-			'field_cb'    => 'guard_setting_allow_users',    
+			'label'       => __('Allowed users', 'guard'),
+			'field_cb'    => 'guard_setting_allow_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard',
-			'sanitize_cb' => 'guard_setting_allow_users_sanitize' 
+			'sanitize_cb' => 'guard_setting_allow_users_sanitize'
 		),
 
 		/** Additional Settings ******************************************/
 
 		// Custom login message
 		'_guard_custom_message', array(
-			'label'       => __('Custom login message', 'guard'), 
-			'field_cb'    => 'guard_setting_custom_message', 
+			'label'       => __('Custom login message', 'guard'),
+			'field_cb'    => 'guard_setting_custom_message',
 			'section'     => 'guard-options-additional',
 			'page'        => 'guard',
-			'sanitize_cb' => 'guard_setting_custom_message_sanitize' 
+			'sanitize_cb' => 'guard_setting_custom_message_sanitize'
 		)
 	);
 
@@ -278,7 +278,7 @@ function guard_register_settings() {
 
 /**
  * Output access settings section information header
- * 
+ *
  * @since 0.1
  */
 function guard_access_settings_info() {
@@ -291,7 +291,7 @@ function guard_access_settings_info() {
 
 /**
  * Output additional settings section information header
- * 
+ *
  * @since 0.1
  */
 function guard_additional_settings_info() {
@@ -304,7 +304,7 @@ function guard_additional_settings_info() {
 
 /**
  * Output the enable site protection input field
- * 
+ *
  * @since 0.1
  */
 function guard_setting_protect_site() {
@@ -322,7 +322,7 @@ function guard_setting_protect_site() {
  * Output the allowed users input field
  *
  * @since 0.1
- * 
+ *
  * @uses get_users() To get all users of the site
  */
 function guard_setting_allow_users() {
@@ -344,7 +344,7 @@ function guard_setting_allow_users() {
 
 /**
  * Output the custom message input field
- * 
+ *
  * @since 0.1
  */
 function guard_setting_custom_message() {
@@ -356,9 +356,9 @@ function guard_setting_custom_message() {
 
 /**
  * Sanitize the allowed users input field
- * 
+ *
  * @since 0.1
- * 
+ *
  * @param string $input The submitted value
  * @return array $input
  */
@@ -375,15 +375,15 @@ function guard_setting_allow_users_sanitize( $input ) {
  * @since 0.1
  *
  * @uses wp_kses() To filter out all non allowed HTML tags
- * 
+ *
  * @param string $input The submitted value
  * @return string $input
  */
 function guard_setting_custom_message_sanitize( $input ) {
-	return wp_unslash( wp_kses( $input, array( 
-		'a'      => array('href'), 
-		'em'     => array(), 
-		'strong' => array() 
+	return wp_unslash( wp_kses( $input, array(
+		'a'      => array('href'),
+		'em'     => array(),
+		'strong' => array()
 	) ) );
 }
 
@@ -393,7 +393,7 @@ function guard_setting_custom_message_sanitize( $input ) {
  * @since 0.1
  *
  * @uses add_query_arg() To create the url to the settings page
- * 
+ *
  * @param array $links The current plugin action links
  * @param string $file The current plugin file
  * @return array $links All current plugin action links
@@ -412,7 +412,7 @@ function guard_settings_link( $links, $file ) {
  * Appends our custom message to the login messages
  *
  * @since 0.1
- * 
+ *
  * @param string $message The current login messages
  * @return string $message
  */
@@ -439,7 +439,7 @@ function guard_login_message( $message ) {
  * @since 0.1
  *
  * @uses load_textdomain() To insert the matched language file
- * 
+ *
  * @return mixed Text domain if found, else false
  */
 function guard_load_textdomain() {
@@ -522,11 +522,11 @@ function guard_network_protect() {
  * Returns whether the current network user is allowed to enter
  *
  * @since 0.2
- * 
- * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook 
+ *
+ * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook
  *                        for plugins to override the access granted
  * @uses is_super_admin() To check if the current user is super admin
- * 
+ *
  * @return boolean The user is allowed
  */
 function guard_network_user_is_allowed() {
@@ -565,11 +565,11 @@ function guard_network_redirect() {
  * Remove user blogs that are not allowed for given user
  *
  * @since 0.2
- * 
+ *
  * @uses switch_to_blog()
  * @uses guard_user_is_allowed()
  * @uses restore_current_blog()
- * 
+ *
  * @param array $blogs Blogs of user
  * @param int $user_id User ID
  * @param boolean $all Whether to return also all hidden blogs
@@ -603,7 +603,7 @@ function guard_network_blogs_of_user( $blogs, $user_id, $all ) {
  *
  * @uses guard_network_hide_my_sites()
  * @uses WP_Admin_Bar::remove_menu()
- * 
+ *
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function guard_network_admin_bar( $wp_admin_bar ) {
@@ -616,7 +616,7 @@ function guard_network_admin_bar( $wp_admin_bar ) {
  * Modify the admin menu for protected sites
  *
  * @since 0.2
- * 
+ *
  * @uses guard_network_hide_my_sites()
  * @uses remove_submenu_page()
  */
@@ -634,7 +634,7 @@ function guard_network_admin_menus() {
  * @since 0.x
  *
  * @uses guard_network_hide_my_sites()
- * 
+ *
  * @param array $allcaps All user caps
  * @param array $caps Required caps
  * @param array $args User ID and function arguments
@@ -643,11 +643,11 @@ function guard_network_admin_menus() {
 function guard_network_user_has_cap( $allcaps, $caps, $args ) {
 
 	// Prevent access to "My Sites" admin page by blocking user cap
-	if (   is_admin() 
+	if (   is_admin()
 		&& function_exists( 'get_current_screen' )
 		&& is_object( get_current_screen() )
-		&& 'my-sites' == get_current_screen()->id 
-		&& guard_network_hide_my_sites() 
+		&& 'my-sites' == get_current_screen()->id
+		&& guard_network_hide_my_sites()
 		&& in_array( 'read', $caps )
 		) {
 			$allcaps['read'] = false;
@@ -666,7 +666,7 @@ function guard_network_user_has_cap( $allcaps, $caps, $args ) {
  * @uses is_super_admin()
  * @uses get_blogs_of_user()
  * @uses get_current_user_id()
- * 
+ *
  * @return boolean Hide "My Sites" page
  */
 function guard_network_hide_my_sites() {
@@ -676,7 +676,7 @@ function guard_network_hide_my_sites() {
 	$user_id = get_current_user_id();
 	if ( is_super_admin( $user_id ) )
 		return false;
-		
+
 	$blogs = get_blogs_of_user( $user_id );
 
 	return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ) );
@@ -686,7 +686,7 @@ function guard_network_hide_my_sites() {
  * Create the plugin network admin page menu item
  *
  * @since 0.2
- * 
+ *
  * @uses add_options_page() To add the menu to the options pane
  * @uses add_action() To enable functions hooking into admin page
  *                     head en footer
@@ -709,7 +709,7 @@ function guard_network_admin_menu() {
  * Output plugin network admin page contents
  *
  * @since 0.2
- * 
+ *
  * @uses screen_icon() To output the screen icon
  * @uses settings_fields() To output the form validation inputs
  * @uses do_settings_section() To output all form fields
@@ -720,7 +720,7 @@ function guard_network_admin_menu() {
 function guard_network_page() {
 
 	// Fetch tab
-	$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main'; 
+	$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main';
 
 	?>
 		<div class="wrap">
@@ -740,9 +740,9 @@ function guard_network_page() {
 				<?php break;
 
 				// Sites settings page
-				case 'sites' : 
-					guard_network_page_sites(); 
-					break; 
+				case 'sites' :
+					guard_network_page_sites();
+					break;
 
 				// Hookable settings page
 				default :
@@ -760,7 +760,7 @@ function guard_network_page() {
  * @since 0.x
  *
  * @uses apply_filters() Calls 'guard_network_settings' hook on the settings
- * 
+ *
  * @return array $settings {
  *  @type array Setting ID {
  *   @type string $label Setting label
@@ -778,8 +778,8 @@ function guard_network_settings() {
 
 		// Network only
 		'_guard_network_only' => array(
-			'label'       => __('Network only', 'guard'), 
-			'field_cb'    => 'guard_network_setting_network_only',          
+			'label'       => __('Network only', 'guard'),
+			'field_cb'    => 'guard_network_setting_network_only',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'intval'
@@ -787,8 +787,8 @@ function guard_network_settings() {
 
 		// Network redirect
 		'_guard_network_redirect' => array(
-			'label'       => __('Redirect to main site', 'guard'), 
-			'field_cb'    => 'guard_network_setting_network_redirect',      
+			'label'       => __('Redirect to main site', 'guard'),
+			'field_cb'    => 'guard_network_setting_network_redirect',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'intval'
@@ -796,19 +796,19 @@ function guard_network_settings() {
 
 		// Hide "My Sites"
 		'_guard_network_hide_my_sites' => array(
-			'label'       => __('Hide "My Sites"', 'guard'), 
-			'field_cb'    => 'guard_network_setting_network_hide_my_sites', 
+			'label'       => __('Hide "My Sites"', 'guard'),
+			'field_cb'    => 'guard_network_setting_network_hide_my_sites',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'intval'
 		),
 
 		/** Access Settings **********************************************/
-		
+
 		// Network protect switch
 		'_guard_network_protect' => array(
-			'label'       => __('Protect this network', 'guard'), 
-			'field_cb'    => 'guard_network_setting_network_protect',       
+			'label'       => __('Protect this network', 'guard'),
+			'field_cb'    => 'guard_network_setting_network_protect',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'intval'
@@ -816,19 +816,19 @@ function guard_network_settings() {
 
 		// Allowed network users
 		'_guard_network_allowed_users' => array(
-			'label'       => __('Allowed network users', 'guard'), 
-			'field_cb'    => 'guard_network_setting_allow_users',           
+			'label'       => __('Allowed network users', 'guard'),
+			'field_cb'    => 'guard_network_setting_allow_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'guard_setting_allow_users_sanitize'
 		),
 
 		/** Additional Settings ******************************************/
-		
+
 		// Custom network login message
 		'_guard_network_custom_message' => array(
-			'label'       => __('Custom login message', 'guard'), 
-			'field_cb'    => 'guard_network_setting_custom_message',        
+			'label'       => __('Custom login message', 'guard'),
+			'field_cb'    => 'guard_network_setting_custom_message',
 			'section'     => 'guard-options-additional',
 			'page'        => 'guard_network',
 		    'sanitize_cb' => 'guard_setting_custom_message_sanitize'
@@ -843,7 +843,7 @@ function guard_network_settings() {
  * Setup the plugin network settings
  *
  * @since 0.2
- * 
+ *
  * @uses add_settings_section() To create the settings sections
  * @uses add_settings_field() To create a setting with it's field
  * @uses register_setting() To enable the setting being saved to the DB
@@ -861,7 +861,7 @@ function guard_register_network_settings() {
 	/**
 	 * There's no valid Network Settings API available ìn WP so we'll have to
 	 * do the sanitization and storing manually through wp-admin/network/edit.php
-	 * 
+	 *
 	 * @link http://core.trac.wordpress.org/ticket/15691
 	 */
 	add_action( 'network_admin_edit_guard_network',       'guard_network_settings_api'       );
@@ -871,7 +871,7 @@ function guard_register_network_settings() {
 
 /**
  * Output network main settings section information header
- * 
+ *
  * @since 0.x
  */
 function guard_network_main_settings_info() {
@@ -884,7 +884,7 @@ function guard_network_main_settings_info() {
 
 /**
  * Output network access settings section information header
- * 
+ *
  * @since 0.2
  */
 function guard_network_access_settings_info() {
@@ -897,7 +897,7 @@ function guard_network_access_settings_info() {
 
 /**
  * Output network additional settings section information header
- * 
+ *
  * @since 0.2
  */
 function guard_network_additional_settings_info() {
@@ -910,7 +910,7 @@ function guard_network_additional_settings_info() {
 
 /**
  * Output the network only input field
- * 
+ *
  * @since 0.2
  */
 function guard_network_setting_network_only() {
@@ -926,7 +926,7 @@ function guard_network_setting_network_only() {
 
 /**
  * Output the enable network protection input field
- * 
+ *
  * @since 0.2
  */
 function guard_network_setting_network_protect() {
@@ -942,7 +942,7 @@ function guard_network_setting_network_protect() {
 
 /**
  * Output the redirect to main site input field
- * 
+ *
  * @since 0.2
  */
 function guard_network_setting_network_redirect() {
@@ -958,7 +958,7 @@ function guard_network_setting_network_redirect() {
 
 /**
  * Output the hide my sites input field
- * 
+ *
  * @since 0.2
  */
 function guard_network_setting_network_hide_my_sites() {
@@ -976,9 +976,9 @@ function guard_network_setting_network_hide_my_sites() {
  * Output the allowed network users input field
  *
  * @since 0.2
- * 
+ *
  * @todo Does get_users() fetch all network users?
- * 
+ *
  * @uses guard_get_network_users() To get all users of the network
  */
 function guard_network_setting_allow_users() {
@@ -989,7 +989,7 @@ function guard_network_setting_allow_users() {
 
 	?>
 		<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e('Select a user', 'guard'); ?>">
-	
+
 		<?php foreach ( guard_get_network_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
 		<?php endforeach; ?>
@@ -1009,7 +1009,7 @@ function guard_network_setting_allow_users() {
 	 * @uses switch_to_blog()
 	 * @uses get_users()
 	 * @uses restore_current_blog()
-	 * 
+	 *
 	 * @return array Network users
 	 */
 	function guard_get_network_users() {
@@ -1031,7 +1031,7 @@ function guard_network_setting_allow_users() {
 
 /**
  * Output the custom network message input field
- * 
+ *
  * @since 0.2
  */
 function guard_network_setting_custom_message() {
@@ -1089,7 +1089,7 @@ function guard_network_admin_notice() {
 			$message = __('Settings saved.');
 		else
 			$message = apply_filters( 'guard_network_admin_notice', __('Something went wrong', 'guard'), $_GET['settings-updated'] );
-		
+
 		echo '<div class="message ' . $type . '"><p>' . $message . '</p></div>';
 	}
 }
@@ -1166,7 +1166,7 @@ function guard_network_page_sites() {
 	 * Compare blogs to order an array by blog_id
 	 *
 	 * @since 0.x
-	 * 
+	 *
 	 * @param array $a Blog to compare
 	 * @param array $b Blog to compare
 	 * @return int Move position
