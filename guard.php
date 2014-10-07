@@ -118,26 +118,58 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
+
+		// Plugin
 		add_action( 'plugins_loaded',      array( $this, 'load_textdomain'   )        );
+
+		// Protection
+		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1     );
+		add_action( 'login_message',       array( $this, 'login_message'     ), 1     );
+
+		// Admin
 		add_action( 'admin_init',          array( $this, 'register_settings' )        );
 		add_action( 'admin_menu',          array( $this, 'admin_menu'        )        );
-		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1     );
 		add_filter( 'plugin_action_links', array( $this, 'settings_link'     ), 10, 2 );
-		add_action( 'login_message',       array( $this, 'login_message'     ), 1     );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
 
-		// For WP MS
-		if ( is_multisite() ) {
-			add_action( 'guard_loaded', 'guard_ms' );
-		}
+		// Multisite
+		add_action( 'guard_loaded', 'guard_ms' );
 
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
 	}
 
-	/** Public Methods ********************************************************/
+	/** Plugin ****************************************************************/
+
+	/**
+	 * Loads the textdomain file for this plugin
+	 *
+	 * @since 0.1
+	 *
+	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
+	 * @uses load_textdomain() To load the textdomain
+	 * @uses load_plugin_textdomain() To load the plugin textdomain
+	 */
+	public function load_textdomain() {
+
+		// Traditional WordPress plugin locale filter
+		$locale        = apply_filters( 'plugin_locale', get_locale(), $this->domain );
+		$mofile        = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
+
+		// Setup paths to current locale file
+		$mofile_local  = $this->lang_dir . $mofile;
+		$mofile_global = WP_LANG_DIR . '/guard/' . $mofile;
+
+		// Look in global /wp-content/languages/guard folder first
+		load_textdomain( $this->domain, $mofile_global );
+
+		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
+		load_plugin_textdomain( $this->domain, false, 'guard/languages' );
+	}
+
+	/** Protection ************************************************************/
 
 	/**
 	 * Redirect users on accessing a page of your site
@@ -184,6 +216,33 @@ final class Guard {
 		// Admins are ALLWAYS allowed
 		return current_user_can( 'administrator' ) || $allow;
 	}
+
+	/**
+	 * Appends our custom message to the login messages
+	 *
+	 * @since 0.1
+	 *
+	 * @param string $message The current login messages
+	 * @return string $message
+	 */
+	public function login_message( $message ) {
+
+		// Only display message if site protection is activated
+		if ( ! get_option( '_guard_site_protect' ) )
+			return $message;
+
+		$custom_message = get_option( '_guard_custom_message' );
+
+		// Do not add anything if no message is set
+		if ( empty( $custom_message ) )
+			return $message;
+
+		$message .= '<p class="message">'. $custom_message .'<p>';
+
+		return $message;
+	}
+
+	/** Admin *****************************************************************/
 
 	/**
 	 * Create the plugin admin page menu item
@@ -263,29 +322,30 @@ final class Guard {
 	 *
 	 * @since 0.1
 	 */
-	public function admin_footer() {
-		?>
-	<style type="text/css">
-		.chzn-select,
-		.chzn-container,
-		textarea {
-			float: left;
-		}
+	public function admin_footer() { ?>
 
-		.chzn-container-multi .chzn-choices .search-field input {
-			height: 25px;
-			padding: 3px;
-		}
+		<style type="text/css">
+			.chzn-select,
+			.chzn-container,
+			textarea {
+				float: left;
+			}
 
-		span.float {
-			padding: 4px 6px;
-			float: left;
-		}
-	</style>
+			.chzn-container-multi .chzn-choices .search-field input {
+				height: 25px;
+				padding: 3px;
+			}
 
-	<script type="text/javascript">
-		jQuery( '.chzn-select' ).chosen();
-	</script>
+			span.float {
+				padding: 4px 6px;
+				float: left;
+			}
+		</style>
+
+		<script type="text/javascript">
+			jQuery( '.chzn-select' ).chosen();
+		</script>
+
 		<?php
 			do_action( 'guard_admin_footer' );
 	}
@@ -326,61 +386,10 @@ final class Guard {
 
 		// Only add settings link for our plugin
 		if ( $this->basename == $file ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
 		}
 
 		return $links;
-	}
-
-	/**
-	 * Appends our custom message to the login messages
-	 *
-	 * @since 0.1
-	 *
-	 * @param string $message The current login messages
-	 * @return string $message
-	 */
-	public function login_message( $message ) {
-
-		// Only display message if site protection is activated
-		if ( ! get_option( '_guard_site_protect' ) )
-			return $message;
-
-		$custom_message = get_option( '_guard_custom_message' );
-
-		// Do not add anything if no message is set
-		if ( empty( $custom_message ) )
-			return $message;
-
-		$message .= '<p class="message">'. $custom_message .'<p>';
-
-		return $message;
-	}
-
-	/**
-	 * Loads the textdomain file for this plugin
-	 *
-	 * @since 0.1
-	 *
-	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
-	 * @uses load_textdomain() To load the textdomain
-	 * @uses load_plugin_textdomain() To load the plugin textdomain
-	 */
-	public function load_textdomain() {
-
-		// Traditional WordPress plugin locale filter
-		$locale        = apply_filters( 'plugin_locale', get_locale(), $this->domain );
-		$mofile        = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
-
-		// Setup paths to current locale file
-		$mofile_local  = $this->lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/guard/' . $mofile;
-
-		// Look in global /wp-content/languages/guard folder first
-		load_textdomain( $this->domain, $mofile_global );
-
-		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
-		load_plugin_textdomain( $this->domain, false, 'guard/languages' );
 	}
 
 	/**

@@ -35,21 +35,27 @@ final class Guard_MS {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
+
+		// Plugin
 		add_action( 'plugins_loaded',      array( this, 'network_only'              )        );
-		add_action( 'admin_init',          array( this, 'register_network_settings' )        );
-		add_action( 'network_admin_menu',  array( this, 'network_admin_menu'        )        );
+
+		// Protection
 		add_action( 'template_redirect',   array( this, 'network_protect'           ), 0     );
 		add_action( 'guard_site_protect',  array( this, 'network_redirect'          )        );
-		add_action( 'get_blogs_of_user',   array( this, 'network_blogs_of_user'     ), 10, 3 );
 		add_action( 'admin_bar_menu',      array( this, 'network_admin_bar'         ), 99    );
 		add_action( 'admin_menu',          array( this, 'network_admin_menus'       ), 99    );
+		add_action( 'get_blogs_of_user',   array( this, 'network_blogs_of_user'     ), 10, 3 );
 		add_filter( 'user_has_cap',        array( this, 'network_user_has_cap'      ), 10, 3 );
+
+		// Admin
+		add_action( 'admin_init',          array( this, 'register_network_settings' )        );
+		add_action( 'network_admin_menu',  array( this, 'network_admin_menu'        )        );
 
 		// Uninstall hook
 		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
 	}
 
-	/** Public Methods ***********************************************/
+	/** Plugin *******************************************************/
 
 	/**
 	 * Ensure Guard is only used for the network
@@ -72,6 +78,8 @@ final class Guard_MS {
 		remove_action( 'template_redirect', array( $guard, 'site_protect'      ), 1 );
 		remove_action( 'login_message',     array( $guard, 'login_message'     ), 1 );
 	}
+
+	/** Protection ***************************************************/
 
 	/**
 	 * Redirect user if network is protected
@@ -257,6 +265,8 @@ final class Guard_MS {
 		return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ) );
 	}
 
+	/** Admin ********************************************************/
+
 	/**
 	 * Create the plugin network admin page menu item
 	 *
@@ -295,9 +305,8 @@ final class Guard_MS {
 	public function network_page() {
 
 		// Fetch tab
-		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main';
+		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main'; ?>
 
-		?>
 			<div class="wrap">
 				<?php screen_icon( 'options-general' ); ?>
 				<h2><?php _e( 'Guard Network Settings', 'guard' ); ?></h2>
@@ -305,13 +314,14 @@ final class Guard_MS {
 				<?php switch ( $tab ) :
 
 					// Main settings page
-					case 'main' :
-					?>
+					case 'main' : ?>
+
 				<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
 					<?php settings_fields( 'guard_network' ); ?>
 					<?php do_settings_sections( 'guard_network' ); ?>
 					<?php submit_button(); ?>
 				</form>
+
 					<?php break;
 
 					// Sites settings page
@@ -404,10 +414,11 @@ final class Guard_MS {
 
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
-			if ( 'updated' == $type )
-				$message = __( 'Settings saved.' );
-			else
+			if ( 'updated' == $type ) {
+				$message = __( 'Settings saved.', 'guard' );
+			} else {
 				$message = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong', 'guard' ), $_GET['settings-updated'] );
+			}
 
 			echo '<div class="message ' . $type . '"><p>' . $message . '</p></div>';
 		}
@@ -539,6 +550,11 @@ final class Guard_MS {
  * @uses Guard_MS
  */
 function guard_ms() {
+
+	// Bail if not running Multisite
+	if ( ! is_multisite() )
+		return;
+
 	guard()->ms = new Guard_MS;
 }
 
