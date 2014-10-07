@@ -11,23 +11,26 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Returns whether the current user is allowed to enter
+ * Returns whether the given user is allowed access
  *
  * @since 0.1
  *
+ * @uses user_can() To check if the user is an admin
  * @uses apply_filters() To call 'guard_user_is_allowed' for
  *                        plugins to override the access granted
- * @uses current_user_can() To check if the current user is admin
  *
+ * @param int $user_id Optional. Defaults to current user
  * @return boolean The user is allowed
  */
-function guard_user_is_allowed() {
+function guard_user_is_allowed( $user_id = 0 ) {
 
-	// Get current user ID
-	$user_id = get_current_user_id();
+	// Default to current user ID
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
 
 	// Always allow admins
-	if ( current_user_can( 'administrator' ) )
+	if ( user_can( $user_id, 'administrator' ) )
 		return true;
 
 	// Get allowed users array
@@ -38,20 +41,23 @@ function guard_user_is_allowed() {
 }
 
 /**
- * Returns whether the current network user is allowed to enter
+ * Returns whether the given network user is allowed access
  *
  * @since 0.2
  *
+ * @uses is_super_admin() To check if the current user is a super admin
  * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook
  *                        for plugins to override the access granted
- * @uses is_super_admin() To check if the current user is super admin
  *
+ * @param int $user_id Optional. Defaults to current user
  * @return boolean The user is allowed
  */
-function guard_network_user_is_allowed() {
+function guard_network_user_is_allowed( $user_id = 0 ) {
 
-	// Get current user ID
-	$user_id = get_current_user_id();
+	// Default to current user ID
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
 
 	// Always allow super admins
 	if ( is_super_admin( $user_id ) )
