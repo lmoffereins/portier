@@ -501,7 +501,7 @@ final class Guard {
 	public function settings_link( $links, $file ) {
 
 		// Only add settings link for our plugin
-		if ( plugin_basename( __FILE__ ) == $file ) {
+		if ( $file == $this->basename ) {
 			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings' ) . '</a>';
 		}
 
@@ -538,30 +538,25 @@ final class Guard {
 	 *
 	 * @since 0.1
 	 *
-	 * @uses load_textdomain() To insert the matched language file
-	 *
-	 * @return mixed Text domain if found, else false
+	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
+	 * @uses load_textdomain() To load the textdomain
+	 * @uses load_plugin_textdomain() To load the plugin textdomain
 	 */
 	public function load_textdomain() {
 
 		// Traditional WordPress plugin locale filter
-		$mofile        = sprintf( 'guard-%s.mo', get_locale() );
+		$locale        = apply_filters( 'plugin_locale', get_locale(), $this->domain );
+		$mofile        = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
 
 		// Setup paths to current locale file
-		$mofile_local  = plugin_dir_path( __FILE__ ) .'languages/'. $mofile;
+		$mofile_local  = $this->lang_dir . $mofile;
 		$mofile_global = WP_LANG_DIR . '/guard/' . $mofile;
 
-		// Look in global /wp-content/languages/guard folder
-		if ( file_exists( $mofile_global ) ) {
-			return load_textdomain( 'guard', $mofile_global );
+		// Look in global /wp-content/languages/guard folder first
+		load_textdomain( $this->domain, $mofile_global );
 
-		// Look in local /wp-content/plugins/guard/languages/ folder
-		} elseif ( file_exists( $mofile_local ) ) {
-			return load_textdomain( 'guard', $mofile_local );
-		}
-
-		// Nothing found
-		return false;
+		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
+		load_plugin_textdomain( $this->domain, false, 'guard/languages' );
 	}
 
 	/**
