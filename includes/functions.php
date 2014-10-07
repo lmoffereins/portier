@@ -26,14 +26,15 @@ function guard_user_is_allowed() {
 	// Get current user ID
 	$user_id = get_current_user_id();
 
+	// Always allow admins
+	if ( current_user_can( 'administrator' ) )
+		return true;
+
 	// Get allowed users array
 	$allowed = (array) get_option( '_guard_allowed_users', array() );
 
-	// Filter if user is in it
-	$allow = apply_filters( 'guard_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
-
-	// Admins are ALLWAYS allowed
-	return current_user_can( 'administrator' ) || $allow;
+	// Filter whether user is allowed
+	return apply_filters( 'guard_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
 }
 
 /**
@@ -52,14 +53,15 @@ function guard_network_user_is_allowed() {
 	// Get current user ID
 	$user_id = get_current_user_id();
 
+	// Always allow super admins
+	if ( is_super_admin( $user_id ) )
+		return true;
+
 	// Get allowed users array
 	$allowed = (array) get_site_option( '_guard_network_allowed_users', array() );
 
-	// Filter if user is in it
-	$allow = apply_filters( 'guard_network_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
-
-	// Super admins are ALLWAYS allowed
-	return is_super_admin( $user_id ) || $allow;
+	// Filter whether user is allowed
+	return apply_filters( 'guard_network_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
 }
 
 /**
