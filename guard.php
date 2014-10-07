@@ -291,188 +291,24 @@ final class Guard {
 	}
 
 	/**
-	 * Return the plugin settings
-	 *
-	 * @since 0.x
-	 *
-	 * @uses apply_filters() Calls 'guard_settings' hook on the settings
-	 *
-	 * @return array $settings {
-	 *  @type array Setting ID {
-	 *   @type string $label Setting label
-	 *   @type string $field_cb Setting input field callback
-	 *   @type string $section Setting section name
-	 *   @type string $page Setting page name
-	 *   @type string $sanitize_cb Setting sanitization callback
-	 *  }
-	 * }
-	 */
-	public function settings() {
-		return apply_filters( 'guard_settings', array(
-
-			/** Access Settings **********************************************/
-
-			// Site protect switch
-			'_guard_site_protect', array(
-				'label'       => __( 'Protect my site', 'guard' ),
-				'field_cb'    => array( $this, 'setting_protect_site' ),
-				'section'     => 'guard-options-access',
-				'page'        => 'guard',
-				'sanitize_cb' => 'intval'
-			),
-
-			// Allowed users
-			'_guard_allowed_users', array(
-				'label'       => __( 'Allowed users', 'guard' ),
-				'field_cb'    => array( $this, 'setting_allow_users' ),
-				'section'     => 'guard-options-access',
-				'page'        => 'guard',
-				'sanitize_cb' => array( $this, 'setting_allow_users_sanitize' )
-			),
-
-			/** Additional Settings ******************************************/
-
-			// Custom login message
-			'_guard_custom_message', array(
-				'label'       => __( 'Custom login message', 'guard' ),
-				'field_cb'    => array( $this, 'setting_custom_message' ),
-				'section'     => 'guard-options-additional',
-				'page'        => 'guard',
-				'sanitize_cb' => array( $this, 'setting_custom_message_sanitize' )
-			)
-		) );
-	}
-
-	/**
 	 * Setup the plugin settings
 	 *
 	 * @since 0.1
 	 *
 	 * @uses add_settings_section() To create the settings sections
-	 * @uses Guard::settings()
+	 * @uses guard_settings()
 	 * @uses add_settings_field() To create a setting with it's field
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_settings() {
-		add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), array( $this, 'access_settings_info'     ), 'guard' );
-		add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), array( $this, 'additional_settings_info' ), 'guard' );
+		add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), 'guard_access_settings_info',     'guard' );
+		add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), 'guard_additional_settings_info', 'guard' );
 
 		// Loop all settings to register
-		foreach ( $this->settings() as $setting => $args ) {
+		foreach ( guard_settings() as $setting => $args ) {
 			add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
 			register_setting( $args['page'], $setting, $args['sanitize_cb'] );
 		}
-	}
-
-	/**
-	 * Output access settings section information header
-	 *
-	 * @since 0.1
-	 */
-	public function access_settings_info() {
-		?>
-			<p>
-				<?php _e( 'Here you enable the Guard plugin. By checking the <em>Protect my site</em> input, this site will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output additional settings section information header
-	 *
-	 * @since 0.1
-	 */
-	public function additional_settings_info() {
-		?>
-			<p>
-				<?php _e( 'Below you can set additional Guard options.', 'guard' ); ?>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the enable site protection input field
-	 *
-	 * @since 0.1
-	 */
-	public function setting_protect_site() {
-		?>
-			<p>
-				<label>
-					<input type="checkbox" name="_guard_site_protect" <?php checked( get_option( '_guard_site_protect' ), 1 ) ?> value="1" />
-					<span class="description"><?php _e( 'Enable site protection.', 'guard' ); ?></span>
-				</label>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the allowed users input field
-	 *
-	 * @since 0.1
-	 *
-	 * @uses get_users() To get all users of the site
-	 */
-	public function setting_allow_users() {
-		$users = get_option( '_guard_allowed_users' );
-
-		if ( ! is_array( $users ) )
-			$users = array();
-
-		?>
-			<select id="_guard_allowed_users" class="chzn-select" name="_guard_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
-			<?php foreach ( get_users() as $user ) : ?>
-				<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
-			<?php endforeach; ?>
-
-			</select>
-			<span class="description float"><?php _e( 'Select which users you want to have access.', 'guard' ); ?></span>
-		<?php
-	}
-
-	/**
-	 * Output the custom message input field
-	 *
-	 * @since 0.1
-	 */
-	public function setting_custom_message() {
-		?>
-			<textarea name="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
-			<span class="description float"><?php printf( __( 'Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
-		<?php
-	}
-
-	/**
-	 * Sanitize the allowed users input field
-	 *
-	 * @since 0.1
-	 *
-	 * @param string $input The submitted value
-	 * @return array $input
-	 */
-	public function setting_allow_users_sanitize( $input ) {
-		if ( empty( $input ) )
-			return array();
-
-		return array_unique( array_map( 'intval', (array) $input ) );
-	}
-
-	/**
-	 * Sanitize the custom message input field
-	 *
-	 * @since 0.1
-	 *
-	 * @uses wp_kses() To filter out all non allowed HTML tags
-	 *
-	 * @param string $input The submitted value
-	 * @return string $input
-	 */
-	public function setting_custom_message_sanitize( $input ) {
-		return wp_unslash( wp_kses( $input, array(
-			'a'      => array( 'href' ),
-			'em'     => array(),
-			'strong' => array()
-		) ) );
 	}
 
 	/**
@@ -552,13 +388,13 @@ final class Guard {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard::settings()
+	 * @uses guard_settings()
 	 * @uses delete_option()
 	 */
 	public function uninstall() {
 
 		// Delete all settings
-		foreach ( $this->settings() as $option => $args ) {
+		foreach ( guard_settings() as $option => $args ) {
 			delete_option( $option );
 		}
 	}

@@ -330,104 +330,22 @@ final class Guard_MS {
 	}
 
 	/**
-	 * Return the plugin network settings
-	 *
-	 * @since 0.x
-	 *
-	 * @uses apply_filters() Calls 'guard_network_settings' hook on the settings
-	 *
-	 * @return array $settings {
-	 *  @type array Setting ID {
-	 *   @type string $label Setting label
-	 *   @type string $field_cb Setting input field callback
-	 *   @type string $section Setting section name
-	 *   @type string $page Setting page name
-	 *   @type string $sanitize_cb Setting sanitization callback
-	 *  }
-	 * }
-	 */
-	public function network_settings() {
-		return apply_filters( 'guard_network_settings', array(
-
-			/** Main Settings ************************************************/
-
-			// Network only
-			'_guard_network_only' => array(
-				'label'       => __( 'Network only', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_network_only' ),
-				'section'     => 'guard-options-main',
-				'page'        => 'guard_network',
-				'sanitize_cb' => 'intval'
-			),
-
-			// Network redirect
-			'_guard_network_redirect' => array(
-				'label'       => __( 'Redirect to main site', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_network_redirect' ),
-				'section'     => 'guard-options-main',
-				'page'        => 'guard_network',
-				'sanitize_cb' => 'intval'
-			),
-
-			// Hide "My Sites"
-			'_guard_network_hide_my_sites' => array(
-				'label'       => __( 'Hide "My Sites"', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_network_hide_my_sites' ),
-				'section'     => 'guard-options-main',
-				'page'        => 'guard_network',
-				'sanitize_cb' => 'intval'
-			),
-
-			/** Access Settings **********************************************/
-
-			// Network protect switch
-			'_guard_network_protect' => array(
-				'label'       => __( 'Protect this network', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_network_protect' ),
-				'section'     => 'guard-options-access',
-				'page'        => 'guard_network',
-				'sanitize_cb' => 'intval'
-			),
-
-			// Allowed network users
-			'_guard_network_allowed_users' => array(
-				'label'       => __( 'Allowed network users', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_allow_users' ),
-				'section'     => 'guard-options-access',
-				'page'        => 'guard_network',
-				'sanitize_cb' => array( $this, 'setting_allow_users_sanitize' )
-			),
-
-			/** Additional Settings ******************************************/
-
-			// Custom network login message
-			'_guard_network_custom_message' => array(
-				'label'       => __( 'Custom login message', 'guard' ),
-				'field_cb'    => array( $this, 'network_setting_custom_message' ),
-				'section'     => 'guard-options-additional',
-				'page'        => 'guard_network',
-			    'sanitize_cb' => array( $this, 'setting_custom_message_sanitize' )
-			),
-
-		) );
-	}
-
-	/**
 	 * Setup the plugin network settings
 	 *
 	 * @since 0.2
 	 *
 	 * @uses add_settings_section() To create the settings sections
 	 * @uses add_settings_field() To create a setting with it's field
+	 * @uses guard_network_settings()
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_network_settings() {
-		add_settings_section( 'guard-options-main',       __( 'Network Main Settings',       'guard' ), array( $this, 'network_main_settings_info'       ), 'guard_network' );
-		add_settings_section( 'guard-options-access',     __( 'Network Access Settings',     'guard' ), array( $this, 'network_access_settings_info'     ), 'guard_network' );
-		add_settings_section( 'guard-options-additional', __( 'Additional Network Settings', 'guard' ), array( $this, 'network_additional_settings_info' ), 'guard_network' );
+		add_settings_section( 'guard-options-main',       __( 'Network Main Settings',       'guard' ), 'guard_network_main_settings_info',       'guard_network' );
+		add_settings_section( 'guard-options-access',     __( 'Network Access Settings',     'guard' ), 'guard_network_access_settings_info',     'guard_network' );
+		add_settings_section( 'guard-options-additional', __( 'Additional Network Settings', 'guard' ), 'guard_network_additional_settings_info', 'guard_network' );
 
 		// Loop all network settings to register
-		foreach ( $this->network_settings() as $setting => $args ) {
+		foreach ( guard_network_settings() as $setting => $args ) {
 			add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
 		}
 
@@ -437,181 +355,9 @@ final class Guard_MS {
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_guard_network',       array( $this, 'network_settings_api'       ) );
-		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'network_sites_settings_api' ) );
-		add_action( 'network_admin_notices',                  array( $this, 'network_admin_notice'       ) );
-	}
-
-	/**
-	 * Output network main settings section information header
-	 *
-	 * @since 0.x
-	 */
-	public function network_main_settings_info() {
-		?>
-			<p>
-				<?php _e( 'Here you activate the main network functionality of Guard. For activating the network protection, see the Network Access Settings.', 'guard' ); ?>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output network access settings section information header
-	 *
-	 * @since 0.2
-	 */
-	public function network_access_settings_info() {
-		?>
-			<p>
-				<?php _e( 'Here you activate your network protection. By checking the <em>Protect this network</em> input, this network will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output network additional settings section information header
-	 *
-	 * @since 0.2
-	 */
-	public function network_additional_settings_info() {
-		?>
-			<p>
-				<?php _e( 'Below you can set additional Network Guard options.', 'guard' ); ?>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the network only input field
-	 *
-	 * @since 0.2
-	 */
-	public function network_setting_network_only() {
-		?>
-			<p>
-				<label>
-					<input type="checkbox" name="_guard_network_only" <?php checked( get_site_option( '_guard_network_only' ), 1 ) ?> value="1" />
-					<span class="description"><?php _e( 'Disable this plugin for individual sites.', 'guard' ); ?></span>
-				</label>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the enable network protection input field
-	 *
-	 * @since 0.2
-	 */
-	public function network_setting_network_protect() {
-		?>
-			<p>
-				<label>
-					<input type="checkbox" name="_guard_network_protect" <?php checked( get_site_option( '_guard_network_protect' ), 1 ) ?> value="1" />
-					<span class="description"><?php _e( 'Enable network protection.', 'guard' ); ?></span>
-				</label>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the redirect to main site input field
-	 *
-	 * @since 0.2
-	 */
-	public function network_setting_network_redirect() {
-		?>
-			<p>
-				<label>
-					<input type="checkbox" name="_guard_network_redirect" <?php checked( get_site_option( '_guard_network_redirect' ), 1 ) ?> value="1" />
-					<span class="description"><?php _e( 'Redirect users from protected sites to the main site.', 'guard' ); ?></span>
-				</label>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the hide my sites input field
-	 *
-	 * @since 0.2
-	 */
-	public function network_setting_network_hide_my_sites() {
-		?>
-			<p>
-				<label>
-					<input type="checkbox" name="_guard_network_hide_my_sites" <?php checked( get_site_option( '_guard_network_hide_my_sites' ), 1 ) ?> value="1" />
-					<span class="description"><?php _e( 'Hide "My Sites" links and page when a user has access to only one site.', 'guard' ); ?></span>
-				</label>
-			</p>
-		<?php
-	}
-
-	/**
-	 * Output the allowed network users input field
-	 *
-	 * @since 0.2
-	 *
-	 * @todo Does get_users() fetch all network users?
-	 *
-	 * @uses Guard_MS::get_network_users() To get all users of the network
-	 */
-	public function network_setting_allow_users() {
-		$users = get_site_option( '_guard_network_allowed_users' );
-
-		if ( ! is_array( $users ) )
-			$users = array();
-
-		?>
-			<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
-
-			<?php foreach ( $this->get_network_users() as $user ) : ?>
-				<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $users ) ); ?>><?php echo $user->user_login; ?></option>
-			<?php endforeach; ?>
-
-			</select>
-			<span class="description float"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></span>
-		<?php
-	}
-
-		/**
-		 * Return array of all network users
-		 *
-		 * @since 0.2
-		 *
-		 * @uses get_current_user_id()
-		 * @uses get_blogs_of_user()
-		 * @uses switch_to_blog()
-		 * @uses get_users()
-		 * @uses restore_current_blog()
-		 *
-		 * @return array Network users
-		 */
-		public function get_network_users() {
-			$users = array();
-			$user_id = get_current_user_id(); // Always super admin?
-
-			foreach ( get_blogs_of_user( $user_id ) as $blog_id => $details ) {
-				switch_to_blog( $blog_id );
-
-				// array( 0 => WP_User ) becomes array( $user_id => WP_User )
-				foreach ( get_users() as $user )
-					$users[$user->ID] = $user;
-
-				restore_current_blog();
-			}
-
-			return apply_filters( 'guard_get_network_users', $users );
-		}
-
-	/**
-	 * Output the custom network message input field
-	 *
-	 * @since 0.2
-	 */
-	public function network_setting_custom_message() {
-		?>
-			<textarea name="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
-			<span class="description float"><?php printf( __( 'Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
-		<?php
+		add_action( 'network_admin_edit_guard_network',       array( $this, 'guard_network_settings_api'       ) );
+		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'guard_network_sites_settings_api' ) );
+		add_action( 'network_admin_notices',                  array( $this, 'guard_network_admin_notice'       ) );
 	}
 
 	/**
@@ -620,7 +366,7 @@ final class Guard_MS {
 	 * @since 0.2
 	 *
 	 * @uses wp_verify_nonce()
-	 * @uses Guard::network_settings()
+	 * @uses guard_network_settings()
 	 * @uses update_site_option()
 	 * @uses wp_redirect()
 	 */
@@ -689,13 +435,13 @@ final class Guard_MS {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard::network_settings()
+	 * @uses guard_network_settings()
 	 * @uses delete_site_option()
 	 */
 	public function network_uninstall() {
 
 		// Delete all settings
-		foreach ( $this->network_settings() as $option => $args ) {
+		foreach ( guard_network_settings() as $option => $args ) {
 			delete_site_option( $option );
 		}
 	}
