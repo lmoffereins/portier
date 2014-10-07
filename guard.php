@@ -118,13 +118,15 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-		add_action( 'plugins_loaded',      'load_textdomain'      );
-		add_action( 'admin_init',          'register_settings'    );
-		add_action( 'admin_menu',          'admin_menu'           );
-		add_action( 'template_redirect',   'site_protect',  1     );
-		add_filter( 'plugin_action_links', 'settings_link', 10, 2 );
-		add_action( 'login_message',       'login_message', 1     );
-		register_uninstall_hook( __FILE__, 'uninstall'            );
+		add_action( 'plugins_loaded',      array( $this, 'load_textdomain'   )        );
+		add_action( 'admin_init',          array( $this, 'register_settings' )        );
+		add_action( 'admin_menu',          array( $this, 'admin_menu'        )        );
+		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1     );
+		add_filter( 'plugin_action_links', array( $this, 'settings_link'     ), 10, 2 );
+		add_action( 'login_message',       array( $this, 'login_message'     ), 1     );
+
+		// Uninstall hook
+		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
 
 		// For WP MS
 		if ( is_multisite() ) {
