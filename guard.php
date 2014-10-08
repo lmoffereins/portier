@@ -124,7 +124,7 @@ final class Guard {
 
 		// Protection
 		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1     );
-		add_action( 'login_message',       array( $this, 'login_message'     ), 1     );
+		add_filter( 'login_message',       array( $this, 'login_message'     ), 1     );
 
 		// Admin
 		add_action( 'admin_init',          array( $this, 'register_settings' )        );

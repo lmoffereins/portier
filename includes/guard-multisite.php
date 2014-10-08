@@ -76,7 +76,7 @@ final class Guard_MS {
 		remove_action( 'admin_init',        array( $guard, 'register_settings' )    );
 		remove_action( 'admin_menu',        array( $guard, 'admin_menu'        )    );
 		remove_action( 'template_redirect', array( $guard, 'site_protect'      ), 1 );
-		remove_action( 'login_message',     array( $guard, 'login_message'     ), 1 );
+		remove_filter( 'login_message',     array( $guard, 'login_message'     ), 1 );
 	}
 
 	/** Protection ***************************************************/
