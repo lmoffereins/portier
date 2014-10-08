@@ -71,6 +71,42 @@ function guard_network_user_is_allowed( $user_id = 0 ) {
 }
 
 /**
+ * Return whether the given user is allowed for the given blog
+ *
+ * @since 1.0.0
+ *
+ * @param int $user_id Optional. Defaults to current user ID
+ * @param int $blog_id Optional. Defaults to current blog ID
+ * @return bool User is allowed
+ */
+function guard_user_is_allowed_for_blog( $user_id = 0, $blog_id = 0 ) {
+
+	// Default to current user ID
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
+
+	// Always allow super admins. For non-multisite defaults to has_cap( 'delete_users' )
+	if ( is_super_admin( $user_id ) )
+		return true;
+
+	// Switch to blog
+	if ( ! empty( $blog_id ) ) {
+		switch_to_blog( (int) $blog_id );
+	}
+
+	// Check single site allowance
+	$retval = guard_user_is_allowed( $user_id );
+
+	// Restore blog
+	if ( ! empty( $blog_id ) ) {
+		restore_current_blog();
+	}
+
+	return apply_filters( 'guard_user_is_allowed_for_blog', $retval, $user_id, $blog_id );
+}
+
+/**
  * Return array of all network users
  *
  * @since 0.2
