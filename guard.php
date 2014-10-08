@@ -342,7 +342,12 @@ final class Guard {
 
 		// Loop all settings to register
 		foreach ( guard_settings() as $setting => $args ) {
-			add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+
+			// Only render field when label and callback are present
+			if ( isset( $args['label'] ) && isset( $args['field_cb'] ) ) {
+				add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+			}
+
 			register_setting( $args['page'], $setting, $args['sanitize_cb'] );
 		}
 	}
