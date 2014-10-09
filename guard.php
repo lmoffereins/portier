@@ -109,7 +109,7 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function includes() {
-		require( $this->includes . 'guard-multisite.php' );
+		require( $this->includes . 'multisite.php' );
 	}
 
 	/**
