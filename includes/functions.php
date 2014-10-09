@@ -162,5 +162,5 @@ function guard_network_hide_my_sites() {
 
 	$blogs = get_blogs_of_user( $user_id );
 
-	return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ), $user_id );
+	return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ), $user_id, $blogs );
 }
