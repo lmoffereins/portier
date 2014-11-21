@@ -10,13 +10,13 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Guard_MS' ) ) :
+if ( ! class_exists( 'Guard_Multisite' ) ) :
 /**
  * Guard Multisite Class
  *
  * @since 1.0.0
  */
-final class Guard_MS {
+final class Guard_Multisite {
 
 	/**
 	 * Setup class
@@ -160,7 +160,7 @@ final class Guard_MS {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_MS::network_hide_my_sites()
+	 * @uses Guard_Multisite::network_hide_my_sites()
 	 * @uses WP_Admin_Bar::remove_menu()
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
@@ -178,7 +178,7 @@ final class Guard_MS {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_MS::network_hide_my_sites()
+	 * @uses Guard_Multisite::network_hide_my_sites()
 	 * @uses remove_submenu_page()
 	 */
 	public function network_admin_menus() {
@@ -194,7 +194,7 @@ final class Guard_MS {
 	 *
 	 * @since 0.x
 	 *
-	 * @uses Guard_MS::network_hide_my_sites()
+	 * @uses Guard_Multisite::network_hide_my_sites()
 	 *
 	 * @param array $allcaps All user caps
 	 * @param array $caps Required caps
@@ -251,7 +251,7 @@ final class Guard_MS {
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
-	 * @uses Guard_MS::network_page_sites()
+	 * @uses Guard_Multisite::network_page_sites()
 	 * @uses do_action() Calls 'guard_network_page' with the tab
 	 */
 	public function network_page() {
@@ -358,7 +358,7 @@ final class Guard_MS {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_MS::is_network_page()
+	 * @uses Guard_Multisite::is_network_page()
 	 */
 	public function network_admin_notice() {
 		if ( ! $this->is_network_page() )
@@ -499,15 +499,10 @@ final class Guard_MS {
  * @since 1.0.0
  *
  * @uses guard()
- * @uses Guard_MS
+ * @uses Guard_Multisite
  */
-function guard_ms() {
-
-	// Bail if not running Multisite
-	if ( ! is_multisite() )
-		return;
-
-	guard()->ms = new Guard_MS;
+function guard_multisite() {
+	guard()->ms = new Guard_Multisite;
 }
 
 endif; // class_exists

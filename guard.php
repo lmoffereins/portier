@@ -109,7 +109,11 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function includes() {
-		require( $this->includes . 'multisite.php' );
+
+		// Multisite
+		if ( is_multisite() ) {
+			require( $this->includes_dir . 'multisite.php' );
+		}
 	}
 
 	/**
@@ -135,7 +139,9 @@ final class Guard {
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
 
 		// Multisite
-		add_action( 'guard_loaded', 'guard_ms' );
+		if ( is_multisite() ) {
+			add_action( 'guard_loaded', 'guard_multisite' );
+		}
 
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
