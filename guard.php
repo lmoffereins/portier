@@ -118,7 +118,7 @@ final class Guard {
 
 		// Multisite
 		if ( is_multisite() ) {
-			require( $this->includes_dir . 'multisite.php' );
+			require( $this->includes_dir . 'network.php' );
 		}
 	}
 
