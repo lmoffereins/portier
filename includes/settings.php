@@ -35,7 +35,7 @@ function guard_settings() {
 		/** Access Settings **********************************************/
 
 		// Site protect switch
-		'_guard_site_protect', array(
+		'_guard_site_protect' => array(
 			'label'       => __( 'Protect my site', 'guard' ),
 			'field_cb'    => 'guard_setting_protect_site',
 			'section'     => 'guard-options-access',
@@ -44,7 +44,7 @@ function guard_settings() {
 		),
 
 		// Allowed users
-		'_guard_allowed_users', array(
+		'_guard_allowed_users' => array(
 			'label'       => __( 'Allowed users', 'guard' ),
 			'field_cb'    => 'guard_setting_allow_users',
 			'section'     => 'guard-options-access',
@@ -55,7 +55,7 @@ function guard_settings() {
 		/** Additional Settings ******************************************/
 
 		// Custom login message
-		'_guard_custom_message', array(
+		'_guard_custom_message' => array(
 			'label'       => __( 'Custom login message', 'guard' ),
 			'field_cb'    => 'guard_setting_custom_message',
 			'section'     => 'guard-options-additional',
