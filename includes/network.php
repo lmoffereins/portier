@@ -493,16 +493,4 @@ final class Guard_Network {
 	}
 }
 
-/**
- * Setup the Guard Network class
- *
- * @since 1.0.0
- *
- * @uses guard()
- * @uses Guard_Network
- */
-function guard_network() {
-	guard()->network = new Guard_Network;
-}
-
 endif; // class_exists

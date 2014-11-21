@@ -115,11 +115,6 @@ final class Guard {
 		if ( is_admin() ) {
 			require( $this->includes_dir . 'settings.php'  );
 		}
-
-		// Multisite
-		if ( is_multisite() ) {
-			require( $this->includes_dir . 'network.php' );
-		}
 	}
 
 	/**
@@ -130,24 +125,20 @@ final class Guard {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( $this, 'load_textdomain'   )        );
+		add_action( 'plugins_loaded',      array( $this, 'load_textdomain'   ) );
+		add_action( 'plugins_loaded',      array( $this, 'load_for_network'  ) );
 
 		// Protection
-		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1     );
-		add_filter( 'login_message',       array( $this, 'login_message'     ), 1     );
+		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1 );
+		add_filter( 'login_message',       array( $this, 'login_message'     ), 1 );
 
 		// Admin
-		add_action( 'admin_init',          array( $this, 'register_settings' )        );
-		add_action( 'admin_menu',          array( $this, 'admin_menu'        )        );
+		add_action( 'admin_init',          array( $this, 'register_settings' ) );
+		add_action( 'admin_menu',          array( $this, 'admin_menu'        ) );
 		add_filter( 'plugin_action_links', array( $this, 'settings_link'     ), 10, 2 );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
-
-		// Multisite
-		if ( is_multisite() ) {
-			add_action( 'guard_loaded', 'guard_network' );
-		}
 
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
@@ -179,6 +170,30 @@ final class Guard {
 
 		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
 		load_plugin_textdomain( $this->domain, false, 'guard/languages' );
+	}
+
+	/**
+	 * Initialize network functions when network activated
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses is_plugin_active_for_network()
+	 * @uses guard_network()
+	 */
+	public function load_for_network() {
+
+		// Load file to use its functions
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+		// Bail if plugin is not network activated
+		if ( ! is_plugin_active_for_network( $this->file ) )
+			return;
+
+		// Load network file
+		require( $this->includes_dir . 'network.php' );
+
+		// Setup network functionality
+		$this->network = new Guard_Network;
 	}
 
 	/** Protection ************************************************************/
