@@ -232,17 +232,16 @@ final class Guard {
 	 */
 	public function login_message( $message ) {
 
-		// Only display message if site protection is activated
+		// Bail when protection is not active
 		if ( ! get_option( '_guard_site_protect' ) )
 			return $message;
 
 		$custom_message = get_option( '_guard_custom_message' );
 
-		// Do not add anything if no message is set
-		if ( empty( $custom_message ) )
-			return $message;
-
-		$message .= '<p class="message">'. $custom_message .'<p>';
+		// Append message when it's provided
+		if ( ! empty( $custom_message ) ) {
+			$message .= '<p class="message">'. $custom_message .'<p>';
+		}
 
 		return $message;
 	}
