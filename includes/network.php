@@ -361,7 +361,7 @@ final class Guard_Network {
 			return;
 
 		// Loop all network settings to update
-		foreach ( $this->network_settings() as $option => $args ) {
+		foreach ( guard_network_settings() as $option => $args ) {
 			if ( ! isset( $_POST[$option] ) )
 				$_POST[$option] = apply_filters( 'guard_network_settings_default', 0, $option );
 
