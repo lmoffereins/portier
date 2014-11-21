@@ -109,6 +109,12 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function includes() {
+		require( $this->includes_dir . 'functions.php' );
+
+		// Admin
+		if ( is_admin() ) {
+			require( $this->includes_dir . 'settings.php'  );
+		}
 
 		// Multisite
 		if ( is_multisite() ) {
