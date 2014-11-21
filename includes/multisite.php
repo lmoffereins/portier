@@ -37,19 +37,19 @@ final class Guard_Multisite {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( this, 'network_only'              )        );
+		add_action( 'plugins_loaded',      array( $this, 'network_only'              )        );
 
 		// Protection
-		add_action( 'template_redirect',   array( this, 'network_protect'           ), 0     );
-		add_action( 'guard_site_protect',  array( this, 'network_redirect'          )        );
-		add_action( 'admin_bar_menu',      array( this, 'network_admin_bar'         ), 99    );
-		add_action( 'admin_menu',          array( this, 'network_admin_menus'       ), 99    );
-		add_action( 'get_blogs_of_user',   array( this, 'network_blogs_of_user'     ), 10, 3 );
-		add_filter( 'user_has_cap',        array( this, 'network_user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',   array( $this, 'network_protect'           ), 0     );
+		add_action( 'guard_site_protect',  array( $this, 'network_redirect'          )        );
+		add_action( 'admin_bar_menu',      array( $this, 'network_admin_bar'         ), 99    );
+		add_action( 'admin_menu',          array( $this, 'network_admin_menus'       ), 99    );
+		add_action( 'get_blogs_of_user',   array( $this, 'network_blogs_of_user'     ), 10, 3 );
+		add_filter( 'user_has_cap',        array( $this, 'network_user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',          array( this, 'register_network_settings' )        );
-		add_action( 'network_admin_menu',  array( this, 'network_admin_menu'        )        );
+		add_action( 'admin_init',          array( $this, 'register_network_settings' )        );
+		add_action( 'network_admin_menu',  array( $this, 'network_admin_menu'        )        );
 
 		// Uninstall hook
 		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
