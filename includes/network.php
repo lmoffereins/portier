@@ -37,19 +37,19 @@ final class Guard_Network {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( $this, 'network_only'              )        );
+		add_action( 'plugins_loaded',      array( $this, 'network_only'      )        );
 
 		// Protection
-		add_action( 'template_redirect',   array( $this, 'network_protect'           ), 0     );
-		add_action( 'guard_site_protect',  array( $this, 'network_redirect'          )        );
-		add_action( 'admin_bar_menu',      array( $this, 'network_admin_bar'         ), 99    );
-		add_action( 'admin_menu',          array( $this, 'network_admin_menus'       ), 99    );
-		add_action( 'get_blogs_of_user',   array( $this, 'network_blogs_of_user'     ), 10, 3 );
-		add_filter( 'user_has_cap',        array( $this, 'network_user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',   array( $this, 'network_protect'   ), 0     );
+		add_action( 'guard_site_protect',  array( $this, 'network_redirect'  )        );
+		add_action( 'admin_bar_menu',      array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_menu',          array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',   array( $this, 'blogs_of_user'     ), 10, 3 );
+		add_filter( 'user_has_cap',        array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',          array( $this, 'register_network_settings' )        );
-		add_action( 'network_admin_menu',  array( $this, 'network_admin_menu'        )        );
+		add_action( 'admin_init',          array( $this, 'register_settings'  ) );
+		add_action( 'network_admin_menu',  array( $this, 'network_admin_menu' ) );
 
 		// Uninstall hook
 		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
@@ -134,7 +134,7 @@ final class Guard_Network {
 	 * @param boolean $all Whether to return also all hidden blogs
 	 * @return array $blogs
 	 */
-	public function network_blogs_of_user( $blogs, $user_id, $all ) {
+	public function blogs_of_user( $blogs, $user_id, $all ) {
 
 		// All blogs requested
 		if ( $all )
@@ -165,7 +165,7 @@ final class Guard_Network {
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
-	public function network_admin_bar( $wp_admin_bar ) {
+	public function filter_admin_bar( $wp_admin_bar ) {
 
 		// Remove admin bar menu top item
 		if ( guard_network_hide_my_sites() ) {
@@ -181,7 +181,7 @@ final class Guard_Network {
 	 * @uses Guard_Network::network_hide_my_sites()
 	 * @uses remove_submenu_page()
 	 */
-	public function network_admin_menus() {
+	public function filter_admin_menu() {
 
 		// Only removes menu item, not admin page itself
 		if ( guard_network_hide_my_sites() ) {
@@ -201,7 +201,7 @@ final class Guard_Network {
 	 * @param array $args User ID and public function arguments
 	 * @return array $allcaps
 	 */
-	public function network_user_has_cap( $allcaps, $caps, $args ) {
+	public function user_has_cap( $allcaps, $caps, $args ) {
 
 		// Prevent access to "My Sites" admin page by blocking user cap
 		if (   is_admin()
@@ -301,7 +301,7 @@ final class Guard_Network {
 	 * @uses guard_network_settings()
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
-	public function register_network_settings() {
+	public function register_settings() {
 		add_settings_section( 'guard-options-main',       __( 'Network Main Settings',       'guard' ), 'guard_network_main_settings_info',       'guard_network' );
 		add_settings_section( 'guard-options-access',     __( 'Network Access Settings',     'guard' ), 'guard_network_access_settings_info',     'guard_network' );
 		add_settings_section( 'guard-options-additional', __( 'Additional Network Settings', 'guard' ), 'guard_network_additional_settings_info', 'guard_network' );
