@@ -37,19 +37,20 @@ final class Guard_Network {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( $this, 'network_only'      ), 20    );
+		add_action( 'plugins_loaded',        array( $this, 'network_only'      ), 20    );
 
 		// Protection
-		add_action( 'template_redirect',   array( $this, 'network_protect'   ), 0     );
-		add_action( 'guard_site_protect',  array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',      array( $this, 'filter_admin_bar'  ), 99    );
-		add_action( 'admin_menu',          array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',   array( $this, 'blogs_of_user'     ), 10, 3 );
-		add_filter( 'user_has_cap',        array( $this, 'user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',     array( $this, 'network_protect'   ), 0     );
+		add_action( 'guard_site_protect',    array( $this, 'network_redirect'  )        );
+		add_action( 'admin_bar_menu',        array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',     array( $this, 'blogs_of_user'     ), 10, 3 );
+		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',          array( $this, 'register_settings'  ) );
-		add_action( 'network_admin_menu',  array( $this, 'network_admin_menu' ) );
+		add_action( 'admin_init',            array( $this, 'register_settings' ) );
+		add_action( 'network_admin_menu',    array( $this, 'admin_menu'        ) );
+		add_action( 'network_admin_notices', array( $this, 'admin_notices'     ) );
 
 		// Uninstall hook
 		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
@@ -228,7 +229,7 @@ final class Guard_Network {
 	 * @uses add_action() To enable functions hooking into admin page
 	 *                     head en footer
 	 */
-	public function network_admin_menu() {
+	public function admin_menu() {
 
 		// Create Settings submenu
 		$hook = add_submenu_page(
@@ -336,14 +337,13 @@ final class Guard_Network {
 		}
 
 		/**
-		 * There's no valid Network Settings API available ìn WP so we'll have to
+		 * There's no valid Network Settings API available in WP so we'll have to
 		 * do the sanitization and storing manually through wp-admin/network/edit.php
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_guard_network',       array( $this, 'network_settings_api'       ) );
-		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'network_sites_settings_api' ) );
-		add_action( 'network_admin_notices',                  array( $this, 'network_admin_notice'       ) );
+		add_action( 'network_admin_edit_guard_network',       array( $this, 'update_network_settings' ) );
+		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'update_sites_settings'   ) );
 	}
 
 	/**
@@ -356,7 +356,7 @@ final class Guard_Network {
 	 * @uses update_site_option()
 	 * @uses wp_redirect()
 	 */
-	public function network_settings_api() {
+	public function update_network_settings() {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network-options' ) )
 			return;
 
@@ -384,7 +384,7 @@ final class Guard_Network {
 	 *
 	 * @uses Guard_Network::is_network_page()
 	 */
-	public function network_admin_notice() {
+	public function admin_notices() {
 		if ( ! $this->is_network_page() )
 			return;
 
@@ -492,7 +492,7 @@ final class Guard_Network {
 	 * @uses wp_verify_nonce()
 	 * @uses Multisite()
 	 */
-	public function network_sites_settings_api() {
+	public function update_sites_settings() {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites-options' ) )
 			return;
 
