@@ -229,10 +229,12 @@ final class Guard_Network {
 	 *                     head en footer
 	 */
 	public function network_admin_menu() {
+
+		// Create Settings submenu
 		$hook = add_submenu_page(
 			'settings.php',
 			__( 'Guard Network Settings', 'guard' ),
-			__( 'Guard Network',          'guard' ),
+			__( 'Guard', 'guard' ),
 			'manage_network',
 			'guard_network',
 			array( $this, 'network_page' )
@@ -240,6 +242,28 @@ final class Guard_Network {
 
 		add_action( "admin_head-$hook",   array( $this, 'admin_head'   ) );
 		add_action( "admin_footer-$hook", array( $this, 'admin_footer' ) );
+	}
+
+	/**
+	 * Provide a hook for the guard network settings page head
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @uses do_action() Calls 'guard_network_admin_head'
+	 */
+	public function admin_head() {
+		do_action( 'guard_network_admin_head' );
+	}
+
+	/**
+	 * Provide a hook for the guard network settings page footer
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @uses do_action() Calls 'guard_network_admin_footer'
+	 */
+	public function admin_footer() {
+		do_action( 'guard_network_admin_footer' );
 	}
 
 	/**
