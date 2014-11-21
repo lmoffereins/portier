@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Guard Multisite Functions
+ * Guard Network Functions
  *
  * @package Guard
  * @subpackage Multisite
@@ -10,13 +10,13 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Guard_Multisite' ) ) :
+if ( ! class_exists( 'Guard_Network' ) ) :
 /**
- * Guard Multisite Class
+ * Guard Network Class
  *
  * @since 1.0.0
  */
-final class Guard_Multisite {
+final class Guard_Network {
 
 	/**
 	 * Setup class
@@ -30,7 +30,7 @@ final class Guard_Multisite {
 	/** Private Methods **********************************************/
 
 	/**
-	 * Setup multisite actions and filters
+	 * Setup network actions and filters
 	 *
 	 * @since 1.0.0
 	 */
@@ -160,7 +160,7 @@ final class Guard_Multisite {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_Multisite::network_hide_my_sites()
+	 * @uses Guard_Network::network_hide_my_sites()
 	 * @uses WP_Admin_Bar::remove_menu()
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
@@ -178,7 +178,7 @@ final class Guard_Multisite {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_Multisite::network_hide_my_sites()
+	 * @uses Guard_Network::network_hide_my_sites()
 	 * @uses remove_submenu_page()
 	 */
 	public function network_admin_menus() {
@@ -194,7 +194,7 @@ final class Guard_Multisite {
 	 *
 	 * @since 0.x
 	 *
-	 * @uses Guard_Multisite::network_hide_my_sites()
+	 * @uses Guard_Network::network_hide_my_sites()
 	 *
 	 * @param array $allcaps All user caps
 	 * @param array $caps Required caps
@@ -251,7 +251,7 @@ final class Guard_Multisite {
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
-	 * @uses Guard_Multisite::network_page_sites()
+	 * @uses Guard_Network::network_page_sites()
 	 * @uses do_action() Calls 'guard_network_page' with the tab
 	 */
 	public function network_page() {
@@ -358,7 +358,7 @@ final class Guard_Multisite {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_Multisite::is_network_page()
+	 * @uses Guard_Network::is_network_page()
 	 */
 	public function network_admin_notice() {
 		if ( ! $this->is_network_page() )
@@ -409,7 +409,7 @@ final class Guard_Multisite {
 		}
 	}
 
-	/** Multisite Manage Sites ***************************************/
+	/** Network Manage Sites ***************************************/
 
 	/**
 	 * Output network sites management admin panel
@@ -466,7 +466,7 @@ final class Guard_Multisite {
 	 * @since 0.x
 	 *
 	 * @uses wp_verify_nonce()
-	 * @uses wp_redirect()
+	 * @uses Multisite()
 	 */
 	public function network_sites_settings_api() {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites-options' ) )
@@ -494,15 +494,15 @@ final class Guard_Multisite {
 }
 
 /**
- * Setup the Guard Multisite class
+ * Setup the Guard Network class
  *
  * @since 1.0.0
  *
  * @uses guard()
- * @uses Guard_Multisite
+ * @uses Guard_Network
  */
-function guard_multisite() {
-	guard()->ms = new Guard_Multisite;
+function guard_network() {
+	guard()->network = new Guard_Network;
 }
 
 endif; // class_exists

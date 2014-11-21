@@ -146,7 +146,7 @@ final class Guard {
 
 		// Multisite
 		if ( is_multisite() ) {
-			add_action( 'guard_loaded', 'guard_multisite' );
+			add_action( 'guard_loaded', 'guard_network' );
 		}
 
 		// Fire plugin loaded hook
