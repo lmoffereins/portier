@@ -37,7 +37,7 @@ final class Guard_Network {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( $this, 'network_only'      )        );
+		add_action( 'plugins_loaded',      array( $this, 'network_only'      ), 20    );
 
 		// Protection
 		add_action( 'template_redirect',   array( $this, 'network_protect'   ), 0     );
