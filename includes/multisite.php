@@ -317,9 +317,9 @@ final class Guard_Multisite {
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_guard_network',       array( $this, 'guard_network_settings_api'       ) );
-		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'guard_network_sites_settings_api' ) );
-		add_action( 'network_admin_notices',                  array( $this, 'guard_network_admin_notice'       ) );
+		add_action( 'network_admin_edit_guard_network',       array( $this, 'network_settings_api'       ) );
+		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'network_sites_settings_api' ) );
+		add_action( 'network_admin_notices',                  array( $this, 'network_admin_notice'       ) );
 	}
 
 	/**
