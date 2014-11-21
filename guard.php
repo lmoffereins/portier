@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Guard' ) ) :
 /**
- * Main Plugin Class
+ * Main Guard Class
  *
  * @since 1.0.0
  */
@@ -61,7 +61,7 @@ final class Guard {
 	}
 
 	/**
-	 * A dummy constructor to prevent Plugin from being loaded more than once.
+	 * A dummy constructor to prevent Guard from being loaded more than once.
 	 *
 	 * @since 1.0.0
 	 *
@@ -418,12 +418,12 @@ final class Guard {
 }
 
 /**
- * The main public function responsible for returning the one true Plugin Instance
+ * The main public function responsible for returning the one true Guard Instance
  * to functions everywhere.
  *
  * @since 1.0.0
  *
- * @return The one true Plugin Instance
+ * @return The one true Guard Instance
  */
 function guard() {
 	return Guard::instance();
