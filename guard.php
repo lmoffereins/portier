@@ -125,17 +125,19 @@ final class Guard {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded',      array( $this, 'load_textdomain'   ) );
-		add_action( 'plugins_loaded',      array( $this, 'load_for_network'  ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain'  ) );
+		add_action( 'plugins_loaded', array( $this, 'load_for_network' ) );
 
 		// Protection
-		add_action( 'template_redirect',   array( $this, 'site_protect'      ), 1 );
-		add_filter( 'login_message',       array( $this, 'login_message'     ), 1 );
+		add_action( 'template_redirect', array( $this, 'site_protect'  ), 1 );
+		add_filter( 'login_message',     array( $this, 'login_message' ), 1 );
 
 		// Admin
-		add_action( 'admin_init',          array( $this, 'register_settings' ) );
-		add_action( 'admin_menu',          array( $this, 'admin_menu'        ) );
-		add_filter( 'plugin_action_links', array( $this, 'settings_link'     ), 10, 2 );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu'        ) );
+
+		// Plugin links
+		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );

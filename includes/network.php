@@ -63,21 +63,24 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses remove_action()
-	 * @uses remove_filter()
+	 * @uses Guard::remove_site_hooks()
 	 */
 	public function network_only() {
+
+		// Bail if not marked as network only
 		if ( ! get_site_option( '_guard_network_only' ) )
 			return;
 
-		// Get Guard
+		// Get guard and remove plugin hooks for the single site context
 		$guard = guard();
 
-		// Unset all Guard single site actions and filters
-		remove_action( 'admin_init',        array( $guard, 'register_settings' )    );
-		remove_action( 'admin_menu',        array( $guard, 'admin_menu'        )    );
-		remove_action( 'template_redirect', array( $guard, 'site_protect'      ), 1 );
-		remove_filter( 'login_message',     array( $guard, 'login_message'     ), 1 );
+		// Protection
+		remove_action( 'template_redirect', array( $guard, 'site_protect'  ), 1 );
+		remove_filter( 'login_message',     array( $guard, 'login_message' ), 1 );
+
+		// Admin
+		remove_action( 'admin_init', array( $guard, 'register_settings' ) );
+		remove_action( 'admin_menu', array( $guard, 'admin_menu'        ) );
 	}
 
 	/** Protection ***************************************************/
