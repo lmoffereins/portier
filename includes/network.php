@@ -96,11 +96,11 @@ final class Guard_Network {
 	 */
 	public function network_protect() {
 
-		// Only redirect if network protection is activated
+		// Bail when network protection is not active
 		if ( ! get_site_option( '_guard_network_protect' ) )
 			return;
 
-		// Redirect user if not logged in or if not allowed
+		// Redirect when the user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! guard_network_user_is_allowed() )
 			auth_redirect();
 	}
@@ -111,11 +111,12 @@ final class Guard_Network {
 	 * @since 0.2
 	 *
 	 * @uses get_site_option()
+	 * @uses wp_redirect()
 	 * @uses network_home_url()
 	 */
 	public function network_redirect() {
 
-		// Only alter redirection
+		// Bail when network redirection is not active
 		if ( ! get_site_option( '_guard_network_redirect' ) )
 			return;
 
@@ -140,14 +141,19 @@ final class Guard_Network {
 	 */
 	public function blogs_of_user( $blogs, $user_id, $all ) {
 
-		// All blogs requested
-		if ( $all )
+		// Do not change blog list when requesting all
+		if ( $all ) {
 			return $blogs;
+		}
 
+		// Walk all blogs
 		foreach ( $blogs as $blog_id => $details ) {
 			switch_to_blog( $blog_id );
 
+			// Site protection is active
 			if ( get_option( '_guard_site_protect' ) ) {
+
+				// User is not allowed
 				if ( ! guard()->user_is_allowed() ) {
 					unset( $blogs[$blog_id] );
 				}
@@ -164,15 +170,17 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_Network::network_hide_my_sites()
+	 * @uses guard_network_hide_my_sites()
 	 * @uses WP_Admin_Bar::remove_menu()
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function filter_admin_bar( $wp_admin_bar ) {
 
-		// Remove admin bar menu top item
+		// Hiding 'My Sites'
 		if ( guard_network_hide_my_sites() ) {
+
+			// Remove admin bar menu top item
 			$wp_admin_bar->remove_menu( 'my-sites' );
 		}
 	}
@@ -182,13 +190,15 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard_Network::network_hide_my_sites()
+	 * @uses guard_network_hide_my_sites()
 	 * @uses remove_submenu_page()
 	 */
 	public function filter_admin_menu() {
 
-		// Only removes menu item, not admin page itself
+		// Hiding 'My Sites'
 		if ( guard_network_hide_my_sites() ) {
+
+			// This only removes the admin menu item, not the page
 			remove_submenu_page( 'index.php', 'my-sites.php' );
 		}
 	}
@@ -196,9 +206,10 @@ final class Guard_Network {
 	/**
 	 * Modify the user capabilities by filtering 'user_has_cap'
 	 *
-	 * @since 0.x
+	 * @since 1.0.0
 	 *
-	 * @uses Guard_Network::network_hide_my_sites()
+	 * @uses get_current_screen()
+	 * @uses guard_network_hide_my_sites()
 	 *
 	 * @param array $allcaps All user caps
 	 * @param array $caps Required caps
@@ -207,14 +218,20 @@ final class Guard_Network {
 	 */
 	public function user_has_cap( $allcaps, $caps, $args ) {
 
-		// Prevent access to "My Sites" admin page by blocking user cap
-		if (   is_admin()
-			&& function_exists( 'get_current_screen' )
-			&& is_object( get_current_screen() )
-			&& 'my-sites' == get_current_screen()->id
+		// Prevent access to 'My Sites' admin page by blocking user cap
+		if ( is_admin()
+
+			// We are on the 'My Sites' page
+			&& function_exists( 'get_current_screen' ) && isset( get_current_screen()->id ) && 'my-sites' == get_current_screen()->id
+
+			// Hiding 'My Sites'
 			&& guard_network_hide_my_sites()
+
+			// Requesting the 'read' cap
 			&& in_array( 'read', $caps )
 		) {
+
+			// Disable the read user cap
 			$allcaps['read'] = false;
 		}
 
@@ -228,7 +245,7 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses add_options_page() To add the menu to the options pane
+	 * @uses add_submenu_page() To add the menu to the options pane
 	 * @uses add_action() To enable functions hooking into admin page
 	 *                     head en footer
 	 */
@@ -330,6 +347,8 @@ final class Guard_Network {
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_settings() {
+
+		// Create settings sections
 		add_settings_section( 'guard-options-main',       __( 'Network Main Settings',       'guard' ), 'guard_network_main_settings_info',       'guard_network' );
 		add_settings_section( 'guard-options-access',     __( 'Network Access Settings',     'guard' ), 'guard_network_access_settings_info',     'guard_network' );
 		add_settings_section( 'guard-options-additional', __( 'Additional Network Settings', 'guard' ), 'guard_network_additional_settings_info', 'guard_network' );
@@ -340,8 +359,8 @@ final class Guard_Network {
 		}
 
 		/**
-		 * There's no valid Network Settings API available in WP so we'll have to
-		 * do the sanitization and storing manually through wp-admin/network/edit.php
+		 * There is no valid Network Settings API available in WP Multisite so we will have
+		 * to do the sanitization and storing manually through wp-admin/network/edit.php
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
@@ -360,17 +379,29 @@ final class Guard_Network {
 	 * @uses wp_redirect()
 	 */
 	public function update_network_settings() {
+
+		// Bail when not verified
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network-options' ) )
 			return;
 
 		// Loop all network settings to update
 		foreach ( guard_network_settings() as $option => $args ) {
-			if ( ! isset( $_POST[$option] ) )
-				$_POST[$option] = apply_filters( 'guard_network_settings_default', 0, $option );
 
-			$value = call_user_func_array( $args['sanitize_cb'], array( $_POST[$option] ) );
+			// Handle unprovided input defaults
+			if ( ! isset( $_POST[ $option ] ) ) {
+				$_POST[ $option ] = apply_filters( 'guard_network_settings_default', 0, $option );
+			}
 
-			// Don't catch retval since both non-updates and errors return false
+			// Custom sanitization
+			if ( isset( $args['sanitize_cb'] ) ) {
+				$value = call_user_func_array( $args['sanitize_cb'], array( $_POST[ $option ] ) );
+
+			// Get raw input (!)
+			} else {
+				$value = $_POST[ $option ];
+			}
+
+			// Update the network setting
 			update_site_option( $option, $value );
 		}
 
@@ -388,9 +419,12 @@ final class Guard_Network {
 	 * @uses Guard_Network::is_network_page()
 	 */
 	public function admin_notices() {
+
+		// Bail when not on the settings page
 		if ( ! $this->is_network_page() )
 			return;
 
+		// Settings were updated
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type ) {
@@ -404,7 +438,7 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Return whether we are on the plugin network page
+	 * Return whether we are on the plugin network settings page
 	 *
 	 * @since 0.2
 	 *
@@ -457,20 +491,22 @@ final class Guard_Network {
 
 		// Fetch all blogs
 		$blogs = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
-		usort( $blogs, 'guard_network_blog_order' );
+		usort( $blogs, 'guard_network_blog_order' ); ?>
 
-		?>
-				<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
-					<?php settings_fields( 'guard_network_sites' ); ?>
-					<?php foreach ( $blogs as $details ) : switch_to_blog( $details['blog_id'] ); ?>
+			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
+				<?php settings_fields( 'guard_network_sites' ); ?>
 
-						<h2><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
-						<?php do_settings_sections( 'guard' ); ?>
-						<hr />
+				<?php // Walk all blogs ?>
+				<?php foreach ( $blogs as $details ) : switch_to_blog( $details['blog_id'] ); ?>
 
-					<?php restore_current_blog(); endforeach; ?>
-					<?php submit_button(); ?>
-				</form>
+					<h2><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
+					<?php do_settings_sections( 'guard' ); ?>
+					<hr />
+
+				<?php restore_current_blog(); endforeach; ?>
+				<?php submit_button(); ?>
+			</form>
+
 		<?php
 	}
 
@@ -490,12 +526,13 @@ final class Guard_Network {
 	/**
 	 * Update network sites settings
 	 *
-	 * @since 0.x
+	 * @since 1.0.0
 	 *
 	 * @uses wp_verify_nonce()
-	 * @uses Multisite()
 	 */
 	public function update_sites_settings() {
+
+		// Bail when not verified
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites-options' ) )
 			return;
 

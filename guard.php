@@ -207,17 +207,22 @@ final class Guard {
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
 	 * @uses guard_user_is_allowed() To check if the user is allowed
+	 * @uses do_action() Calls 'guard_site_protect'
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function site_protect() {
 
-		// Only redirect if site protection is activated
+		// Bail when protection is not active
 		if ( ! get_option( '_guard_site_protect' ) )
 			return;
 
-		// Redirect user if not logged in or if not allowed
+		// When user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! guard_user_is_allowed() ) {
+
+			// Provide hook
 			do_action( 'guard_site_protect' );
+
+			// Logout user and redirect to login page
 			auth_redirect();
 		}
 	}
@@ -253,11 +258,13 @@ final class Guard {
 	 *
 	 * @since 0.1
 	 *
-	 * @uses add_options_page() To add the menu to the options pane
+	 * @uses add_options_page() To add the menu to the options menu
 	 * @uses add_action() To enable functions hooking into admin page
 	 *                     head en footer
 	 */
 	public function admin_menu() {
+
+		// Setup settings page
 		$hook = add_options_page(
 			__( 'Guard Settings', 'guard' ),
 			'Guard',
@@ -280,10 +287,9 @@ final class Guard {
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
 	 */
-	public function admin_page() {
-		?>
+	public function admin_page() { ?>
+
 			<div class="wrap">
-				<?php screen_icon(); ?>
 				<h2>Guard</h2>
 
 				<form method="post" action="options.php">
@@ -291,8 +297,8 @@ final class Guard {
 					<?php do_settings_sections( 'guard' ); ?>
 					<?php submit_button(); ?>
 				</form>
-
 			</div>
+
 		<?php
 	}
 
@@ -314,6 +320,7 @@ final class Guard {
 		wp_enqueue_script( 'chosen' );
 		wp_enqueue_style(  'chosen' );
 
+		// Provide hook
 		do_action( 'guard_admin_head' );
 	}
 
@@ -351,7 +358,9 @@ final class Guard {
 		</script>
 
 		<?php
-			do_action( 'guard_admin_footer' );
+
+		// Provide hook
+		do_action( 'guard_admin_footer' );
 	}
 
 	/**
@@ -365,6 +374,8 @@ final class Guard {
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_settings() {
+
+		// Create settings sections
 		add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), 'guard_access_settings_info',     'guard' );
 		add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), 'guard_additional_settings_info', 'guard' );
 
@@ -393,8 +404,8 @@ final class Guard {
 	 */
 	public function settings_link( $links, $file ) {
 
-		// Only add settings link for our plugin
-		if ( $this->basename == $file ) {
+		// Add settings link for our plugin
+		if ( $file == $this->basename ) {
 			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
 		}
 
