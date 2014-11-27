@@ -355,7 +355,13 @@ final class Guard_Network {
 
 		// Loop all network settings to register
 		foreach ( guard_network_settings() as $setting => $args ) {
-			add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+
+			// Only render field when label and callback are present
+			if ( isset( $args['label'] ) && isset( $args['field_cb'] ) ) {
+				add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+			}
+
+			register_setting( $args['page'], $setting, $args['sanitize_cb'] );
 		}
 
 		/**
@@ -364,51 +370,92 @@ final class Guard_Network {
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_guard_network',       array( $this, 'update_network_settings' ) );
+		add_action( 'network_admin_edit_guard_network',       array( $this, 'handle_network_settings' ) );
 		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'update_sites_settings'   ) );
 	}
 
 	/**
 	 * Handle updating network settings
 	 *
-	 * @since 0.2
+	 * @since 0.0.7
 	 *
-	 * @uses wp_verify_nonce()
-	 * @uses guard_network_settings()
+	 * @uses wp_reset_vars()
+	 * @uses is_multisite()
+	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
+	 * @uses current_user_can()
+	 * @uses is_super_admin()
+	 * @uses wp_die()
+	 * @uses check_admin_referer()
+	 * @uses apply_filters() Calls 'whitelist_options'
 	 * @uses update_site_option()
+	 * @uses get_settings_errors()
+	 * @uses add_settings_error()
+	 * @uses set_transient()
+	 * @uses add_query_arg()
+	 * @uses wp_get_referer()
 	 * @uses wp_redirect()
 	 */
-	public function update_network_settings() {
+	public function handle_network_settings() {
+		global $action, $option_page;
 
-		// Bail when not verified
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network-options' ) )
+		// Redefine global variable(s)
+		wp_reset_vars( array( 'action', 'option_page' ) );
+
+		// Bail when not using within multisite
+		if ( ! is_multisite() )
 			return;
 
-		// Loop all network settings to update
-		foreach ( guard_network_settings() as $option => $args ) {
+		/* This filter is documented in wp-admin/options.php */
+		$capability = apply_filters( "option_page_capability_{$option_page}", 'manage_options' );
 
-			// Handle unprovided input defaults
-			if ( ! isset( $_POST[ $option ] ) ) {
-				$_POST[ $option ] = apply_filters( 'guard_network_settings_default', 0, $option );
+		// Bail when current user is not allowed
+		if ( ! current_user_can( $capability ) || ( is_multisite() && ! is_super_admin() ) )
+			wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
+
+		// We are saving settings sent from a settings page
+		if ( 'update' == $action ) {
+
+			// Check admin referer
+			check_admin_referer( $option_page . '-options' );
+
+			/* This filter is documented in wp-admin/options.php */
+			$whitelist_options = apply_filters( 'whitelist_options', '' );
+
+			// Bail when settings page is not registered
+			if ( ! isset( $whitelist_options[ $option_page ] ) )
+				wp_die( __( '<strong>ERROR</strong>: options page not found.' ) );
+
+			$options = $whitelist_options[ $option_page ];
+
+			if ( $options ) {
+				foreach ( $options as $option ) {
+					$option = trim( $option );
+					$value = null;
+					if ( isset( $_POST[ $option ] ) ) {
+						$value = $_POST[ $option ];
+						if ( ! is_array( $value ) )
+							$value = trim( $value );
+						$value = wp_unslash( $value );
+					}
+					update_site_option( $option, $value );
+				}
 			}
 
-			// Custom sanitization
-			if ( isset( $args['sanitize_cb'] ) ) {
-				$value = call_user_func_array( $args['sanitize_cb'], array( $_POST[ $option ] ) );
+			/**
+			 * Handle settings errors and return to options page
+			 */
+			// If no settings errors were registered add a general 'updated' message.
+			if ( !count( get_settings_errors() ) )
+				add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+			set_transient('settings_errors', get_settings_errors(), 30);
 
-			// Get raw input (!)
-			} else {
-				$value = $_POST[ $option ];
-			}
-
-			// Update the network setting
-			update_site_option( $option, $value );
+			/**
+			 * Redirect back to the settings page that was submitted
+			 */
+			$goback = add_query_arg( 'settings-updated', 'true',  wp_get_referer() );
+			wp_redirect( $goback );
+			exit;
 		}
-
-		// Build redirect url string
-		$args = array( 'page' => 'guard_network', 'settings-updated' => 'true' ); // Allways true?
-		wp_redirect( add_query_arg( $args, network_admin_url( 'settings.php' ) ) );
-		exit;
 	}
 
 	/**
