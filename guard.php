@@ -206,7 +206,7 @@ final class Guard {
 	 * @since 0.1
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses guard_user_is_allowed() To check if the user is allowed
+	 * @uses guard_is_user_allowed() To check if the user is allowed
 	 * @uses do_action() Calls 'guard_site_protect'
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
@@ -217,7 +217,7 @@ final class Guard {
 			return;
 
 		// When user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! guard_user_is_allowed() ) {
+		if ( ! is_user_logged_in() || ! guard_is_user_allowed() ) {
 
 			// Provide hook
 			do_action( 'guard_site_protect' );

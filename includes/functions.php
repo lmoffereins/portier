@@ -13,16 +13,16 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Returns whether the given user is allowed access
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @uses user_can() To check if the user is an admin
- * @uses apply_filters() To call 'guard_user_is_allowed' for
+ * @uses apply_filters() To call 'guard_is_user_allowed' for
  *                        plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
  * @return boolean The user is allowed
  */
-function guard_user_is_allowed( $user_id = 0 ) {
+function guard_is_user_allowed( $user_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -37,7 +37,7 @@ function guard_user_is_allowed( $user_id = 0 ) {
 	$allowed = (array) get_option( '_guard_allowed_users', array() );
 
 	// Filter whether user is allowed
-	return apply_filters( 'guard_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
+	return apply_filters( 'guard_is_user_allowed', in_array( $user_id, $allowed ), $user_id );
 }
 
 /**
@@ -79,7 +79,7 @@ function guard_network_user_is_allowed( $user_id = 0 ) {
  * @param int $blog_id Optional. Defaults to current blog ID
  * @return bool User is allowed
  */
-function guard_user_is_allowed_for_blog( $user_id = 0, $blog_id = 0 ) {
+function guard_is_user_allowed_for_blog( $user_id = 0, $blog_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -96,14 +96,14 @@ function guard_user_is_allowed_for_blog( $user_id = 0, $blog_id = 0 ) {
 	}
 
 	// Check single site allowance
-	$retval = guard_user_is_allowed( $user_id );
+	$retval = guard_is_user_allowed( $user_id );
 
 	// Restore blog
 	if ( ! empty( $blog_id ) ) {
 		restore_current_blog();
 	}
 
-	return apply_filters( 'guard_user_is_allowed_for_blog', $retval, $user_id, $blog_id );
+	return apply_filters( 'guard_is_user_allowed_for_blog', $retval, $user_id, $blog_id );
 }
 
 /**

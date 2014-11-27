@@ -154,7 +154,7 @@ final class Guard_Network {
 			if ( get_option( '_guard_site_protect' ) ) {
 
 				// User is not allowed
-				if ( ! guard()->user_is_allowed() ) {
+				if ( ! guard_is_user_allowed() ) {
 					unset( $blogs[$blog_id] );
 				}
 			}
