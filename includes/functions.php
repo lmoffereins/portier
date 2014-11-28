@@ -11,6 +11,32 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Return whether the given site's protection is active
+ *
+ * @since 1.0.0
+ *
+ * @param int $site_id The site's ID
+ * @return bool Site protection is active
+ */
+function guard_is_site_protected( $site_id = 1 ) {
+
+	// Network: switch to site
+	if ( is_multisite() ) {
+		$site_id = (int) $site_id;
+		switch_to_blog( $site_id );
+	}
+
+	$protected = get_option( '_guard_site_protect' );
+
+	// Network: reset the switched site
+	if ( is_multisite() ) {
+		restore_current_blog();
+	}
+
+	return (bool) apply_filters( 'guard_is_site_protected', $protected, $site_id );
+}
+
+/**
  * Returns whether the given user is allowed access
  *
  * @since 1.0.0
