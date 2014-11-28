@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * @uses restor_current_blog()
  * @uses apply_filters() Calls 'guard_is_site_protected'
  * 
- * @param int $site_id The site's ID
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
  * @return bool Site protection is active
  */
 function guard_is_site_protected( $site_id = 0 ) {
@@ -52,24 +52,36 @@ function guard_is_site_protected( $site_id = 0 ) {
  *                        plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
  * @return boolean The user is allowed
  */
-function guard_is_user_allowed( $user_id = 0 ) {
+function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
 		$user_id = get_current_user_id();
 	}
 
-	// Always allow admins
-	if ( user_can( $user_id, 'administrator' ) )
+	// Always allow (super) admins. For non-multisite defaults to has_cap( 'delete_users' )
+	if ( is_super_admin( $user_id ) )
 		return true;
+
+	// Network: switch to site
+	if ( ! empty( $site_id ) && is_multisite() ) {
+		$site_id = (int) $site_id;
+		switch_to_blog( $site_id );
+	}
 
 	// Get allowed users array
 	$allowed = (array) get_option( '_guard_allowed_users', array() );
 
+	// Network: reset the switched site
+	if ( ! empty( $site_id ) && is_multisite() ) {
+		restore_current_blog();
+	}
+
 	// Filter whether user is allowed
-	return apply_filters( 'guard_is_user_allowed', in_array( $user_id, $allowed ), $user_id );
+	return apply_filters( 'guard_is_user_allowed', in_array( $user_id, $allowed ), $user_id, $site_id );
 }
 
 /**
@@ -100,42 +112,6 @@ function guard_network_user_is_allowed( $user_id = 0 ) {
 
 	// Filter whether user is allowed
 	return apply_filters( 'guard_network_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
-}
-
-/**
- * Return whether the given user is allowed for the given blog
- *
- * @since 1.0.0
- *
- * @param int $user_id Optional. Defaults to current user ID
- * @param int $blog_id Optional. Defaults to current blog ID
- * @return bool User is allowed
- */
-function guard_is_user_allowed_for_blog( $user_id = 0, $blog_id = 0 ) {
-
-	// Default to current user ID
-	if ( empty( $user_id ) ) {
-		$user_id = get_current_user_id();
-	}
-
-	// Always allow super admins. For non-multisite defaults to has_cap( 'delete_users' )
-	if ( is_super_admin( $user_id ) )
-		return true;
-
-	// Switch to blog
-	if ( ! empty( $blog_id ) ) {
-		switch_to_blog( (int) $blog_id );
-	}
-
-	// Check single site allowance
-	$retval = guard_is_user_allowed( $user_id );
-
-	// Restore blog
-	if ( ! empty( $blog_id ) ) {
-		restore_current_blog();
-	}
-
-	return apply_filters( 'guard_is_user_allowed_for_blog', $retval, $user_id, $blog_id );
 }
 
 /**

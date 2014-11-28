@@ -139,9 +139,6 @@ final class Guard {
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
-		// Uninstall hook
-		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
-
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
 	}
