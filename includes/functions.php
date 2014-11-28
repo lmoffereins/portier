@@ -43,11 +43,16 @@ function guard_is_site_protected( $site_id = 0 ) {
 }
 
 /**
- * Returns whether the given user is allowed access
+ * Returns whether the given user is allowed access for the given site
  *
  * @since 1.0.0
  *
- * @uses user_can() To check if the user is an admin
+ * @uses get_current_user_id()
+ * @uses is_super_admin() To check if the current user is a super admin
+ * @uses is_multisite()
+ * @uses switch_to_blog()
+ * @uses get_option()
+ * @uses restore_current_blog()
  * @uses apply_filters() To call 'guard_is_user_allowed' for
  *                        plugins to override the access granted
  *
@@ -73,23 +78,28 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 	}
 
 	// Get allowed users array
-	$allowed = (array) get_option( '_guard_allowed_users', array() );
+	$users = (array) get_option( '_guard_allowed_users', array() );
 
 	// Network: reset the switched site
 	if ( ! empty( $site_id ) && is_multisite() ) {
 		restore_current_blog();
 	}
 
+	// Is user selected to be allowed?
+	$allowed = ! empty( $users ) ? in_array( $user_id, $users ) : true;
+
 	// Filter whether user is allowed
-	return apply_filters( 'guard_is_user_allowed', in_array( $user_id, $allowed ), $user_id, $site_id );
+	return (bool) apply_filters( 'guard_is_user_allowed', $allowed, $user_id, $site_id );
 }
 
 /**
- * Returns whether the given network user is allowed access
+ * Returns whether the given user is allowed access for the network
  *
  * @since 0.2
  *
+ * @uses get_current_user_id()
  * @uses is_super_admin() To check if the current user is a super admin
+ * @uses get_site_option()
  * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook
  *                        for plugins to override the access granted
  *
@@ -108,10 +118,13 @@ function guard_network_user_is_allowed( $user_id = 0 ) {
 		return true;
 
 	// Get allowed users array
-	$allowed = (array) get_site_option( '_guard_network_allowed_users', array() );
+	$users = (array) get_site_option( '_guard_network_allowed_users', array() );
+
+	// Is user selected to be allowed?
+	$allowed = ! empty( $users ) ? in_array( $user_id, $users ) : true;
 
 	// Filter whether user is allowed
-	return apply_filters( 'guard_network_user_is_allowed', in_array( $user_id, $allowed ), $user_id );
+	return (bool) apply_filters( 'guard_network_user_is_allowed', $allowed, $user_id );
 }
 
 /**
