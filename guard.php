@@ -213,7 +213,7 @@ final class Guard {
 	public function site_protect() {
 
 		// Bail when protection is not active
-		if ( ! get_option( '_guard_site_protect' ) )
+		if ( ! guard_is_site_protected() )
 			return;
 
 		// When user is not logged in or is not allowed
@@ -238,7 +238,7 @@ final class Guard {
 	public function login_message( $message ) {
 
 		// When protection is active
-		if ( get_option( '_guard_site_protect' ) ) {
+		if ( guard_is_site_protected() ) {
 			$custom_message = get_option( '_guard_custom_message' );
 
 			// Append message when it's provided

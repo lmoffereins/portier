@@ -15,13 +15,19 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  *
+ * @uses is_multisite()
+ * @uses switch_to_blog()
+ * @uses get_option()
+ * @uses restor_current_blog()
+ * @uses apply_filters() Calls 'guard_is_site_protected'
+ * 
  * @param int $site_id The site's ID
  * @return bool Site protection is active
  */
-function guard_is_site_protected( $site_id = 1 ) {
+function guard_is_site_protected( $site_id = 0 ) {
 
 	// Network: switch to site
-	if ( is_multisite() ) {
+	if ( ! empty( $site_id ) && is_multisite() ) {
 		$site_id = (int) $site_id;
 		switch_to_blog( $site_id );
 	}
@@ -29,7 +35,7 @@ function guard_is_site_protected( $site_id = 1 ) {
 	$protected = get_option( '_guard_site_protect' );
 
 	// Network: reset the switched site
-	if ( is_multisite() ) {
+	if ( ! empty( $site_id ) && is_multisite() ) {
 		restore_current_blog();
 	}
 

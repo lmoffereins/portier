@@ -101,7 +101,7 @@ function guard_setting_protect_site() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_site_protect" <?php checked( get_option( '_guard_site_protect' ), 1 ) ?> value="1" />
+				<input type="checkbox" name="_guard_site_protect" value="1" <?php checked( guard_is_site_protected() ); ?>/>
 				<span class="description"><?php _e( 'Enable site protection.', 'guard' ); ?></span>
 			</label>
 		</p>

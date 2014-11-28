@@ -151,7 +151,7 @@ final class Guard_Network {
 			switch_to_blog( $blog_id );
 
 			// Site protection is active
-			if ( get_option( '_guard_site_protect' ) ) {
+			if ( guard_is_site_protected() ) {
 
 				// User is not allowed
 				if ( ! guard_is_user_allowed() ) {
