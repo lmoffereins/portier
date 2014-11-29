@@ -91,17 +91,17 @@ final class Guard_Network {
 	 * @since 0.2
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses guard_network_user_is_allowed() To check if the network user is allowed
+	 * @uses guard_network_is_user_allowed() To check if the network user is allowed
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function network_protect() {
 
 		// Bail when network protection is not active
-		if ( ! get_site_option( '_guard_network_protect' ) )
+		if ( ! guard_is_network_protected() )
 			return;
 
 		// Redirect when the user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! guard_network_user_is_allowed() )
+		if ( ! is_user_logged_in() || ! guard_network_is_user_allowed() )
 			auth_redirect();
 	}
 

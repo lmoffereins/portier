@@ -330,7 +330,7 @@ function guard_network_setting_network_protect() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_network_protect" <?php checked( get_site_option( '_guard_network_protect' ), 1 ) ?> value="1" />
+				<input type="checkbox" name="_guard_network_protect"value="1"  <?php checked( guard_is_network_protected() ); ?>/>
 				<span class="description"><?php _e( 'Enable network protection.', 'guard' ); ?></span>
 			</label>
 		</p>

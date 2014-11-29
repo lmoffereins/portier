@@ -43,6 +43,28 @@ function guard_is_site_protected( $site_id = 0 ) {
 }
 
 /**
+ * Return whether the network's protection is active
+ *
+ * @since 1.0.0
+ *
+ * @uses is_multisite()
+ * @uses get_site_option()
+ * @uses apply_filters() Calls 'guard_is_network_protected'
+ * 
+ * @return bool Network protection is active
+ */
+function guard_is_network_protected() {
+
+	// Bail when not on multisite
+	if ( ! is_multisite() )
+		return false;
+
+	$protected = get_site_option( '_guard_network_protect' );
+
+	return (bool) apply_filters( 'guard_is_network_protected', $protected );
+}
+
+/**
  * Returns whether the given user is allowed access for the given site
  *
  * @since 1.0.0
@@ -100,13 +122,13 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
  * @uses get_current_user_id()
  * @uses is_super_admin() To check if the current user is a super admin
  * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_network_user_is_allowed' hook
+ * @uses apply_filters() Calls 'guard_network_is_user_allowed' hook
  *                        for plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
  * @return boolean The user is allowed
  */
-function guard_network_user_is_allowed( $user_id = 0 ) {
+function guard_network_is_user_allowed( $user_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -124,7 +146,7 @@ function guard_network_user_is_allowed( $user_id = 0 ) {
 	$allowed = ! empty( $users ) ? in_array( $user_id, $users ) : true;
 
 	// Filter whether user is allowed
-	return (bool) apply_filters( 'guard_network_user_is_allowed', $allowed, $user_id );
+	return (bool) apply_filters( 'guard_network_is_user_allowed', $allowed, $user_id );
 }
 
 /**
