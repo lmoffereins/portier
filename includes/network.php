@@ -90,6 +90,7 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
+	 * @uses guard_is_network_protected()
 	 * @uses is_user_logged_in() To check if the user is logged in
 	 * @uses guard_network_is_user_allowed() To check if the network user is allowed
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
@@ -106,23 +107,23 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Redirect users to network home site if sub site is protected
+	 * Redirect the unauthorized user to the network home instead of the login page
 	 *
 	 * @since 0.2
 	 *
-	 * @uses get_site_option()
+	 * @uses guard_network_redirect()
 	 * @uses wp_redirect()
 	 * @uses network_home_url()
 	 */
 	public function network_redirect() {
 
-		// Bail when network redirection is not active
-		if ( ! get_site_option( '_guard_network_redirect' ) )
-			return;
+		// When network redirection is active
+		if ( guard_network_redirect() ) {
 
-		// Redirect user to network home site
-		wp_redirect( network_home_url() );
-		exit;
+			// Redirect user to network home site
+			wp_redirect( network_home_url() );
+			exit;
+		}
 	}
 
 	/**

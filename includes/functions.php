@@ -59,9 +59,21 @@ function guard_is_network_protected() {
 	if ( ! is_multisite() )
 		return false;
 
-	$protected = get_site_option( '_guard_network_protect' );
+	return (bool) apply_filters( 'guard_is_network_protected', get_site_option( '_guard_network_protect' ) );
+}
 
-	return (bool) apply_filters( 'guard_is_network_protected', $protected );
+/**
+ * Return whether redirection from unallowed sites is active
+ *
+ * @since 1.0.0
+ *
+ * @uses get_site_option()
+ * @uses apply_filters() Calls 'guard_network_redirect'
+ * 
+ * @return bool Network redirect is active
+ */
+function guard_network_redirect() {
+	return (bool) apply_filters( 'guard_network_redirect', get_site_option( '_guard_network_redirect' ) );
 }
 
 /**
