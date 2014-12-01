@@ -187,7 +187,7 @@ final class Guard {
 		// Load file to use its functions
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		// Bail if plugin is not network activated
+		// Bail when plugin is not network activated
 		if ( ! is_plugin_active_for_network( $this->basename ) )
 			return;
 
