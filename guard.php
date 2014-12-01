@@ -266,7 +266,7 @@ final class Guard {
 		// Setup settings page
 		$hook = add_options_page(
 			__( 'Guard Settings', 'guard' ),
-			'Guard',
+			__( 'Guard', 'guard' ),
 			'manage_options',
 			'guard',
 			array( $this, 'admin_page' )
