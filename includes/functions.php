@@ -134,7 +134,7 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 	}
 
 	// Is user selected to be allowed?
-	$allowed = ! empty( $users ) ? in_array( $user_id, $users ) : true;
+	$allowed = in_array( $user_id, $users );
 
 	// Filter whether user is allowed
 	return (bool) apply_filters( 'guard_is_user_allowed', $allowed, $user_id, $site_id );
@@ -169,7 +169,7 @@ function guard_network_is_user_allowed( $user_id = 0 ) {
 	$users = (array) get_site_option( '_guard_network_allowed_users', array() );
 
 	// Is user selected to be allowed?
-	$allowed = ! empty( $users ) ? in_array( $user_id, $users ) : true;
+	$allowed = in_array( $user_id, $users );
 
 	// Filter whether user is allowed
 	return (bool) apply_filters( 'guard_network_is_user_allowed', $allowed, $user_id );

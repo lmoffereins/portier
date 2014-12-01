@@ -152,17 +152,16 @@ final class Guard_Network {
 		}
 
 		// Walk all sites
-		foreach ( $sites as $site_id => $details ) {
+		foreach ( $sites as $k => $details ) {
 
-			// Site protection is active
-			if ( guard_is_site_protected( $site_id ) ) {
+			// Get the site's ID
+			$site_id = $details->userblog_id;
 
-				// User is not allowed
-				if ( ! guard_is_user_allowed( $user_id, $site_id ) ) {
+			// Site protection is active and user is not allowed
+			if ( guard_is_site_protected( $site_id ) && ! guard_is_user_allowed( $user_id, $site_id ) ) {
 
-					// Remove site from collection
-					unset( $sites[ $site_id ] );
-				}
+				// Remove site from collection
+				unset( $sites[ $k ] );
 			}
 		}
 
