@@ -214,8 +214,12 @@ function guard_network_hide_my_sites() {
 	$sites   = get_blogs_of_user( $user_id );
 	$hide    = false;
 
-	// Hiding is active and user is not super admin and site count is less then two
-	if ( get_site_option( '_guard_network_hide_my_sites' ) && ! is_super_admin( $user_id ) && count( $sites ) < 2 ) {
+	// Never hide for super admins
+	if ( is_super_admin( $user_id ) )
+		return false;
+
+	// Hiding is active and user site count is less then two
+	if ( get_site_option( '_guard_network_hide_my_sites' ) && count( $sites ) < 2 ) {
 		$hide = true;
 	}
 
