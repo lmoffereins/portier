@@ -173,7 +173,7 @@ final class Guard_Network {
 	public function sites_of_user( $sites, $user_id, $all ) {
 
 		// Do not change site list when requesting all
-		if ( $all ) {
+		if ( $all || guard_is_network_only() ) {
 			return $sites;
 		}
 
