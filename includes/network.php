@@ -123,9 +123,35 @@ final class Guard_Network {
 		// When network redirection is active
 		if ( guard_network_redirect() ) {
 
-			// Redirect user to network home site
-			wp_redirect( network_home_url() );
-			exit;
+			// Define local variable(s)
+			$user_id  = get_current_user_id();
+			$location = '';
+
+			// Redirect user to network home site when it's not protected. Prevents a loophole
+			if ( ! guard_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
+				$location = network_home_url();
+
+			// Find another allowed location when the user is loggedin
+			} elseif ( ! empty( $user_id ) ) {
+
+				// Define local variable(s)
+				$sites = get_blogs_of_user( get_current_user_id() );
+
+				// Get the first allowed site
+				if ( ! empty( $sites ) ) {
+					$site     = reset( $sites );
+					$location = $site->siteurl . $site->path;
+				}
+			}
+
+			// Provide hook
+			$location = apply_filters( 'guard_network_redirect_location', $location, $user_id );
+
+			// Redirect when a location is provided
+			if ( ! empty( $location ) ) {
+				wp_redirect( $location );
+				exit;
+			}
 		}
 	}
 
@@ -380,7 +406,7 @@ final class Guard_Network {
 	/**
 	 * Handle updating network settings
 	 *
-	 * @since 0.0.7
+	 * @since 1.0.0
 	 *
 	 * @uses wp_reset_vars()
 	 * @uses is_multisite()
