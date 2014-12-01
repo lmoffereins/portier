@@ -175,7 +175,9 @@ function guard_network_is_user_allowed( $user_id = 0 ) {
  * @return array Network users
  */
 function guard_get_network_users() {
-	$users = array();
+
+	// Define local variable(s)
+	$users   = array();
 	$user_id = get_current_user_id(); // Always super admin?
 
 	foreach ( get_blogs_of_user( $user_id ) as $blog_id => $details ) {
@@ -193,29 +195,37 @@ function guard_get_network_users() {
 }
 
 /**
- * Return whether to hide "My Sites" page for the current user
+ * Return whether to hide "My Sites" for the current user
  *
  * @since 0.2
  *
- * @uses get_site_option()
  * @uses get_current_user_id()
- * @uses is_super_admin()
  * @uses get_blogs_of_user()
- * @uses get_current_user_id()
+ * @uses get_site_option()
+ * @uses is_super_admin()
+ * @uses apply_filters() Calls 'guard_network_hide_my_sites'
  *
- * @return boolean Hide "My Sites" page
+ * @return boolean Hide "My Sites"
  */
 function guard_network_hide_my_sites() {
-	if ( ! get_site_option( '_guard_network_hide_my_sites' ) )
-		return false;
 
+	// Define local variable(s)
 	$user_id = get_current_user_id();
+	$sites   = get_blogs_of_user( $user_id );
+	$hide    = false;
 
-	// Never hide for super admins
-	if ( is_super_admin( $user_id ) )
-		return false;
+	// When hiding is active
+	if ( get_site_option( '_guard_network_hide_my_sites' ) ) {
 
-	$blogs = get_blogs_of_user( $user_id );
+		// Never hide for super admins
+		if ( is_super_admin( $user_id ) ) {
+			$hide = false;
 
-	return apply_filters( 'guard_network_hide_my_sites', 1 == count( $blogs ), $user_id, $blogs );
+		// Hide based on site count
+		} else {
+			$hide = count( $sites ) < 2;
+		}
+	}
+
+	return apply_filters( 'guard_network_hide_my_sites', $hide, $user_id, $sites );
 }

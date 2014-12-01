@@ -44,7 +44,7 @@ final class Guard_Network {
 		add_action( 'guard_site_protect',    array( $this, 'network_redirect'  )        );
 		add_action( 'admin_bar_menu',        array( $this, 'filter_admin_bar'  ), 99    );
 		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',     array( $this, 'blogs_of_user'     ), 10, 3 );
+		add_action( 'get_blogs_of_user',     array( $this, 'sites_of_user'     ), 10, 3 );
 		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
@@ -127,43 +127,43 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Remove user blogs that are not allowed for given user
+	 * Remove user sites that are not allowed for given user
 	 *
+	 * The used functions do their own blog switching.
+	 * 
 	 * @since 0.2
 	 *
-	 * @uses switch_to_blog()
-	 * @uses Guard::user_is_allowed()
-	 * @uses restore_current_blog()
+	 * @uses guard_is_site_protected()
+	 * @uses guard_user_is_allowed()
 	 *
-	 * @param array $blogs Blogs of user
+	 * @param array $sites Sites where user is registered
 	 * @param int $user_id User ID
-	 * @param boolean $all Whether to return also all hidden blogs
-	 * @return array $blogs
+	 * @param boolean $all Whether to return also all hidden sites
+	 * @return array Sites
 	 */
-	public function blogs_of_user( $blogs, $user_id, $all ) {
+	public function sites_of_user( $sites, $user_id, $all ) {
 
-		// Do not change blog list when requesting all
+		// Do not change site list when requesting all
 		if ( $all ) {
-			return $blogs;
+			return $sites;
 		}
 
-		// Walk all blogs
-		foreach ( $blogs as $blog_id => $details ) {
-			switch_to_blog( $blog_id );
+		// Walk all sites
+		foreach ( $sites as $site_id => $details ) {
 
 			// Site protection is active
-			if ( guard_is_site_protected() ) {
+			if ( guard_is_site_protected( $site_id ) ) {
 
 				// User is not allowed
-				if ( ! guard_is_user_allowed() ) {
-					unset( $blogs[$blog_id] );
+				if ( ! guard_is_user_allowed( $user_id, $site_id ) ) {
+
+					// Remove site from collection
+					unset( $sites[ $site_id ] );
 				}
 			}
-
-			restore_current_blog();
 		}
 
-		return $blogs;
+		return $sites;
 	}
 
 	/**
@@ -525,7 +525,7 @@ final class Guard_Network {
 	 *
 	 * @since 0.x
 	 *
-	 * @uses get_blog_list() To get all the blogs details. Deprecated.
+	 * @uses get_blog_list() To get all the sites details. Deprecated.
 	 * @uses settings_fields()
 	 * @uses switch_to_blog()
 	 * @uses do_settings_section()
@@ -537,15 +537,15 @@ final class Guard_Network {
 	 */
 	public function network_page_sites() {
 
-		// Fetch all blogs
-		$blogs = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
-		usort( $blogs, 'guard_network_blog_order' ); ?>
+		// Fetch all sites
+		$sites = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
+		usort( $sites, 'guard_network_blog_order' ); ?>
 
 			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
 				<?php settings_fields( 'guard_network_sites' ); ?>
 
-				<?php // Walk all blogs ?>
-				<?php foreach ( $blogs as $details ) : switch_to_blog( $details['blog_id'] ); ?>
+				<?php // Walk all sites ?>
+				<?php foreach ( $sites as $details ) : switch_to_blog( $details['blog_id'] ); ?>
 
 					<h2><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
 					<?php do_settings_sections( 'guard' ); ?>
@@ -559,7 +559,7 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Compare blogs to order an array by blog_id
+	 * Compare sites to order an array by blog_id
 	 *
 	 * @since 1.0.0
 	 *
