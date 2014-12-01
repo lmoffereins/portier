@@ -312,7 +312,7 @@ function guard_network_setting_network_only() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_network_only" <?php checked( get_site_option( '_guard_network_only' ), 1 ) ?> value="1" />
+				<input type="checkbox" name="_guard_network_only" value="1" <?php checked( guard_is_network_only() ); ?> />
 				<span class="description"><?php _e( 'Disable this plugin for individual sites.', 'guard' ); ?></span>
 			</label>
 		</p>
@@ -330,7 +330,7 @@ function guard_network_setting_network_protect() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_network_protect"value="1"  <?php checked( guard_is_network_protected() ); ?>/>
+				<input type="checkbox" name="_guard_network_protect" value="1" <?php checked( guard_is_network_protected(); ); ?>/>
 				<span class="description"><?php _e( 'Enable network protection.', 'guard' ); ?></span>
 			</label>
 		</p>
@@ -348,7 +348,7 @@ function guard_network_setting_network_redirect() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_network_redirect" <?php checked( get_site_option( '_guard_network_redirect' ), 1 ) ?> value="1" />
+				<input type="checkbox" name="_guard_network_redirect" value="1" <?php checked( guard_network_redirect() ); ?> />
 				<span class="description"><?php _e( 'Redirect users from protected sites to the main site.', 'guard' ); ?></span>
 			</label>
 		</p>
@@ -366,7 +366,7 @@ function guard_network_setting_network_hide_my_sites() {
 
 		<p>
 			<label>
-				<input type="checkbox" name="_guard_network_hide_my_sites" <?php checked( get_site_option( '_guard_network_hide_my_sites' ), 1 ) ?> value="1" />
+				<input type="checkbox" name="_guard_network_hide_my_sites" value="1" <?php checked( guard_network_hide_my_sites() ); ?> />
 				<span class="description"><?php _e( 'Hide "My Sites" links and page when a user has access to only one site.', 'guard' ); ?></span>
 			</label>
 		</p>

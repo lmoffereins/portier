@@ -63,15 +63,17 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses Guard::remove_site_hooks()
+	 * @uses get_site_option()
+	 * @uses remove_action()
+	 * @uses remove_filter()
 	 */
 	public function network_only() {
 
 		// Bail if not marked as network only
-		if ( ! get_site_option( '_guard_network_only' ) )
+		if ( ! guard_is_network_only() )
 			return;
 
-		// Get guard and remove plugin hooks for the single site context
+		// Get Guard and remove plugin hooks for the single site context
 		$guard = guard();
 
 		// Protection
