@@ -63,7 +63,7 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses get_site_option()
+	 * @uses guard_is_network_only()
 	 * @uses remove_action()
 	 * @uses remove_filter()
 	 */
@@ -104,8 +104,9 @@ final class Guard_Network {
 			return;
 
 		// Redirect when the user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! guard_network_is_user_allowed() )
+		if ( ! is_user_logged_in() || ! guard_network_is_user_allowed() ) {
 			auth_redirect();
+		}
 	}
 
 	/**
@@ -136,7 +137,7 @@ final class Guard_Network {
 	 * @since 0.2
 	 *
 	 * @uses guard_is_site_protected()
-	 * @uses guard_user_is_allowed()
+	 * @uses guard_is_user_allowed()
 	 *
 	 * @param array $sites Sites where user is registered
 	 * @param int $user_id User ID
