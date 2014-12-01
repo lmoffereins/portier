@@ -214,17 +214,9 @@ function guard_network_hide_my_sites() {
 	$sites   = get_blogs_of_user( $user_id );
 	$hide    = false;
 
-	// When hiding is active
-	if ( get_site_option( '_guard_network_hide_my_sites' ) ) {
-
-		// Never hide for super admins
-		if ( is_super_admin( $user_id ) ) {
-			$hide = false;
-
-		// Hide based on site count
-		} else {
-			$hide = count( $sites ) < 2;
-		}
+	// Hiding is active and user is not super admin and site count is less then two
+	if ( get_site_option( '_guard_network_hide_my_sites' ) && ! is_super_admin( $user_id ) && count( $sites ) < 2 ) {
+		$hide = true;
 	}
 
 	return apply_filters( 'guard_network_hide_my_sites', $hide, $user_id, $sites );
