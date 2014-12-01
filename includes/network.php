@@ -36,6 +36,9 @@ final class Guard_Network {
 	 */
 	private function setup_actions() {
 
+		// Get Guard
+		$guard = guard();
+
 		// Plugin
 		add_action( 'plugins_loaded',        array( $this, 'network_only'      ), 20    );
 
@@ -48,9 +51,10 @@ final class Guard_Network {
 		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',            array( $this, 'register_settings' ) );
-		add_action( 'network_admin_menu',    array( $this, 'admin_menu'        ) );
-		add_action( 'network_admin_notices', array( $this, 'admin_notices'     ) );
+		add_action( 'admin_init',               array( $this,  'register_settings' ) );
+		add_action( 'network_admin_menu',       array( $this,  'admin_menu'        ) );
+		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
+		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
 
 		// Uninstall hook
 		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
@@ -284,7 +288,7 @@ final class Guard_Network {
 			__( 'Guard', 'guard' ),
 			'manage_network',
 			'guard_network',
-			array( $this, 'network_page' )
+			array( $this, 'admin_page' )
 		);
 
 		add_action( "admin_head-$hook",   array( $this, 'admin_head'   ) );
@@ -325,7 +329,7 @@ final class Guard_Network {
 	 * @uses Guard_Network::network_page_sites()
 	 * @uses do_action() Calls 'guard_network_page' with the tab
 	 */
-	public function network_page() {
+	public function admin_page() {
 
 		// Fetch tab
 		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main'; ?>

@@ -133,8 +133,9 @@ final class Guard {
 		add_filter( 'login_message',     array( $this, 'login_message' ), 1 );
 
 		// Admin
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'admin_menu', array( $this, 'admin_menu'        ) );
+		add_action( 'admin_init',       array( $this, 'register_settings' ) );
+		add_action( 'admin_menu',       array( $this, 'admin_menu'        ) );
+		add_action( 'guard_admin_head', array( $this, 'enqueue_scripts'   ) );
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -277,62 +278,79 @@ final class Guard {
 	}
 
 	/**
-	 * Output plugin admin page contents
-	 *
-	 * @since 0.1
-	 *
-	 * @uses screen_icon() To output the screen icon
-	 * @uses settings_fields() To output the form validation inputs
-	 * @uses do_settings_section() To output all form fields
-	 * @uses submit_button() To output the form submit button
-	 */
-	public function admin_page() { ?>
-
-			<div class="wrap">
-				<h2>Guard</h2>
-
-				<form method="post" action="options.php">
-					<?php settings_fields( 'guard' ); ?>
-					<?php do_settings_sections( 'guard' ); ?>
-					<?php submit_button(); ?>
-				</form>
-			</div>
-
-		<?php
-	}
-
-	/**
 	 * Enqueue script and style in plugin admin page head
 	 *
 	 * @since 0.1
-	 *
-	 * @uses wp_script_is() To check if the script is already registered
-	 * @uses wp_style_is() To check if the style is already registered
 	 */
 	public function admin_head() {
-		if ( ! wp_script_is( 'chosen', 'registered' ) )
-			wp_register_script( 'chosen', plugins_url( 'js/chosen/jquery.chosen.min.js', __FILE__), array( 'jquery' ), '0.9.8' );
-
-		if ( ! wp_style_is( 'chosen', 'registered' ) )
-			wp_register_style( 'chosen', plugins_url( 'js/chosen/chosen.css', __FILE__ ) );
-
-		wp_enqueue_script( 'chosen' );
-		wp_enqueue_style(  'chosen' );
-
-		// Provide hook
 		do_action( 'guard_admin_head' );
 	}
 
 	/**
 	 * Output plugin admin page footer contents
 	 *
-	 * Some restyling of chosen elements in the admin page and a
-	 * float class for description spans to display well with inputs
-	 * and a lines to initialize the chosen script.
-	 *
 	 * @since 0.1
 	 */
-	public function admin_footer() { ?>
+	public function admin_footer() { 
+		do_action( 'guard_admin_footer' );
+	}
+
+	/**
+	 * Output plugin admin page contents
+	 *
+	 * @since 0.1
+	 *
+	 * @uses settings_fields() To output the form validation inputs
+	 * @uses do_settings_section() To output all form fields
+	 * @uses submit_button() To output the form submit button
+	 */
+	public function admin_page() { ?>
+
+		<div class="wrap">
+			<h2><?php _e( 'Guard', 'guard' ); ?></h2>
+
+			<form method="post" action="options.php">
+				<?php settings_fields( 'guard' ); ?>
+				<?php do_settings_sections( 'guard' ); ?>
+				<?php submit_button(); ?>
+			</form>
+		</div>
+
+		<?php
+	}
+
+	/**
+	 * Output admin page scripts and styles
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @uses wp_script_is() To check if the script is already registered
+	 * @uses wp_style_is() To check if the style is already registered
+	 * @uses wp_register_script()
+	 * @uses wp_register_style()
+	 */
+	public function enqueue_scripts() {
+
+		// Register Chosen when not done already
+		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
+			wp_register_script( 'chosen', plugins_url( 'js/chosen/jquery.chosen.min.js', __FILE__), array( 'jquery' ), '0.9.8' );
+		}
+
+		if ( ! wp_style_is( 'chosen', 'registered' ) ) {
+			wp_register_style( 'chosen', plugins_url( 'js/chosen/chosen.css', __FILE__ ) );
+		}
+
+		// Enqueue Chosen
+		wp_enqueue_script( 'chosen' );
+		wp_enqueue_style(  'chosen' ); 
+
+		?>
+
+		<script type="text/javascript">
+			jQuery(document).ready( function($) {
+				$( '.chzn-select' ).chosen();
+			});
+		</script>
 
 		<style type="text/css">
 			.chzn-select,
@@ -352,14 +370,7 @@ final class Guard {
 			}
 		</style>
 
-		<script type="text/javascript">
-			jQuery( '.chzn-select' ).chosen();
-		</script>
-
 		<?php
-
-		// Provide hook
-		do_action( 'guard_admin_footer' );
 	}
 
 	/**
