@@ -49,7 +49,7 @@ function guard_settings() {
 			'field_cb'    => 'guard_setting_allow_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard',
-			'sanitize_cb' => 'guard_setting_allow_users_sanitize'
+			'sanitize_cb' => 'guard_setting_sanitize_ids'
 		),
 
 		/** Additional Settings ******************************************/
@@ -148,16 +148,19 @@ function guard_setting_custom_message() {
 /**
  * Sanitize the allowed users input field
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @param string $input The submitted value
  * @return array $input
  */
-function guard_setting_allow_users_sanitize( $input ) {
-	if ( empty( $input ) )
-		return array();
+function guard_setting_sanitize_ids( $input ) {
+	if ( ! empty( $input ) ) {
+		$input = array_unique( array_map( 'absint', (array) $input ) );
+	} else {
+		$input = array();
+	}
 
-	return array_unique( array_map( 'intval', (array) $input ) );
+	return $input;
 }
 
 /**
@@ -223,7 +226,7 @@ function guard_network_settings() {
 		// Hide "My Sites"
 		'_guard_network_hide_my_sites' => array(
 			'label'       => __( 'Hide "My Sites"', 'guard' ),
-			'field_cb'    => 'guard_network_setting_network_hide_my_sites',
+			'field_cb'    => 'guard_network_setting_hide_my_sites',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
 			'sanitize_cb' => 'intval'
@@ -243,10 +246,10 @@ function guard_network_settings() {
 		// Allowed network users
 		'_guard_network_allowed_users' => array(
 			'label'       => __( 'Allowed network users', 'guard' ),
-			'field_cb'    => 'guard_network_setting_allow_users',
+			'field_cb'    => 'guard_network_setting_allowed_users',
 			'section'     => 'guard-options-access',
 			'page'        => 'guard_network',
-			'sanitize_cb' => 'guard_setting_allow_users_sanitize'
+			'sanitize_cb' => 'guard_setting_sanitize_ids'
 		),
 
 		/** Additional Settings ******************************************/
@@ -361,7 +364,7 @@ function guard_network_setting_network_redirect() {
  *
  * @since 0.2
  */
-function guard_network_setting_network_hide_my_sites() {
+function guard_network_setting_hide_my_sites() {
 	?>
 
 		<p>
@@ -383,7 +386,7 @@ function guard_network_setting_network_hide_my_sites() {
  *
  * @uses Guard_MS::get_network_users() To get all users of the network
  */
-function guard_network_setting_allow_users() {
+function guard_network_setting_allowed_users() {
 	$users = (array) get_site_option( '_guard_network_allowed_users', array() ); ?>
 
 		<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
