@@ -109,6 +109,7 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	private function includes() {
+		require( $this->includes_dir . 'extend.php'    );
 		require( $this->includes_dir . 'functions.php' );
 
 		// Admin
@@ -139,6 +140,9 @@ final class Guard {
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
+
+		// Setup extensions
+		add_action( 'guard_loaded', 'guard_extend' );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
