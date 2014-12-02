@@ -145,9 +145,6 @@ final class Guard {
 		// Setup extensions
 		add_action( 'guard_loaded', 'guard_setup_buddypress' );
 
-		// Uninstall hook
-		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
-
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
 	}
@@ -424,22 +421,6 @@ final class Guard {
 		}
 
 		return $links;
-	}
-
-	/**
-	 * Clean up when this plugin is deleted
-	 *
-	 * @since 0.2
-	 *
-	 * @uses guard_settings()
-	 * @uses delete_option()
-	 */
-	public function uninstall() {
-
-		// Delete all settings
-		foreach ( guard_settings() as $option => $args ) {
-			delete_option( $option );
-		}
 	}
 }
 

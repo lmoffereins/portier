@@ -55,9 +55,6 @@ final class Guard_Network {
 		add_action( 'network_admin_menu',       array( $this,  'admin_menu'        ) );
 		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
 		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
-
-		// Uninstall hook
-		register_uninstall_hook( guard()->file, array( $this, 'network_uninstall' ) );
 	}
 
 	/** Plugin *******************************************************/
@@ -529,22 +526,6 @@ final class Guard_Network {
 			return true;
 
 		return false;
-	}
-
-	/**
-	 * Clean up when this plugin is deleted
-	 *
-	 * @since 0.2
-	 *
-	 * @uses guard_network_settings()
-	 * @uses delete_site_option()
-	 */
-	public function network_uninstall() {
-
-		// Delete all settings
-		foreach ( guard_network_settings() as $option => $args ) {
-			delete_site_option( $option );
-		}
 	}
 
 	/** Network Manage Sites ***************************************/
