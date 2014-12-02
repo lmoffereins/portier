@@ -11,18 +11,26 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Initiate the available extensions
+ * Setup BuddyPress pugin extension
  *
  * @since 1.0.0
+ * 
+ * @uses buddypress()
+ * @uses guard()
  */
-function guard_extend() {
-	
-	// Get Guard
-	$guard = guard();
+function guard_extend_buddypress() {
 
-	// Extensions paths
-	$guard->extend_dir = trailingslashit( $this->includes_dir . 'extend' );
-	$guard->extend_url = trailingslashit( $this->includes_url . 'extend' );
+	// Bail when BuddyPress is not active
+	if ( ! function_exists( 'buddypress' ) )
+		return;
 
-	do_action( 'guard_extend' );
+	// Bail when in maintenance mode
+	if ( ! buddypress() || buddypress()->maintenance_mode )
+		return;
+
+	// Include BuddyPress extension
+	require( guard()->includes_dir . 'extend/buddypress.php' );
+
+	// Initiate BuddyPress for Guard
+	guard()->extend->buddypress = new Guard_BuddyPress();
 }

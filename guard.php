@@ -142,7 +142,7 @@ final class Guard {
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Setup extensions
-		add_action( 'guard_loaded', 'guard_extend' );
+		add_action( 'guard_loaded', 'guard_buddypress' );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
