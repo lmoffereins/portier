@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @uses buddypress()
  * @uses guard()
  */
-function guard_extend_buddypress() {
+function guard_setup_buddypress() {
 
 	// Bail when BuddyPress is not active
 	if ( ! function_exists( 'buddypress' ) )

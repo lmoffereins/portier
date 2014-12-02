@@ -100,7 +100,8 @@ final class Guard {
 
 		/** Misc **************************************************************/
 
-		$this->domain = 'guard';
+		$this->extend       = new stdClass();
+		$this->domain       = 'guard';
 	}
 
 	/**
@@ -142,7 +143,7 @@ final class Guard {
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Setup extensions
-		add_action( 'guard_loaded', 'guard_buddypress' );
+		add_action( 'guard_loaded', 'guard_setup_buddypress' );
 
 		// Uninstall hook
 		register_uninstall_hook( $this->file, array( $this, 'uninstall' ) );
@@ -185,7 +186,6 @@ final class Guard {
 	 * @since 1.0.0
 	 *
 	 * @uses is_plugin_active_for_network()
-	 * @uses guard_network()
 	 */
 	public function load_for_network() {
 
