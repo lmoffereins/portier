@@ -43,54 +43,6 @@ function guard_is_site_protected( $site_id = 0 ) {
 }
 
 /**
- * Return whether the network's protection is active
- *
- * @since 1.0.0
- *
- * @uses is_multisite()
- * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_is_network_protected'
- * 
- * @return bool Network protection is active
- */
-function guard_is_network_protected() {
-
-	// Bail when not on multisite
-	if ( ! is_multisite() )
-		return false;
-
-	return (bool) apply_filters( 'guard_is_network_protected', get_site_option( '_guard_network_protect' ) );
-}
-
-/**
- * Return whether redirection from unallowed sites is active
- *
- * @since 1.0.0
- *
- * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_network_redirect'
- * 
- * @return bool Network redirect is active
- */
-function guard_network_redirect() {
-	return (bool) apply_filters( 'guard_network_redirect', get_site_option( '_guard_network_redirect' ) );
-}
-
-/**
- * Return whether the plugin is active for the network level only
- *
- * @since 1.0.0
- *
- * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_is_network_only'
- * 
- * @return bool Guard is for the network level only
- */
-function guard_is_network_only() {
-	return (bool) apply_filters( 'guard_is_network_only', get_site_option( '_guard_network_only' ) );
-}
-
-/**
  * Returns whether the given user is allowed access for the given site
  *
  * @since 1.0.0
@@ -141,6 +93,26 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 }
 
 /**
+ * Return whether the network's protection is active
+ *
+ * @since 1.0.0
+ *
+ * @uses is_multisite()
+ * @uses get_site_option()
+ * @uses apply_filters() Calls 'guard_is_network_protected'
+ * 
+ * @return bool Network protection is active
+ */
+function guard_is_network_protected() {
+
+	// Bail when not on multisite
+	if ( ! is_multisite() )
+		return false;
+
+	return (bool) apply_filters( 'guard_is_network_protected', get_site_option( '_guard_network_protect' ) );
+}
+
+/**
  * Returns whether the given user is allowed access for the network
  *
  * @since 0.2
@@ -173,6 +145,34 @@ function guard_network_is_user_allowed( $user_id = 0 ) {
 
 	// Filter whether user is allowed
 	return (bool) apply_filters( 'guard_network_is_user_allowed', $allowed, $user_id );
+}
+
+/**
+ * Return whether redirection from unallowed sites is active
+ *
+ * @since 1.0.0
+ *
+ * @uses get_site_option()
+ * @uses apply_filters() Calls 'guard_network_redirect'
+ * 
+ * @return bool Network redirect is active
+ */
+function guard_network_redirect() {
+	return (bool) apply_filters( 'guard_network_redirect', get_site_option( '_guard_network_redirect' ) );
+}
+
+/**
+ * Return whether the plugin is active for the network level only
+ *
+ * @since 1.0.0
+ *
+ * @uses get_site_option()
+ * @uses apply_filters() Calls 'guard_is_network_only'
+ * 
+ * @return bool Guard is for the network level only
+ */
+function guard_is_network_only() {
+	return (bool) apply_filters( 'guard_is_network_only', get_site_option( '_guard_network_only' ) );
 }
 
 /**

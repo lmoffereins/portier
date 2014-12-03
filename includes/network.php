@@ -128,24 +128,23 @@ final class Guard_Network {
 			$user_id  = get_current_user_id();
 			$location = '';
 
-			// Redirect user to network home site when it's not protected. Prevents a loophole
-			if ( ! guard_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
-				$location = network_home_url();
+			// Find an allowed location when the user is loggedin
+			if ( ! empty( $user_id ) ) {
 
-			// Find another allowed location when the user is loggedin
-			} elseif ( ! empty( $user_id ) ) {
+				// Get the user's primary site
+				$site = get_active_blog_for_user( $user_id );
 
-				// Define local variable(s)
-				$sites = get_blogs_of_user( get_current_user_id() );
-
-				// Get the first allowed site
-				if ( ! empty( $sites ) ) {
-					$site     = reset( $sites );
+				// Redirect user to their primary site, only when they are allowed there. Prevents looping.
+				if ( ! empty( $site ) && ( ! guard_is_site_protected( $site->blog_id ) || guard_is_user_allowed( $user_id, $site->blog_id ) ) ) {
 					$location = $site->siteurl . $site->path;
 				}
+
+			// Try to return the anonymous user to the network home
+			} elseif ( ! guard_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
+				$location = network_home_url();
 			}
 
-			// Provide hook
+			// Provide hook to filter the redirect location
 			$location = apply_filters( 'guard_network_redirect_location', $location, $user_id );
 
 			// Redirect when a location is provided
