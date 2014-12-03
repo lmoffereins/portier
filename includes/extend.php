@@ -32,5 +32,5 @@ function guard_setup_buddypress() {
 	require( guard()->includes_dir . 'extend/buddypress.php' );
 
 	// Initiate BuddyPress for Guard
-	guard()->extend->buddypress = new Guard_BuddyPress();
+	guard()->extend->bp = new Guard_BuddyPress();
 }
