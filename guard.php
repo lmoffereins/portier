@@ -143,7 +143,7 @@ final class Guard {
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Setup extensions
-		add_action( 'guard_loaded', 'guard_setup_buddypress' );
+		add_action( 'bp_loaded', 'guard_setup_buddypress' );
 
 		// Fire plugin loaded hook
 		do_action( 'guard_loaded' );
