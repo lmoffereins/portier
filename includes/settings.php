@@ -18,16 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'guard_settings'
- *
- * @return array $settings {
- *  @type array Setting ID {
- *   @type string $label Setting label
- *   @type string $callback Setting input field callback
- *   @type string $section Setting section name
- *   @type string $page Setting page name
- *   @type string $sanitize_callback Setting sanitization callback
- *  }
- * }
+ * @return array Settings
  */
 function guard_settings() {
 	return apply_filters( 'guard_settings', array(
@@ -190,16 +181,7 @@ function guard_setting_sanitize_message( $input ) {
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'guard_network_settings'
- *
- * @return array $settings {
- *  @type array Setting ID {
- *   @type string $label Setting label
- *   @type string $callback Setting input field callback
- *   @type string $section Setting section name
- *   @type string $page Setting page name
- *   @type string $sanitize_callback Setting sanitization callback
- *  }
- * }
+ * @return array Settings
  */
 function guard_network_settings() {
 	return apply_filters( 'guard_network_settings', array(
@@ -226,7 +208,7 @@ function guard_network_settings() {
 
 		// Hide "My Sites"
 		'_guard_network_hide_my_sites' => array(
-			'label'             => __( 'Hide "My Sites"', 'guard' ),
+			'label'             => sprintf( _x( 'Hide %s', 'Setting label for hide-my-sites option', 'guard' ), '"' . __( 'My Sites' ) . '"' ),
 			'callback'          => 'guard_network_setting_hide_my_sites',
 			'section'           => 'guard-options-main',
 			'page'              => 'guard_network',
@@ -246,7 +228,7 @@ function guard_network_settings() {
 
 		// Allowed network users
 		'_guard_network_allowed_users' => array(
-			'label'             => __( 'Allowed network users', 'guard' ),
+			'label'             => __( 'Allowed users', 'guard' ),
 			'callback'          => 'guard_network_setting_allowed_users',
 			'section'           => 'guard-options-access',
 			'page'              => 'guard_network',
@@ -383,7 +365,7 @@ function guard_network_setting_allowed_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_network_allowed_users"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></label>
+	<label for="_guard_network_allowed_users"><?php _e( 'Select which network users you want to have access', 'guard' ); ?></label>
 
 	<?php
 }
