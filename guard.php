@@ -230,7 +230,7 @@ final class Guard {
 	}
 
 	/**
-	 * Appends our custom message to the login messages
+	 * Append our custom login message to the login messages
 	 *
 	 * @since 0.1
 	 *
@@ -241,11 +241,11 @@ final class Guard {
 
 		// When protection is active
 		if ( guard_is_site_protected() ) {
-			$custom_message = get_option( '_guard_custom_message' );
+			$login_message = get_option( '_guard_login_message' );
 
 			// Append message when it's provided
-			if ( ! empty( $custom_message ) ) {
-				$message .= '<p class="message">'. $custom_message .'<p>';
+			if ( ! empty( $login_message ) ) {
+				$message .= '<p class="message">'. $login_message .'<p>';
 			}
 		}
 

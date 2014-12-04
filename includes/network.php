@@ -44,6 +44,7 @@ final class Guard_Network {
 
 		// Protection
 		add_action( 'template_redirect',     array( $this, 'network_protect'   ), 0     );
+		add_filter( 'login_message',         array( $this, 'login_message'     ), 0     );
 		add_action( 'guard_site_protect',    array( $this, 'network_redirect'  )        );
 		add_action( 'admin_bar_menu',        array( $this, 'filter_admin_bar'  ), 99    );
 		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
@@ -108,6 +109,29 @@ final class Guard_Network {
 		if ( ! is_user_logged_in() || ! guard_network_is_user_allowed() ) {
 			auth_redirect();
 		}
+	}
+
+	/**
+	 * Append our custom network login message to the login messages
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $message The current login messages
+	 * @return string $message
+	 */
+	public function login_message( $message ) {
+
+		// When network protection is active
+		if ( guard_is_network_protected() ) {
+			$login_message = get_site_option( '_guard_network_login_message' );
+
+			// Append message when it's provided
+			if ( ! empty( $login_message ) ) {
+				$message .= '<p class="message">'. $login_message .'<p>';
+			}
+		}
+
+		return $message;
 	}
 
 	/**
