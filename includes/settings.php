@@ -131,7 +131,10 @@ function guard_setting_allow_users() {
 function guard_setting_custom_message() { ?>
 
 	<textarea name="_guard_custom_message" id="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
-	<label for="_guard_custom_message"><?php printf( __( 'Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></label>
+	<label for="_guard_custom_message">
+		<?php _e( 'When site protection is active, this message will be shown at the login screen.', 'guard' ); ?>
+		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
+	</label>
 
 	<?php
 }
@@ -365,7 +368,7 @@ function guard_network_setting_allowed_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_network_allowed_users"><?php _e( 'Select which network users you want to have access', 'guard' ); ?></label>
+	<label for="_guard_network_allowed_users"><?php _e( 'Select which users you want to have access', 'guard' ); ?></label>
 
 	<?php
 }
@@ -380,7 +383,10 @@ function guard_network_setting_allowed_users() {
 function guard_network_setting_custom_message() { ?>
 
 	<textarea name="_guard_network_custom_message" id="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
-	<label for="_guard_network_custom_message"><?php printf( __( 'Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></label>
+	<label for="_guard_network_custom_message">
+		<?php _e( 'When network protection is active, this message will be shown at the login screen.', 'guard' ); ?>
+		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
+	</label>
 
 	<?php
 }
