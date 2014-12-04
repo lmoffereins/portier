@@ -47,7 +47,7 @@ final class Guard_Network {
 		add_action( 'guard_site_protect',    array( $this, 'network_redirect'  )        );
 		add_action( 'admin_bar_menu',        array( $this, 'filter_admin_bar'  ), 99    );
 		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',     array( $this, 'sites_of_user'     ), 10, 3 );
+		add_action( 'get_blogs_of_user',     array( $this, 'filter_user_sites' ), 10, 3 );
 		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
@@ -111,13 +111,18 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Redirect the unauthorized user to the network home instead of the login page
+	 * Try to rediect the unauthorized user to an allowed site instead of the login page
 	 *
 	 * @since 0.2
 	 *
 	 * @uses guard_network_redirect()
-	 * @uses wp_redirect()
+	 * @uses get_current_user_id()
+	 * @uses get_active_glob_for_user() To get the user's primary (allowed) blog
+	 * @uses guard_is_site_protected()
+	 * @uses guard_is_user_allowed()
 	 * @uses network_home_url()
+	 * @uses apply_filters() Calls 'guard_network_redirect_location'
+	 * @uses wp_redirect()
 	 */
 	public function network_redirect() {
 
@@ -134,7 +139,7 @@ final class Guard_Network {
 				// Get the user's primary site
 				$site = get_active_blog_for_user( $user_id );
 
-				// Redirect user to their primary site, only when they are allowed there. Prevents looping.
+				// Redirect user to their primary site, only when they are allowed there
 				if ( ! empty( $site ) && ( ! guard_is_site_protected( $site->blog_id ) || guard_is_user_allowed( $user_id, $site->blog_id ) ) ) {
 					$location = $site->siteurl . $site->path;
 				}
@@ -162,6 +167,7 @@ final class Guard_Network {
 	 * 
 	 * @since 0.2
 	 *
+	 * @uses guard_is_network_only()
 	 * @uses guard_is_site_protected()
 	 * @uses guard_is_user_allowed()
 	 *
@@ -170,7 +176,7 @@ final class Guard_Network {
 	 * @param boolean $all Whether to return also all hidden sites
 	 * @return array Sites
 	 */
-	public function sites_of_user( $sites, $user_id, $all ) {
+	public function filter_user_sites( $sites, $user_id, $all ) {
 
 		// Do not change site list when requesting all
 		if ( $all || guard_is_network_only() ) {
@@ -234,6 +240,7 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses is_admin()
 	 * @uses get_current_screen()
 	 * @uses guard_network_hide_my_sites()
 	 *
