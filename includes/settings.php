@@ -61,24 +61,14 @@ function guard_settings() {
  *
  * @since 0.1
  */
-function guard_access_settings_info() { ?>
-
-	<p><?php _e( 'Here you enable the Guard plugin. By checking the <em>Protect my site</em> input, this site will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?></p>
-
-	<?php
-}
+function guard_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output additional settings section information header
  *
  * @since 0.1
  */
-function guard_additional_settings_info() { ?>
-
-	<p><?php _e( 'Below you can set additional Guard options.', 'guard' ); ?></p>
-
-	<?php
-}
+function guard_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the enable site protection input field
@@ -257,36 +247,21 @@ function guard_network_settings() {
  *
  * @since 1.0.0
  */
-function guard_network_main_settings_info() { ?>
-
-	<p><?php _e( 'Here you activate the main network functionality of Guard. For activating the network protection, see the Network Access Settings.', 'guard' ); ?></p>
-
-	<?php
-}
+function guard_network_main_settings_info() { /* Nothing to show */ }
 
 /**
  * Output network access settings section information header
  *
  * @since 0.2
  */
-function guard_network_access_settings_info() { ?>
-
-	<p><?php _e( 'Here you activate your network protection. By checking the <em>Protect this network</em> input, this network will only be accessible for admins and allowed users, specified by you in the select option below. No one else shall pass!', 'guard' ); ?></p>
-
-	<?php
-}
+function guard_network_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output network additional settings section information header
  *
  * @since 0.2
  */
-function guard_network_additional_settings_info() { ?>
-
-	<p><?php _e( 'Below you can set additional Network Guard options.', 'guard' ); ?></p>
-
-	<?php
-}
+function guard_network_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the network only input field
