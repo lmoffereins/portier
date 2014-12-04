@@ -71,7 +71,7 @@ class Guard_BuddyPress {
 
 			// Allowed groups
 			$settings['_guard_bp_allowed_groups'] = array(
-				'label'       => __( 'Allowed BuddyPress groups', 'guard' ),
+				'label'       => __( 'Allowed groups', 'guard' ),
 				'field_cb'    => array( $this, 'setting_allowed_groups' ),
 				'section'     => 'guard-options-access',
 				'page'        => $network ? 'guard_network' : 'guard',

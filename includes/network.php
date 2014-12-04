@@ -539,7 +539,7 @@ final class Guard_Network {
 	/**
 	 * Output network sites management admin panel
 	 *
-	 * @since 0.x
+	 * @since 1.0.0
 	 *
 	 * @uses get_blog_list() To get all the sites details. Deprecated.
 	 * @uses settings_fields()

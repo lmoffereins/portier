@@ -217,7 +217,7 @@ function guard_network_settings() {
 
 		// Network redirect
 		'_guard_network_redirect' => array(
-			'label'       => __( 'Redirect to main site', 'guard' ),
+			'label'       => __( 'Redirect to allowed site', 'guard' ),
 			'field_cb'    => 'guard_network_setting_network_redirect',
 			'section'     => 'guard-options-main',
 			'page'        => 'guard_network',
@@ -343,7 +343,7 @@ function guard_network_setting_network_protect() { ?>
 function guard_network_setting_network_redirect() { ?>
 
 	<input type="checkbox" id="_guard_network_redirect" name="_guard_network_redirect" value="1" <?php checked( guard_network_redirect() ); ?>/>
-	<label for="_guard_network_redirect"><span class="description"><?php _e( 'Redirect users from protected sites to the main site.', 'guard' ); ?></span></label>
+	<label for="_guard_network_redirect"><span class="description"><?php _e( 'Try to redirect users from protected sites to an allowed site or the network home when available.', 'guard' ); ?></span></label>
 
 	<?php
 }
@@ -358,7 +358,7 @@ function guard_network_setting_network_redirect() { ?>
 function guard_network_setting_hide_my_sites() { ?>
 
 	<input type="checkbox" id="_guard_network_hide_my_sites" name="_guard_network_hide_my_sites" value="1" <?php checked( get_site_option( '_guard_network_hide_my_sites' ) ); ?>/>
-	<label for="_guard_network_hide_my_sites"><span class="description"><?php _e( 'Hide "My Sites" links and page when a user has access to only one site.', 'guard' ); ?></span></label>
+	<label for="_guard_network_hide_my_sites"><span class="description"><?php printf( __( 'Hide the %s links and page when a user has access to only one site.', 'guard' ), '"' . __( 'My Sites' ) . '"' ); ?></span></label>
 
 	<?php
 }
