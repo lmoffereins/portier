@@ -34,6 +34,15 @@ function guard_settings() {
 			'sanitize_callback' => 'intval'
 		),
 
+		// Login message
+		'_guard_login_message' => array(
+			'label'             => __( 'Login message', 'guard' ),
+			'callback'          => 'guard_setting_login_message',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard',
+			'sanitize_callback' => 'guard_setting_sanitize_message'
+		),
+
 		// Allowed users
 		'_guard_allowed_users' => array(
 			'label'             => __( 'Allowed users', 'guard' ),
@@ -42,17 +51,6 @@ function guard_settings() {
 			'page'              => 'guard',
 			'sanitize_callback' => 'guard_setting_sanitize_ids'
 		),
-
-		/** Additional Settings ******************************************/
-
-		// Custom login message
-		'_guard_custom_message' => array(
-			'label'             => __( 'Custom login message', 'guard' ),
-			'callback'          => 'guard_setting_custom_message',
-			'section'           => 'guard-options-additional',
-			'page'              => 'guard',
-			'sanitize_callback' => 'guard_setting_sanitize_message'
-		)
 	) );
 }
 
@@ -118,10 +116,10 @@ function guard_setting_allow_users() {
  * @uses esc_textarea()
  * @uses get_option()
  */
-function guard_setting_custom_message() { ?>
+function guard_setting_login_message() { ?>
 
-	<textarea name="_guard_custom_message" id="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
-	<label for="_guard_custom_message">
+	<textarea name="_guard_login_message" id="_guard_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_login_message' ) ); ?></textarea>
+	<label for="_guard_login_message">
 		<?php _e( 'When site protection is active, this message will be shown at the login screen.', 'guard' ); ?>
 		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
 	</label>
@@ -219,24 +217,22 @@ function guard_network_settings() {
 			'sanitize_callback' => 'intval'
 		),
 
-		// Allowed network users
+		// Login message
+		'_guard_network_login_message' => array(
+			'label'             => __( 'Login message', 'guard' ),
+			'callback'          => 'guard_network_setting_login_message',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'guard_setting_sanitize_message'
+		),
+
+		// Allowed users
 		'_guard_network_allowed_users' => array(
 			'label'             => __( 'Allowed users', 'guard' ),
 			'callback'          => 'guard_network_setting_allowed_users',
 			'section'           => 'guard-options-access',
 			'page'              => 'guard_network',
 			'sanitize_callback' => 'guard_setting_sanitize_ids'
-		),
-
-		/** Additional Settings ******************************************/
-
-		// Custom network login message
-		'_guard_network_custom_message' => array(
-			'label'             => __( 'Custom login message', 'guard' ),
-			'callback'          => 'guard_network_setting_custom_message',
-			'section'           => 'guard-options-additional',
-			'page'              => 'guard_network',
-		    'sanitize_callback' => 'guard_setting_sanitize_message'
 		),
 
 	) );
@@ -355,10 +351,10 @@ function guard_network_setting_allowed_users() {
  *
  * @uses get_site_option() To get the field's value
  */
-function guard_network_setting_custom_message() { ?>
+function guard_network_setting_login_message() { ?>
 
-	<textarea name="_guard_network_custom_message" id="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
-	<label for="_guard_network_custom_message">
+	<textarea name="_guard_network_login_message" id="_guard_network_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_login_message' ) ); ?></textarea>
+	<label for="_guard_network_login_message">
 		<?php _e( 'When network protection is active, this message will be shown at the login screen.', 'guard' ); ?>
 		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
 	</label>

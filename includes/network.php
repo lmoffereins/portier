@@ -382,9 +382,8 @@ final class Guard_Network {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'guard-options-main',       __( 'Main Settings',       'guard' ), 'guard_network_main_settings_info',       'guard_network' );
-		add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), 'guard_network_access_settings_info',     'guard_network' );
-		add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), 'guard_network_additional_settings_info', 'guard_network' );
+		add_settings_section( 'guard-options-main',   __( 'Main Settings',   'guard' ), 'guard_network_main_settings_info',   'guard_network' );
+		add_settings_section( 'guard-options-access', __( 'Access Settings', 'guard' ), 'guard_network_access_settings_info', 'guard_network' );
 
 		// Loop all network settings to register
 		foreach ( guard_network_settings() as $setting => $args ) {

@@ -380,8 +380,7 @@ final class Guard {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'guard-options-access',     __( 'Access Settings',     'guard' ), 'guard_access_settings_info',     'guard' );
-		add_settings_section( 'guard-options-additional', __( 'Additional Settings', 'guard' ), 'guard_additional_settings_info', 'guard' );
+		add_settings_section( 'guard-options-access', __( 'Access Settings', 'guard' ), 'guard_access_settings_info', 'guard' );
 
 		// Loop all settings to register
 		foreach ( guard_settings() as $setting => $args ) {
