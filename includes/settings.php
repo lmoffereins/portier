@@ -22,10 +22,10 @@ defined( 'ABSPATH' ) || exit;
  * @return array $settings {
  *  @type array Setting ID {
  *   @type string $label Setting label
- *   @type string $field_cb Setting input field callback
+ *   @type string $callback Setting input field callback
  *   @type string $section Setting section name
  *   @type string $page Setting page name
- *   @type string $sanitize_cb Setting sanitization callback
+ *   @type string $sanitize_callback Setting sanitization callback
  *  }
  * }
  */
@@ -36,31 +36,31 @@ function guard_settings() {
 
 		// Site protect switch
 		'_guard_site_protect' => array(
-			'label'       => __( 'Protect my site', 'guard' ),
-			'field_cb'    => 'guard_setting_protect_site',
-			'section'     => 'guard-options-access',
-			'page'        => 'guard',
-			'sanitize_cb' => 'intval'
+			'label'             => __( 'Protect my site', 'guard' ),
+			'callback'          => 'guard_setting_protect_site',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard',
+			'sanitize_callback' => 'intval'
 		),
 
 		// Allowed users
 		'_guard_allowed_users' => array(
-			'label'       => __( 'Allowed users', 'guard' ),
-			'field_cb'    => 'guard_setting_allow_users',
-			'section'     => 'guard-options-access',
-			'page'        => 'guard',
-			'sanitize_cb' => 'guard_setting_sanitize_ids'
+			'label'             => __( 'Allowed users', 'guard' ),
+			'callback'          => 'guard_setting_allow_users',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard',
+			'sanitize_callback' => 'guard_setting_sanitize_ids'
 		),
 
 		/** Additional Settings ******************************************/
 
 		// Custom login message
 		'_guard_custom_message' => array(
-			'label'       => __( 'Custom login message', 'guard' ),
-			'field_cb'    => 'guard_setting_custom_message',
-			'section'     => 'guard-options-additional',
-			'page'        => 'guard',
-			'sanitize_cb' => 'guard_setting_sanitize_message'
+			'label'             => __( 'Custom login message', 'guard' ),
+			'callback'          => 'guard_setting_custom_message',
+			'section'           => 'guard-options-additional',
+			'page'              => 'guard',
+			'sanitize_callback' => 'guard_setting_sanitize_message'
 		)
 	) );
 }
@@ -194,10 +194,10 @@ function guard_setting_sanitize_message( $input ) {
  * @return array $settings {
  *  @type array Setting ID {
  *   @type string $label Setting label
- *   @type string $field_cb Setting input field callback
+ *   @type string $callback Setting input field callback
  *   @type string $section Setting section name
  *   @type string $page Setting page name
- *   @type string $sanitize_cb Setting sanitization callback
+ *   @type string $sanitize_callback Setting sanitization callback
  *  }
  * }
  */
@@ -208,60 +208,60 @@ function guard_network_settings() {
 
 		// Network only
 		'_guard_network_only' => array(
-			'label'       => __( 'Network only', 'guard' ),
-			'field_cb'    => 'guard_network_setting_network_only',
-			'section'     => 'guard-options-main',
-			'page'        => 'guard_network',
-			'sanitize_cb' => 'intval'
+			'label'             => __( 'Network only', 'guard' ),
+			'callback'          => 'guard_network_setting_network_only',
+			'section'           => 'guard-options-main',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'intval'
 		),
 
 		// Network redirect
 		'_guard_network_redirect' => array(
-			'label'       => __( 'Redirect to allowed site', 'guard' ),
-			'field_cb'    => 'guard_network_setting_network_redirect',
-			'section'     => 'guard-options-main',
-			'page'        => 'guard_network',
-			'sanitize_cb' => 'intval'
+			'label'             => __( 'Redirect to allowed site', 'guard' ),
+			'callback'          => 'guard_network_setting_network_redirect',
+			'section'           => 'guard-options-main',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'intval'
 		),
 
 		// Hide "My Sites"
 		'_guard_network_hide_my_sites' => array(
-			'label'       => __( 'Hide "My Sites"', 'guard' ),
-			'field_cb'    => 'guard_network_setting_hide_my_sites',
-			'section'     => 'guard-options-main',
-			'page'        => 'guard_network',
-			'sanitize_cb' => 'intval'
+			'label'             => __( 'Hide "My Sites"', 'guard' ),
+			'callback'          => 'guard_network_setting_hide_my_sites',
+			'section'           => 'guard-options-main',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'intval'
 		),
 
 		/** Access Settings **********************************************/
 
 		// Network protect switch
 		'_guard_network_protect' => array(
-			'label'       => __( 'Protect this network', 'guard' ),
-			'field_cb'    => 'guard_network_setting_network_protect',
-			'section'     => 'guard-options-access',
-			'page'        => 'guard_network',
-			'sanitize_cb' => 'intval'
+			'label'             => __( 'Protect this network', 'guard' ),
+			'callback'          => 'guard_network_setting_network_protect',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'intval'
 		),
 
 		// Allowed network users
 		'_guard_network_allowed_users' => array(
-			'label'       => __( 'Allowed network users', 'guard' ),
-			'field_cb'    => 'guard_network_setting_allowed_users',
-			'section'     => 'guard-options-access',
-			'page'        => 'guard_network',
-			'sanitize_cb' => 'guard_setting_sanitize_ids'
+			'label'             => __( 'Allowed network users', 'guard' ),
+			'callback'          => 'guard_network_setting_allowed_users',
+			'section'           => 'guard-options-access',
+			'page'              => 'guard_network',
+			'sanitize_callback' => 'guard_setting_sanitize_ids'
 		),
 
 		/** Additional Settings ******************************************/
 
 		// Custom network login message
 		'_guard_network_custom_message' => array(
-			'label'       => __( 'Custom login message', 'guard' ),
-			'field_cb'    => 'guard_network_setting_custom_message',
-			'section'     => 'guard-options-additional',
-			'page'        => 'guard_network',
-		    'sanitize_cb' => 'guard_setting_sanitize_message'
+			'label'             => __( 'Custom login message', 'guard' ),
+			'callback'          => 'guard_network_setting_custom_message',
+			'section'           => 'guard-options-additional',
+			'page'              => 'guard_network',
+		    'sanitize_callback' => 'guard_setting_sanitize_message'
 		),
 
 	) );

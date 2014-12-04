@@ -394,11 +394,11 @@ final class Guard {
 		foreach ( guard_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
-			if ( isset( $args['label'] ) && isset( $args['field_cb'] ) ) {
-				add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
+				add_settings_field( $setting, $args['label'], $args['callback'], $args['page'], $args['section'] );
 			}
 
-			register_setting( $args['page'], $setting, $args['sanitize_cb'] );
+			register_setting( $args['page'], $setting, $args['sanitize_callback'] );
 		}
 	}
 

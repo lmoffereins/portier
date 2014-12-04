@@ -70,12 +70,12 @@ class Guard_BuddyPress {
 		if ( bp_is_active( 'groups' ) ) {
 
 			// Allowed groups
-			$settings['_guard_bp_allowed_groups'] = array(
-				'label'       => __( 'Allowed groups', 'guard' ),
-				'field_cb'    => array( $this, 'setting_allowed_groups' ),
-				'section'     => 'guard-options-access',
-				'page'        => $network ? 'guard_network' : 'guard',
-				'sanitize_cb' => 'guard_setting_sanitize_ids'
+				$settings['_guard_bp_allowed_groups'] = array(
+				'label'             => __( 'Allowed groups', 'guard' ),
+				'callback'          => array( $this, 'setting_allowed_groups' ),
+				'section'           => 'guard-options-access',
+				'page'              => $network ? 'guard_network' : 'guard',
+				'sanitize_callback' => 'guard_setting_sanitize_ids'
 			);
 		}
 

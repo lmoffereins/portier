@@ -390,11 +390,11 @@ final class Guard_Network {
 		foreach ( guard_network_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
-			if ( isset( $args['label'] ) && isset( $args['field_cb'] ) ) {
-				add_settings_field( $setting, $args['label'], $args['field_cb'], $args['page'], $args['section'] );
+			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
+				add_settings_field( $setting, $args['label'], $args['callback'], $args['page'], $args['section'] );
 			}
 
-			register_setting( $args['page'], $setting, $args['sanitize_cb'] );
+			register_setting( $args['page'], $setting, $args['sanitize_callback'] );
 		}
 
 		/**
@@ -608,7 +608,7 @@ final class Guard_Network {
 			// if ( ! isset( $_POST[$option] ) )
 				// $_POST[$option] = apply_filters( 'guard_network_settings_default', 0, $option );
 
-			// $value = call_user_func_array( $args['sanitize_cb'], array( $_POST[$option] ) );
+			// $value = call_user_func_array( $args['sanitize_callback'], array( $_POST[$option] ) );
 
 			// Don't catch retval since both non-updates and errors return false
 			// update_site_option( $option, $value );
