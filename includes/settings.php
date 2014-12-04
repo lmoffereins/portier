@@ -99,7 +99,7 @@ function guard_additional_settings_info() { ?>
 function guard_setting_protect_site() { ?>
 
 	<input type="checkbox" id="_guard_site_protect" name="_guard_site_protect" value="1" <?php checked( guard_is_site_protected() ); ?>/>
-	<label for="_guard_site_protect"><span class="description"><?php _e( 'Enable site protection.', 'guard' ); ?></span></label>
+	<label for="_guard_site_protect"><?php _e( 'Enable site protection', 'guard' ); ?></label>
 
 	<?php
 }
@@ -124,7 +124,7 @@ function guard_setting_allow_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<span class="description float"><?php _e( 'Select which users you want to have access.', 'guard' ); ?></span>
+	<label for="_guard_allowed_groups"><?php _e( 'Select which users you want to have access', 'guard' ); ?></label>
 
 	<?php
 }
@@ -139,8 +139,8 @@ function guard_setting_allow_users() {
  */
 function guard_setting_custom_message() { ?>
 
-	<textarea name="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
-	<span class="description float"><?php printf( __( 'Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
+	<textarea name="_guard_custom_message" id="_guard_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_custom_message' ) ); ?></textarea>
+	<label for="_guard_custom_message"><?php printf( __( 'Serve site guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect my site</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></label>
 
 	<?php
 }
@@ -313,7 +313,7 @@ function guard_network_additional_settings_info() { ?>
 function guard_network_setting_network_only() { ?>
 
 	<input type="checkbox" id="_guard_network_only" name="_guard_network_only" value="1" <?php checked( guard_is_network_only() ); ?>/>
-	<label for="_guard_network_only"><span class="description"><?php _e( 'Disable this plugin for individual sites.', 'guard' ); ?></span></label>
+	<label for="_guard_network_only"><?php _e( 'Disable this plugin for individual sites', 'guard' ); ?></label>
 
 	<?php
 }
@@ -328,7 +328,7 @@ function guard_network_setting_network_only() { ?>
 function guard_network_setting_network_protect() { ?>
 
 	<input type="checkbox" id="_guard_network_protect" name="_guard_network_protect" value="1" <?php checked( guard_is_network_protected() ); ?>/>
-	<label for="_guard_network_protect"><span class="description"><?php _e( 'Enable network protection.', 'guard' ); ?></span></label>
+	<label for="_guard_network_protect"><?php _e( 'Enable network protection', 'guard' ); ?></label>
 
 	<?php
 }
@@ -343,7 +343,7 @@ function guard_network_setting_network_protect() { ?>
 function guard_network_setting_network_redirect() { ?>
 
 	<input type="checkbox" id="_guard_network_redirect" name="_guard_network_redirect" value="1" <?php checked( guard_network_redirect() ); ?>/>
-	<label for="_guard_network_redirect"><span class="description"><?php _e( 'Try to redirect users from protected sites to an allowed site or the network home when available.', 'guard' ); ?></span></label>
+	<label for="_guard_network_redirect"><?php _e( 'Try to redirect users from protected sites to an allowed site or the network home when available', 'guard' ); ?></label>
 
 	<?php
 }
@@ -358,7 +358,7 @@ function guard_network_setting_network_redirect() { ?>
 function guard_network_setting_hide_my_sites() { ?>
 
 	<input type="checkbox" id="_guard_network_hide_my_sites" name="_guard_network_hide_my_sites" value="1" <?php checked( get_site_option( '_guard_network_hide_my_sites' ) ); ?>/>
-	<label for="_guard_network_hide_my_sites"><span class="description"><?php printf( __( 'Hide the %s links and page when a user has access to only one site.', 'guard' ), '"' . __( 'My Sites' ) . '"' ); ?></span></label>
+	<label for="_guard_network_hide_my_sites"><?php printf( __( 'Hide the %s links and page when a user has access to only one site', 'guard' ), '"' . __( 'My Sites' ) . '"' ); ?></label>
 
 	<?php
 }
@@ -383,7 +383,7 @@ function guard_network_setting_allowed_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<span class="description float"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></span>
+	<label for="_guard_network_allowed_users"><?php _e( 'Select which network users you want to have access.', 'guard' ); ?></label>
 
 	<?php
 }
@@ -397,8 +397,8 @@ function guard_network_setting_allowed_users() {
  */
 function guard_network_setting_custom_message() { ?>
 
-	<textarea name="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
-	<span class="description float"><?php printf( __( 'Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></span>
+	<textarea name="_guard_network_custom_message" id="_guard_network_custom_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_custom_message' ) ); ?></textarea>
+	<label for="_guard_network_custom_message"><?php printf( __( 'Serve network guests a nice heads up on the login page. Leave empty if not applicable. This message will only be shown if <strong>Protect this network</strong> is activated.<br/>Allowed HTML tags %s, %s and %s.', 'guard' ), '&#60;a&#62;', '&#60;em&#62;', '&#60;strong&#62;' ); ?></label>
 
 	<?php
 }

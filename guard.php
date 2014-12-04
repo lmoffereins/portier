@@ -354,20 +354,13 @@ final class Guard {
 		</script>
 
 		<style type="text/css">
-			.chzn-select,
-			.chzn-container,
-			textarea {
-				float: left;
-			}
-
 			.chzn-container-multi .chzn-choices .search-field input {
-				height: 25px;
-				padding: 3px;
+				height: 25px !important;
 			}
 
-			span.float {
-				padding: 4px 6px;
-				float: left;
+			.form-table div + label,
+			.form-table textarea + label {
+				display: block;
 			}
 		</style>
 
