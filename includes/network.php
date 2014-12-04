@@ -40,22 +40,23 @@ final class Guard_Network {
 		$guard = guard();
 
 		// Plugin
-		add_action( 'plugins_loaded',        array( $this, 'network_only'      ), 20    );
+		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
 
 		// Protection
-		add_action( 'template_redirect',     array( $this, 'network_protect'   ), 0     );
-		add_filter( 'login_message',         array( $this, 'login_message'     ), 0     );
-		add_action( 'guard_site_protect',    array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',        array( $this, 'filter_admin_bar'  ), 99    );
-		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',     array( $this, 'filter_user_sites' ), 10, 3 );
-		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',  array( $this, 'network_protect'   ), 0     );
+		add_filter( 'login_message',      array( $this, 'login_message'     ), 0     );
+		add_action( 'guard_site_protect', array( $this, 'network_redirect'  )        );
+		add_action( 'admin_bar_menu',     array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_menu',         array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',  array( $this, 'filter_user_sites' ), 10, 3 );
+		add_filter( 'user_has_cap',       array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
 		add_action( 'admin_init',               array( $this,  'register_settings' ) );
 		add_action( 'network_admin_menu',       array( $this,  'admin_menu'        ) );
 		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
 		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
+		add_filter( 'guard_network_admin_tabs', array( $this,  'filter_admin_tabs' ) );
 	}
 
 	/** Plugin *******************************************************/
@@ -262,6 +263,9 @@ final class Guard_Network {
 	/**
 	 * Modify the user capabilities by filtering 'user_has_cap'
 	 *
+	 * Doing so is the only easy way to prevent a user from entering
+	 * the My Sites admin page.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @uses is_admin()
@@ -349,7 +353,6 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @uses screen_icon() To output the screen icon
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
@@ -358,39 +361,77 @@ final class Guard_Network {
 	 */
 	public function admin_page() {
 
-		// Fetch tab
-		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'main'; ?>
+		// Get the admin tab(s)
+		$tabs     = apply_filters( 'guard_network_admin_tabs', array( 'main' => __( 'Main', 'guard' ), 'sites' => __( 'Sites', 'guard' ) ) );
+		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 			<div class="wrap">
-				<?php screen_icon( 'options-general' ); ?>
-				<h2><?php _e( 'Guard Network Settings', 'guard' ); ?></h2>
+				<h2 class="nav-tab-wrapper">
+					<?php _e( 'Guard Network Settings', 'guard' ); ?>
+					<?php foreach ( $tabs as $tab => $label ) :
+						printf( '<a class="nav-tab%s" href="%s">%s</a>',
+							( $tab == $page_tab ) ? ' nav-tab-active' : '', 
+							add_query_arg( array( 'page' => 'guard_network', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
+							$label
+						);
+					endforeach; ?>
+				</h2>
 
-				<?php switch ( $tab ) :
+				<?php switch ( $page_tab ) :
 
 					// Main settings page
 					case 'main' : ?>
 
-				<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
-					<?php settings_fields( 'guard_network' ); ?>
-					<?php do_settings_sections( 'guard_network' ); ?>
-					<?php submit_button(); ?>
-				</form>
+					<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
+						<?php settings_fields( 'guard_network' ); ?>
+						<?php do_settings_sections( 'guard_network' ); ?>
+						<?php submit_button(); ?>
+					</form>
 
-					<?php break;
+					<?php 
+						break;
 
 					// Sites settings page
-					case 'sites' :
-						$this->network_page_sites();
+					case 'sites' : 
+
+						// Guard supports sub sites
+						if ( ! guard_is_network_only() ) {
+							$this->admin_page_sites();
+
+						// Guard is only active for the network
+						} else { ?>
+
+					<p class="notice notice-error"><?php _e( 'Guard is only active for the network. There are no sites settings here.', 'guard' ); ?></p>
+
+					<?php }
 						break;
 
 					// Hookable settings page
 					default :
-						do_action( 'guard_network_page', $tab );
+						do_action( 'guard_network_page', $page_tab );
 						break;
 
 				endswitch; ?>
 			</div>
 		<?php
+	}
+
+	/**
+	 * Filter the plugin's admin page tabs
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param array $tabs Admin tabs
+	 * @return array Admin tabs
+	 */
+	public function filter_admin_tabs( $tabs ) {
+
+		// Remove Sites tab when Guard is only active for the network
+		if ( guard_is_network_only() ) {
+			unset( $tabs['sites'] );
+		}
+
+		return $tabs;
 	}
 
 	/**
@@ -574,7 +615,7 @@ final class Guard_Network {
 	 * @todo Require distinct field ids and input names per blog
 	 * @todo Enable blog list paging like '&paged=2'
 	 */
-	public function network_page_sites() {
+	public function admin_page_sites() {
 
 		// Fetch all sites
 		$sites = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
