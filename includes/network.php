@@ -586,16 +586,10 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
-	 * @global string $hook_suffix
-	 * @return boolean This is the network page
+	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
-		global $hook_suffix;
-
-		if ( isset( $hook_suffix ) && 'settings_page_guard_network' == $hook_suffix )
-			return true;
-
-		return false;
+		return ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard_network' == $GLOBALS['hook_suffix'] );
 	}
 
 	/** Network Manage Sites ***************************************/
