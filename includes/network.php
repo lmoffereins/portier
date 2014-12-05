@@ -599,35 +599,42 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses get_blog_list() To get all the sites details. Deprecated.
-	 * @uses settings_fields()
+	 * @uses wp_get_sites()
 	 * @uses switch_to_blog()
-	 * @uses do_settings_section()
+	 * @uses get_option()
+	 * @uses add_query_arg()
 	 * @uses restore_current_blog()
+	 * @uses wp_nonce_field()
 	 * @uses submit_button()
-	 *
-	 * @todo Require distinct field ids and input names per blog
-	 * @todo Enable blog list paging like '&paged=2'
 	 */
 	public function admin_page_sites() {
 
-		// Fetch all sites
-		$sites = get_blog_list( 0, 'all' ); // Deprecated, but no alternative available
-		usort( $sites, 'guard_network_blog_order' ); ?>
+		// Get all sites of this network
+		$sites = wp_get_sites();
 
-			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
-				<?php settings_fields( 'guard_network_sites' ); ?>
+		// Order by blog ID
+		usort( $sites, array( $this, 'network_blog_order' ) ); ?>
 
-				<?php // Walk all sites ?>
-				<?php foreach ( $sites as $details ) : switch_to_blog( $details['blog_id'] ); ?>
+		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
+			<h3><?php _e( 'Manage Site Protection', 'guard' ); ?></h3>
+			<table class="form-table">
+				<?php foreach ( $sites as $details ) : 
+					$blog_id = (int) $details['blog_id']; 
+					switch_to_blog( $blog_id ); ?>
 
-					<h2><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), esc_url( 'http://' . $details['domain'] . $details['path'] ), $details['domain'] . $details['path'] ); ?></h2>
-					<?php do_settings_sections( 'guard' ); ?>
-					<hr />
+				<tr>
+					<td>
+						<input type="checkbox" id="guard_network_sites_enabled_<?php echo $blog_id; ?>" name="guard_network_sites_enabled[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
+						<label for="guard_network_sites_enabled_<?php echo $blog_id; ?>"><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $details['domain'] . $details['path'] ); ?></label>
+					</td>
+				</tr>
 
 				<?php restore_current_blog(); endforeach; ?>
-				<?php submit_button(); ?>
-			</form>
+			</table>
+
+			<?php wp_nonce_field( 'guard_network_sites' ); ?>
+			<?php submit_button(); ?>
+		</form>
 
 		<?php
 	}
