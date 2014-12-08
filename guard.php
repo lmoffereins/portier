@@ -13,7 +13,7 @@
  * Plugin URI:        https://github.com/lmoffereins/guard
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
- * Version:           0.2
+ * Version:           1.0.0
  * Text Domain:       guard
  * Domain Path:       /languages/
  * GitHub Plugin URI: lmoffereins/guard
@@ -81,7 +81,7 @@ final class Guard {
 
 		/** Versions **********************************************************/
 
-		$this->version = '0.2';
+		$this->version = '1.0.0';
 
 		/** Paths *************************************************************/
 
@@ -154,7 +154,7 @@ final class Guard {
 	/**
 	 * Loads the textdomain file for this plugin
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
 	 * @uses load_textdomain() To load the textdomain
@@ -205,7 +205,7 @@ final class Guard {
 	/**
 	 * Redirect users on accessing a page of your site
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses is_user_logged_in() To check if the user is logged in
 	 * @uses guard_is_user_allowed() To check if the user is allowed
@@ -232,7 +232,7 @@ final class Guard {
 	/**
 	 * Append our custom login message to the login messages
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @param string $message The current login messages
 	 * @return string $message
@@ -257,7 +257,7 @@ final class Guard {
 	/**
 	 * Create the plugin admin page menu item
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses add_options_page() To add the menu to the options menu
 	 * @uses add_action() To enable functions hooking into admin page
@@ -281,7 +281,7 @@ final class Guard {
 	/**
 	 * Enqueue script and style in plugin admin page head
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 */
 	public function admin_head() {
 		do_action( 'guard_admin_head' );
@@ -290,7 +290,7 @@ final class Guard {
 	/**
 	 * Output plugin admin page footer contents
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 */
 	public function admin_footer() { 
 		do_action( 'guard_admin_footer' );
@@ -299,7 +299,7 @@ final class Guard {
 	/**
 	 * Output plugin admin page contents
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
@@ -370,7 +370,7 @@ final class Guard {
 	/**
 	 * Setup the plugin settings
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses add_settings_section() To create the settings sections
 	 * @uses guard_settings()
@@ -397,7 +397,7 @@ final class Guard {
 	/**
 	 * Add a settings link to the plugin actions on plugin.php
 	 *
-	 * @since 0.1
+	 * @since 1.0.0
 	 *
 	 * @uses add_query_arg() To create the url to the settings page
 	 *

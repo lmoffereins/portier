@@ -115,7 +115,7 @@ function guard_is_network_protected() {
 /**
  * Returns whether the given user is allowed access for the network
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_current_user_id()
  * @uses is_super_admin() To check if the current user is a super admin
@@ -178,7 +178,7 @@ function guard_is_network_only() {
 /**
  * Return array of all network users
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_current_user_id()
  * @uses get_blogs_of_user()
@@ -211,7 +211,7 @@ function guard_get_network_users() {
 /**
  * Return whether to hide "My Sites" for the current user
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_current_user_id()
  * @uses get_blogs_of_user()

@@ -57,21 +57,21 @@ function guard_settings() {
 /**
  * Output access settings section information header
  *
- * @since 0.1
+ * @since 1.0.0
  */
 function guard_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output additional settings section information header
  *
- * @since 0.1
+ * @since 1.0.0
  */
 function guard_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the enable site protection input field
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @uses guard_is_site_protected()
  */
@@ -86,7 +86,7 @@ function guard_setting_protect_site() { ?>
 /**
  * Output the allowed users input field
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @uses get_option()
  * @uses get_users() To get all users of the site
@@ -111,7 +111,7 @@ function guard_setting_allow_users() {
 /**
  * Output the custom message input field
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @uses esc_textarea()
  * @uses get_option()
@@ -148,7 +148,7 @@ function guard_setting_sanitize_ids( $input ) {
 /**
  * Sanitize the custom message input field
  *
- * @since 0.1
+ * @since 1.0.0
  *
  * @uses wp_unslash()
  * @uses wp_kses() To filter out all non allowed HTML tags
@@ -248,21 +248,21 @@ function guard_network_main_settings_info() { /* Nothing to show */ }
 /**
  * Output network access settings section information header
  *
- * @since 0.2
+ * @since 1.0.0
  */
 function guard_network_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output network additional settings section information header
  *
- * @since 0.2
+ * @since 1.0.0
  */
 function guard_network_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the network only input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses guard_is_network_only()
  */
@@ -277,7 +277,7 @@ function guard_network_setting_network_only() { ?>
 /**
  * Output the enable network protection input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses guard_is_network_protected()
  */
@@ -292,7 +292,7 @@ function guard_network_setting_network_protect() { ?>
 /**
  * Output the redirect to main site input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses guard_network_redirect()
  */
@@ -307,7 +307,7 @@ function guard_network_setting_network_redirect() { ?>
 /**
  * Output the hide my sites input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_site_option() To get the field's value
  */
@@ -322,7 +322,7 @@ function guard_network_setting_hide_my_sites() { ?>
 /**
  * Output the allowed network users input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_site_option() To get the field's value
  * @uses guard_get_network_users() To get all users of the network
@@ -347,7 +347,7 @@ function guard_network_setting_allowed_users() {
 /**
  * Output the custom network message input field
  *
- * @since 0.2
+ * @since 1.0.0
  *
  * @uses get_site_option() To get the field's value
  */

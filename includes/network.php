@@ -67,7 +67,7 @@ final class Guard_Network {
 	/**
 	 * Ensure Guard is only used for the network
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_only()
 	 * @uses remove_action()
@@ -96,7 +96,7 @@ final class Guard_Network {
 	/**
 	 * Redirect user when network is protected
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_protected()
 	 * @uses is_user_logged_in() To check if the user is logged in
@@ -141,7 +141,7 @@ final class Guard_Network {
 	/**
 	 * Try to rediect the unauthorized user to an allowed site instead of the login page
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_network_redirect()
 	 * @uses get_current_user_id()
@@ -193,7 +193,7 @@ final class Guard_Network {
 	 *
 	 * The used functions do their own blog switching.
 	 * 
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_only()
 	 * @uses guard_is_site_protected()
@@ -228,7 +228,7 @@ final class Guard_Network {
 	/**
 	 * Modify the admin bar for protected sites
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_network_hide_my_sites()
 	 * @uses WP_Admin_Bar::remove_menu()
@@ -248,7 +248,7 @@ final class Guard_Network {
 	/**
 	 * Modify the admin menu for protected sites
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses guard_network_hide_my_sites()
 	 * @uses remove_submenu_page()
@@ -307,7 +307,7 @@ final class Guard_Network {
 	/**
 	 * Create the plugin network admin page menu item
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses add_submenu_page() To add the menu to the options pane
 	 * @uses add_action() To enable functions hooking into admin page
@@ -354,7 +354,7 @@ final class Guard_Network {
 	/**
 	 * Output plugin network admin page contents
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'guard_network_admin_tabs'
 	 * @uses add_query_arg()
@@ -412,7 +412,7 @@ final class Guard_Network {
 	/**
 	 * Setup the plugin network settings
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses add_settings_section() To create the settings sections
 	 * @uses add_settings_field() To create a setting with it's field
@@ -535,7 +535,7 @@ final class Guard_Network {
 	/**
 	 * Output network settings update message
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @uses Guard_Network::is_network_page()
 	 * @uses apply_filters() Calls 'guard_network_admin_notice'
@@ -562,7 +562,7 @@ final class Guard_Network {
 	/**
 	 * Return whether we are on the plugin network settings page
 	 *
-	 * @since 0.2
+	 * @since 1.0.0
 	 *
 	 * @global string $hook_suffix
 	 * @return bool This is the network page
