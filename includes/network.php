@@ -57,6 +57,9 @@ final class Guard_Network {
 		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
 		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
 		add_action( 'guard_network_page_sites', array( $this,  'admin_page_sites'  ) );
+
+		// Plugin links
+		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 	}
 
 	/** Plugin *******************************************************/
@@ -566,6 +569,27 @@ final class Guard_Network {
 	 */
 	public function is_network_page() {
 		return ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard_network' == $GLOBALS['hook_suffix'] );
+	}
+
+	/**
+	 * Add a settings link to the plugin actions on plugin.php
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses add_query_arg() To create the url to the settings page
+	 *
+	 * @param array $links The current plugin action links
+	 * @param string $file The current plugin file
+	 * @return array $links All current plugin action links
+	 */
+	public function settings_link( $links, $file ) {
+
+		// Add settings link for our plugin
+		if ( $file == guard()->basename ) {
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard_network', 'settings.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
+		}
+
+		return $links;
 	}
 
 	/** Network Manage Sites ***************************************/
