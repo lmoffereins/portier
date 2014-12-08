@@ -630,7 +630,7 @@ final class Guard_Network {
 				<tr>
 					<td>
 						<input type="checkbox" id="_guard_site_protect_<?php echo $blog_id; ?>" name="_guard_site_protect[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
-						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $details['domain'] . $details['path'] ); ?></label>
+						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( _x( '%1$s at %2$s', 'Site at url', 'guard' ), get_option( 'blogname' ), sprintf( '<a href="%s">%s</a>', add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $details['domain'] . $details['path'] ) ); ?></label>
 					</td>
 				</tr>
 
