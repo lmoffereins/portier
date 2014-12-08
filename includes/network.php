@@ -561,6 +561,7 @@ final class Guard_Network {
 	 * @since 0.2
 	 *
 	 * @uses Guard_Network::is_network_page()
+	 * @uses apply_filters() Calls 'guard_network_admin_notice'
 	 */
 	public function admin_notices() {
 
@@ -586,6 +587,7 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
+	 * @global string $hook_suffix
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
@@ -607,14 +609,19 @@ final class Guard_Network {
 	 * @uses wp_nonce_field()
 	 * @uses submit_button()
 	 */
-	public function admin_page_sites() { ?>
+	public function admin_page_sites() { 
+
+		// Get all sites of this network
+		$sites = wp_get_sites(); ?>
 
 		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
+			<input type="hidden" name="guard_network_sites" value="<?php echo implode( ',', wp_list_pluck( $sites, 'blog_id' ) ); ?>" />
+
 			<h3><?php _e( 'Manage Site Protection', 'guard' ); ?></h3>
 			<table class="form-table">
 
 				<?php // Walk all sites of this network ?>
-				<?php foreach ( wp_get_sites() as $details ) : 
+				<?php foreach ( $sites as $details ) : 
 					$blog_id = (int) $details['blog_id']; 
 					switch_to_blog( $blog_id ); ?>
 
@@ -645,7 +652,7 @@ final class Guard_Network {
 	public function update_sites_settings() {
 
 		// Bail when not verified
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites-options' ) )
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites' ) )
 			return;
 
 		var_dump( $_POST );
