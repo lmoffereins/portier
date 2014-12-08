@@ -56,7 +56,7 @@ final class Guard_Network {
 		add_action( 'network_admin_menu',       array( $this,  'admin_menu'        ) );
 		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
 		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
-		add_filter( 'guard_network_admin_tabs', array( $this,  'filter_admin_tabs' ) );
+		add_action( 'guard_network_page_sites', array( $this,  'admin_page_sites'  ) );
 	}
 
 	/** Plugin *******************************************************/
@@ -353,16 +353,21 @@ final class Guard_Network {
 	 *
 	 * @since 0.2
 	 *
+	 * @uses apply_filters() Calls 'guard_network_admin_tabs'
+	 * @uses add_query_arg()
+	 * @uses network_admin_url()
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
-	 * @uses Guard_Network::network_page_sites()
-	 * @uses do_action() Calls 'guard_network_page' with the tab
+	 * @uses do_action() Calls 'guard_network_page_{$page_tab}'
 	 */
 	public function admin_page() {
 
-		// Get the admin tab(s)
-		$tabs     = apply_filters( 'guard_network_admin_tabs', array( 'main' => __( 'Main', 'guard' ), 'sites' => __( 'Sites', 'guard' ) ) );
+		// Get the admin tabs
+		$tabs = apply_filters( 'guard_network_admin_tabs', array( 'main' => __( 'Main', 'guard' ), 'sites' => __( 'Sites', 'guard' ) ) );
+		// Remove Sites tab when Guard is only active for the network
+		if ( guard_is_network_only() )
+			unset( $tabs['sites'] );
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 			<div class="wrap">
@@ -391,47 +396,14 @@ final class Guard_Network {
 					<?php 
 						break;
 
-					// Sites settings page
-					case 'sites' : 
-
-						// Guard supports sub sites
-						if ( ! guard_is_network_only() ) {
-							$this->admin_page_sites();
-
-						// Guard is only active for the network
-						} else { ?>
-
-					<p class="notice notice-error"><?php _e( 'Guard is only active for the network. There are no sites settings here.', 'guard' ); ?></p>
-
-					<?php }
-						break;
-
-					// Hookable settings page
+					// Custom settings page
 					default :
-						do_action( 'guard_network_page', $page_tab );
+						do_action( "guard_network_page_{$page_tab}" );
 						break;
 
 				endswitch; ?>
 			</div>
 		<?php
-	}
-
-	/**
-	 * Filter the plugin's admin page tabs
-	 *
-	 * @since 1.0.0
-	 * 
-	 * @param array $tabs Admin tabs
-	 * @return array Admin tabs
-	 */
-	public function filter_admin_tabs( $tabs ) {
-
-		// Remove Sites tab when Guard is only active for the network
-		if ( guard_is_network_only() ) {
-			unset( $tabs['sites'] );
-		}
-
-		return $tabs;
 	}
 
 	/**
@@ -603,6 +575,7 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses guard_is_network_only()
 	 * @uses wp_get_sites()
 	 * @uses switch_to_blog()
 	 * @uses get_option()
@@ -611,7 +584,13 @@ final class Guard_Network {
 	 * @uses wp_nonce_field()
 	 * @uses submit_button()
 	 */
-	public function admin_page_sites() { 
+	public function admin_page_sites() {
+
+		// Bail when Guard is only active for the network
+		if ( guard_is_network_only() ) {
+			echo '<div class="notice notice-error"><p>' . __( 'Guard is only active for the network. There are no site settings here.', 'guard' ) . '</p></div>';
+			return;
+		}
 
 		// Get all sites of this network
 		$sites = wp_get_sites(); ?>
