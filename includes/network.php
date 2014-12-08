@@ -468,7 +468,7 @@ final class Guard_Network {
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
 		add_action( 'network_admin_edit_guard_network',       array( $this, 'handle_network_settings' ) );
-		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'update_sites_settings'   ) );
+		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'handle_sites_settings'   ) );
 	}
 
 	/**
@@ -534,6 +534,8 @@ final class Guard_Network {
 							$value = trim( $value );
 						$value = wp_unslash( $value );
 					}
+
+					// Update the network option
 					update_site_option( $option, $value );
 				}
 			}
@@ -542,14 +544,14 @@ final class Guard_Network {
 			 * Handle settings errors and return to options page
 			 */
 			// If no settings errors were registered add a general 'updated' message.
-			if ( !count( get_settings_errors() ) )
-				add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
-			set_transient('settings_errors', get_settings_errors(), 30);
+			if ( ! count( get_settings_errors() ) )
+				add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
+			set_transient( 'settings_errors', get_settings_errors(), 30 );
 
 			/**
 			 * Redirect back to the settings page that was submitted
 			 */
-			$goback = add_query_arg( 'settings-updated', 'true',  wp_get_referer() );
+			$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
 			wp_redirect( $goback );
 			exit;
 		}
@@ -627,8 +629,8 @@ final class Guard_Network {
 
 				<tr>
 					<td>
-						<input type="checkbox" id="guard_network_sites_enabled_<?php echo $blog_id; ?>" name="guard_network_sites_enabled[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
-						<label for="guard_network_sites_enabled_<?php echo $blog_id; ?>"><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $details['domain'] . $details['path'] ); ?></label>
+						<input type="checkbox" id="_guard_site_protect_<?php echo $blog_id; ?>" name="_guard_site_protect[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
+						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( __( '%1$s at <a href="%2$s">%3$s</a>', 'guard' ), get_option( 'blogname' ), add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $details['domain'] . $details['path'] ); ?></label>
 					</td>
 				</tr>
 
@@ -647,31 +649,75 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses wp_verify_nonce()
+	 * @uses is_multisite()
+	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
+	 * @uses current_user_can()
+	 * @uses is_super_admin()
+	 * @uses check_admin_referer()
+	 * @uses wp_parse_id_list()
+	 * @uses wp_die()
+	 * @uses switch_to_blog()
+	 * @uses update_option()
+	 * @uses restore_current_blog()
+	 * @uses get_settings_errors()
+	 * @uses add_settings_error()
+	 * @uses set_transient()
+	 * @uses add_query_arg()
+	 * @uses wp_get_referer()
+	 * @uses wp_redirect()
 	 */
-	public function update_sites_settings() {
+	public function handle_sites_settings() {
 
-		// Bail when not verified
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'guard_network_sites' ) )
+		// Define local variable(s)
+		$option_page = 'guard_network_sites';
+
+		// Bail when not using within multisite
+		if ( ! is_multisite() )
 			return;
 
-		var_dump( $_POST );
-		exit;
+		/* This filter is documented in wp-admin/options.php */
+		$capability = apply_filters( "option_page_capability_{$option_page}", 'manage_options' );
 
-		// Loop all network settings to update
-		foreach ( $sites_settings as $blog_id => $settings ) {
-			// if ( ! isset( $_POST[$option] ) )
-				// $_POST[$option] = apply_filters( 'guard_network_settings_default', 0, $option );
+		// Bail when current user is not allowed
+		if ( ! current_user_can( $capability ) || ( is_multisite() && ! is_super_admin() ) )
+			wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
 
-			// $value = call_user_func_array( $args['sanitize_callback'], array( $_POST[$option] ) );
+		// Check admin referer
+		check_admin_referer( $option_page );
 
-			// Don't catch retval since both non-updates and errors return false
-			// update_site_option( $option, $value );
+		// Get site ids to walk
+		$sites = isset( $_POST[ $option_page ] ) ? wp_parse_id_list( $_POST[ $option_page ] ) : array();
+
+		// Bail when site ids are not provided
+		if ( empty( $sites ) )
+			wp_die( __( '<strong>ERROR</strong>: site ids not found.', 'guard' ) );
+
+		// Walk sites
+		foreach ( $sites as $site_id ) {
+
+			// Switch to site
+			switch_to_blog( $site_id );
+
+			// Update settings
+			update_option( '_guard_site_protect', in_array( $site_id, array_keys( $_POST['_guard_site_protect'] ) ) );
+
+			// Switch back
+			restore_current_blog();
 		}
 
-		// Build redirect url string
-		$args = array( 'page' => 'guard_network', 'tab' => 'sites', 'settings-updated' => 'true' ); // Allways true?
-		wp_redirect( add_query_arg( $args, network_admin_url( 'settings.php' ) ) );
+		/**
+		 * Handle settings errors and return to options page
+		 */
+		// If no settings errors were registered add a general 'updated' message.
+		if ( ! count( get_settings_errors() ) )
+			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'updated' );
+		set_transient( 'settings_errors', get_settings_errors(), 30 );
+
+		/**
+		 * Redirect back to the settings page that was submitted
+		 */
+		$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
+		wp_redirect( $goback );
 		exit;
 	}
 }
