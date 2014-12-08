@@ -47,6 +47,9 @@ class Guard_BuddyPress {
 			// Filter user access
 			add_filter( 'guard_is_user_allowed',         array( $this, 'is_user_allowed' ), 10, 3 );
 			add_filter( 'guard_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
+
+			// Admin
+			add_filter( 'guard_network_sites_protect_details', array( $this, 'protect_details' ) );
 		}
 	}
 
@@ -202,6 +205,30 @@ class Guard_BuddyPress {
 		}
 
 		return $allowed;
+	}
+
+	/** Network Manage Sites ***************************************/
+
+	/**
+	 * Modify the network sites protect details
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param string $title Site protect details
+	 * @return string Site protect details
+	 */
+	public function protect_details( $title ) {
+
+		// Append a dividing sign
+		if ( ! empty( $title ) ) {
+			$title .= '; ';
+		}
+
+		// Get allowed group count
+		$allowed_group_count = count( $this->get_allowed_groups() );
+		$title .= sprintf( _n( '%d allowed group', '%d allowed groups', $allowed_group_count, 'guard' ), $allowed_group_count );
+
+		return $title;
 	}
 }
 
