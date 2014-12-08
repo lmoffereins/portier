@@ -299,7 +299,7 @@ function guard_network_setting_network_protect() { ?>
 function guard_network_setting_network_redirect() { ?>
 
 	<input type="checkbox" id="_guard_network_redirect" name="_guard_network_redirect" value="1" <?php checked( guard_network_redirect() ); ?>/>
-	<label for="_guard_network_redirect"><?php _e( 'Try to redirect users from protected sites to an allowed site or the network home when available', 'guard' ); ?></label>
+	<label for="_guard_network_redirect"><?php _e( 'Instead of just logging the user out, try to redirect the user from protected sites to an allowed site or the network home, when available', 'guard' ); ?></label>
 
 	<?php
 }
