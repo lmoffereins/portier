@@ -607,18 +607,14 @@ final class Guard_Network {
 	 * @uses wp_nonce_field()
 	 * @uses submit_button()
 	 */
-	public function admin_page_sites() {
-
-		// Get all sites of this network
-		$sites = wp_get_sites();
-
-		// Order by blog ID
-		usort( $sites, array( $this, 'network_blog_order' ) ); ?>
+	public function admin_page_sites() { ?>
 
 		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
 			<h3><?php _e( 'Manage Site Protection', 'guard' ); ?></h3>
 			<table class="form-table">
-				<?php foreach ( $sites as $details ) : 
+
+				<?php // Walk all sites of this network ?>
+				<?php foreach ( wp_get_sites() as $details ) : 
 					$blog_id = (int) $details['blog_id']; 
 					switch_to_blog( $blog_id ); ?>
 
@@ -637,19 +633,6 @@ final class Guard_Network {
 		</form>
 
 		<?php
-	}
-
-	/**
-	 * Compare sites to order an array by blog_id
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $a Blog to compare
-	 * @param array $b Blog to compare
-	 * @return int Move position
-	 */
-	public function network_blog_order( $a, $b ) {
-		return $a['blog_id'] > $b['blog_id'];
 	}
 
 	/**
