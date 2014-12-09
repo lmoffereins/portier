@@ -24,7 +24,17 @@ class Guard_BuddyPress {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+		$this->setup_globals();
 		$this->setup_actions();
+	}
+
+	/**
+	 * Define default class globals
+	 *
+	 * @since 1.0.0
+	 */
+	public function setup_globals() {
+		$this->bp_group_hierarchy = defined( 'BP_GROUP_HIERARCHY_VERSION' );
 	}
 
 	/**
@@ -73,7 +83,7 @@ class Guard_BuddyPress {
 		if ( bp_is_active( 'groups' ) ) {
 
 			// Allowed groups
-				$settings['_guard_bp_allowed_groups'] = array(
+			$settings['_guard_bp_allowed_groups'] = array(
 				'label'             => __( 'Allowed groups', 'guard' ),
 				'callback'          => array( $this, 'setting_allowed_groups' ),
 				'section'           => 'guard-options-access',
@@ -184,16 +194,34 @@ class Guard_BuddyPress {
 		if ( ! $allowed ) {
 
 			// Get the allowed groups
-			$getter = current_filter() == 'guard_network_is_user_allowed' ? 'get_network_allowed_groups' : 'get_allowed_groups';
-			$allowed_groups = call_user_func_array( array( $this, $getter ), array( $site_id ) );
+			$getter    = current_filter() == 'guard_network_is_user_allowed' ? 'get_network_allowed_groups' : 'get_allowed_groups';
+			$group_ids = call_user_func_array( array( $this, $getter ), array( $site_id ) );
 
 			// Only check for selected groups
-			if ( ! empty( $allowed_groups ) ) {
+			if ( ! empty( $group_ids ) ) {
+
+				// Account for group hierarchy
+				if ( $this->bp_group_hierarchy ) {
+
+					// Walk hierarchy
+					$hierarchy = new ArrayIterator( $group_ids );
+					foreach ( $hierarchy as $gid ) {
+
+						// Add child group ids when found
+						if ( $children = BP_Groups_Hierarchy::has_children( $gid ) ) {
+							foreach ( $children as $child_id )
+								$hierarchy->append( (int) $child_id );
+						}
+					}
+
+					// Set hierarchy group id collection
+					$group_ids = $hierarchy->getArrayCopy();
+				}
 
 				// Find any group memberships
 				$groups = groups_get_groups( array(
 					'user_id'         => $user_id,
-					'include'         => $allowed_groups,
+					'include'         => $group_ids,
 					'show_hidden'     => true,
 					'per_page'        => false,
 					'populate_extras' => false,
