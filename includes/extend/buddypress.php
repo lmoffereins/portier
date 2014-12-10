@@ -59,7 +59,7 @@ class Guard_BuddyPress {
 			add_filter( 'guard_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
 
 			// Admin
-			add_filter( 'guard_network_sites_protect_details', array( $this, 'protect_details' ) );
+			add_filter( 'guard_get_protection_details', array( $this, 'protection_details' ) );
 		}
 	}
 
@@ -235,17 +235,15 @@ class Guard_BuddyPress {
 		return $allowed;
 	}
 
-	/** Network Manage Sites ***************************************/
-
 	/**
-	 * Modify the network sites protect details
+	 * Modify the site's protection details
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @param string $title Site protect details
-	 * @return string Site protect details
+	 * @param string $title Site protection details
+	 * @return string Site protection details
 	 */
-	public function protect_details( $title ) {
+	public function protection_details( $title ) {
 
 		// Append a dividing sign
 		if ( ! empty( $title ) ) {

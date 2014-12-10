@@ -9,7 +9,7 @@
 
 /**
  * Plugin Name:       Guard
- * Description:       Prevent people from visiting your (multi)site
+ * Description:       Restrict access to your (multi)site
  * Plugin URI:        https://github.com/lmoffereins/guard
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
@@ -131,8 +131,9 @@ final class Guard {
 		add_action( 'plugins_loaded', array( $this, 'load_for_network' ) );
 
 		// Protection
-		add_action( 'template_redirect', array( $this, 'site_protect'  ), 1 );
-		add_filter( 'login_message',     array( $this, 'login_message' ), 1 );
+		add_action( 'template_redirect', array( $this, 'site_protect'   ), 1 );
+		add_filter( 'login_message',     array( $this, 'login_message'  ), 1 );
+		add_action( 'admin_bar_menu',    array( $this, 'admin_bar_menu' )    );
 
 		// Admin
 		add_action( 'admin_init',       array( $this, 'register_settings' ) );
@@ -250,6 +251,85 @@ final class Guard {
 		}
 
 		return $message;
+	}
+
+	/**
+	 * Add the plugin's admin bar menu item
+	 * 
+	 * @since 1.0.0
+	 *
+	 * @uses current_user_can()
+	 * @uses guard_is_site_protected()
+	 * @uses guard_get_protection_details()
+	 * 
+	 * @param WP_Admin_Bar $wp_admin_bar
+	 */
+	public function admin_bar_menu( $wp_admin_bar ) {
+
+		// Not in the network admin and when the user is capable
+		if ( ! is_network_admin() && current_user_can( 'manage_options' ) ) {
+
+			// When protection is active
+			$active = guard_is_site_protected();
+			$title1 = $active ? __( 'Site protection is active', 'guard' ) : __( 'Site protection is not active', 'guard' );
+			$title2 = $active ? guard_get_protection_details() : $title1;
+			$class  = $active ? 'active' : '';
+
+			// Add site-is-protected menu notification
+			$wp_admin_bar->add_menu( array(
+				'id'        => 'guard',
+				'parent'    => 'top-secondary',
+				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $title1 . '</span>',
+				'href'      => add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ),
+				'meta'      => array(
+					'class'     => $class,
+					'title'     => $title2,
+				),
+			) );
+
+			// Hook admin bar styles. After footer scripts
+			add_action( 'wp_footer',    array( $this, 'print_scripts' ), 21 );
+			add_action( 'admin_footer', array( $this, 'print_scripts' ), 21 );
+		}
+	}
+
+	/**
+	 * Output custom scripts
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses is_admin_bar_showing()
+	 */
+	public function print_scripts() {
+
+		// For the admin bar
+		if ( is_admin_bar_showing() ) { ?>
+
+			<style type="text/css">
+				#wpadminbar #wp-admin-bar-guard > .ab-item {
+					padding: 0 9px 0 7px;
+				}
+
+				#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon {
+					width: 18px;
+					height: 20px;
+					margin-right: 0;
+				}
+
+				#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon:before {
+					content: '\f332'; /* dashicons-shield */
+					top: 2px;
+					opacity: 0.5;
+				}
+
+				#wpadminbar #wp-admin-bar-guard.active > .ab-item .ab-icon:before {
+					color: #45bbe6; /* The default ab hover color on front */
+					opacity: 1;
+				}
+			</style>
+
+			<?php
+		}
 	}
 
 	/** Admin *****************************************************************/

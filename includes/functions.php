@@ -93,6 +93,25 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 }
 
 /**
+ * Return basic site protection details
+ * 
+ * @since 1.0.0
+ *
+ * @uses get_option()
+ * @uses apply_filters() Calls 'guard_get_protection_details'
+ * 
+ * @return string Protection details
+ */
+function guard_get_protection_details() {
+
+	// Setup basic protection details: allowed user count
+	$allowed_user_count = count( get_option( '_guard_allowed_users' ) );
+	$details = sprintf( _n( '%d allowed user', '%d allowed users', $allowed_user_count, 'guard' ), $allowed_user_count );
+
+	return apply_filters( 'guard_get_protection_details', $details );
+}
+
+/**
  * Return whether the network's protection is active
  *
  * @since 1.0.0

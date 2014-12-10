@@ -83,8 +83,9 @@ final class Guard_Network {
 		$guard = guard();
 
 		// Protection
-		remove_action( 'template_redirect', array( $guard, 'site_protect'  ), 1 );
-		remove_filter( 'login_message',     array( $guard, 'login_message' ), 1 );
+		remove_action( 'template_redirect', array( $guard, 'site_protect'   ), 1 );
+		remove_filter( 'login_message',     array( $guard, 'login_message'  ), 1 );
+		remove_action( 'admin_bar_menu',    array( $guard, 'admin_bar_menu' )    );
 
 		// Admin
 		remove_action( 'admin_init', array( $guard, 'register_settings' ) );
@@ -631,16 +632,16 @@ final class Guard_Network {
 					switch_to_blog( $blog_id ); 
 
 					// Define site details
-					$site_name          = get_option( 'blogname' );
-					$allowed_user_count = count( get_option( '_guard_allowed_users' ) );
-					$site_link_title    = apply_filters( 'guard_network_sites_protect_details', sprintf( _n( '%d allowed user', '%d allowed users', $allowed_user_count, 'guard' ), $allowed_user_count ) );
-					$site_link          = sprintf( '<a href="%s" title="%s">%s</a>', add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), $site_link_title, $details['domain'] . $details['path'] );
-				?>
+					$site_link = sprintf( '<a href="%s" title="%s">%s</a>', 
+						add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), 
+						guard_get_protection_details(), 
+						$details['domain'] . $details['path'] 
+					); ?>
 
 				<tr>
 					<td>
 						<input type="checkbox" id="_guard_site_protect_<?php echo $blog_id; ?>" name="_guard_site_protect[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
-						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( _x( '%1$s at %2$s', 'Site at url', 'guard' ), $site_name, $site_link ); ?></label>
+						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( _x( '%1$s at %2$s', 'Site at url', 'guard' ), get_option( 'blogname' ), $site_link ); ?></label>
 					</td>
 				</tr>
 
