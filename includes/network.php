@@ -374,32 +374,33 @@ final class Guard_Network {
 			unset( $tabs['sites'] );
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
-			<div class="wrap">
-				<h2 class="nav-tab-wrapper">
-					<?php _e( 'Guard Network Settings', 'guard' ); ?>
-					<?php foreach ( $tabs as $tab => $label ) :
-						printf( '<a class="nav-tab%s" href="%s">%s</a>',
-							( $tab == $page_tab ) ? ' nav-tab-active' : '', 
-							add_query_arg( array( 'page' => 'guard_network', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
-							$label
-						);
-					endforeach; ?>
-				</h2>
+		<div class="wrap">
+			<h2 class="nav-tab-wrapper">
+				<?php esc_html_e( 'Guard Network', 'guard' ); ?>
+				<?php foreach ( $tabs as $tab => $label ) :
+					printf( '<a class="nav-tab%s" href="%s">%s</a>',
+						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
+						add_query_arg( array( 'page' => 'guard_network', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
+						$label
+					);
+				endforeach; ?>
+			</h2>
 
-				<?php // Output the settings form on the main page ?>
-				<?php if ( 'main' == $page_tab ) { ?>
+			<?php // Output the settings form on the main page ?>
+			<?php if ( 'main' == $page_tab ) { ?>
 
-				<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
-					<?php settings_fields( 'guard_network' ); ?>
-					<?php do_settings_sections( 'guard_network' ); ?>
-					<?php submit_button(); ?>
-				</form>
+			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
+				<?php settings_fields( 'guard_network' ); ?>
+				<?php do_settings_sections( 'guard_network' ); ?>
+				<?php submit_button(); ?>
+			</form>
 
-				<?php // Custom settings page ?>
-				<?php } else { 
-					do_action( "guard_network_page_{$page_tab}" );
-				} ?>
-			</div>
+			<?php // Custom settings page ?>
+			<?php } else { 
+				do_action( "guard_network_page_{$page_tab}" );
+			} ?>
+		</div>
+
 		<?php
 	}
 

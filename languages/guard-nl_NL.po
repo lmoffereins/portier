@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Guard v1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-16 14:18+0100\n"
-"PO-Revision-Date: 2014-12-11 12:29:03+0000\n"
+"PO-Revision-Date: 2014-12-11 15:34:14+0000\n"
 "Last-Translator: Laurens Offereins\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Textdomain-Support: yes"
 
-#: guard.php:463
-#: includes/network.php:421
+#: guard.php:461
+#: includes/network.php:422
 #@ guard
 msgid "Access Settings"
 msgstr "Toegang Instellen"
@@ -43,8 +43,8 @@ msgstr "Toegestane gebruikers"
 msgid "Select a user"
 msgstr "Selecteer een gebruiker"
 
-#: guard.php:492
-#: includes/network.php:589
+#: guard.php:490
+#: includes/network.php:590
 #@ guard
 msgid "Settings"
 msgstr "Instellingen"
@@ -130,7 +130,6 @@ msgstr[0] "%d toegestane gebruiker"
 msgstr[1] "%d toegestane gebruikers"
 
 #: includes/network.php:322
-#: includes/network.php:379
 #@ guard
 msgid "Guard Network Settings"
 msgstr "Guard Netwerk Instellingen"
@@ -145,53 +144,53 @@ msgstr "Algemeen"
 msgid "Sites"
 msgstr "Sites"
 
-#: includes/network.php:420
+#: includes/network.php:421
 #@ guard
 msgid "Main Settings"
 msgstr "Algemene Instellingen"
 
-#: includes/network.php:485
-#: includes/network.php:693
+#: includes/network.php:486
+#: includes/network.php:694
 #@ default
 msgid "Cheatin&#8217; uh?"
 msgstr ""
 
-#: includes/network.php:498
+#: includes/network.php:499
 #@ default
 msgid "<strong>ERROR</strong>: options page not found."
 msgstr ""
 
-#: includes/network.php:523
-#: includes/network.php:553
-#: includes/network.php:723
+#: includes/network.php:524
+#: includes/network.php:554
+#: includes/network.php:724
 #@ default
 #@ guard
 msgid "Settings saved."
 msgstr "Instellingen bijgewerkt."
 
-#: includes/network.php:555
+#: includes/network.php:556
 #@ guard
 msgid "Something went wrong"
 msgstr "Er is iets fout gegaan"
 
-#: includes/network.php:615
+#: includes/network.php:616
 #@ guard
 msgid "Guard is only active for the network. There are no site settings here."
 msgstr "Guard is alleen actief voor het netwerk. Er zijn geen site instellingen hier."
 
-#: includes/network.php:625
+#: includes/network.php:626
 #@ guard
 msgid "Manage Site Protection"
 msgstr "Beheer Sitebescherming"
 
-#: includes/network.php:643
+#: includes/network.php:644
 #, php-format
 #@ guard
 msgctxt "Site at url"
 msgid "%1$s at %2$s"
 msgstr "%1$s op %2$s"
 
-#: includes/network.php:703
+#: includes/network.php:704
 #@ guard
 msgid "<strong>ERROR</strong>: site ids not found."
 msgstr "<strong>ERROR</strong>: site ids niet gevonden."
@@ -283,4 +282,9 @@ msgstr "Wanneer netwerkbescherming actief is, wordt dit bericht getoond op het l
 #@ guard
 msgid "Select the groups whose members will have access"
 msgstr "Selecteer de groepen wiens leden toegang krijgen"
+
+#: includes/network.php:379
+#@ guard
+msgid "Guard Network"
+msgstr "Guard Netwerk"
 
