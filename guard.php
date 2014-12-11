@@ -406,24 +406,22 @@ final class Guard {
 	 * @since 1.0.0
 	 *
 	 * @uses wp_script_is() To check if the script is already registered
-	 * @uses wp_style_is() To check if the style is already registered
 	 * @uses wp_register_script()
+	 * @uses wp_enqueue_script()
+	 * @uses wp_style_is() To check if the style is already registered
 	 * @uses wp_register_style()
+	 * @uses wp_enqueue_style()
 	 */
 	public function enqueue_scripts() {
 
 		// Register Chosen when not done already
-		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-			wp_register_script( 'chosen', plugins_url( 'js/chosen/jquery.chosen.min.js', __FILE__), array( 'jquery' ), '0.9.8' );
-		}
-
-		if ( ! wp_style_is( 'chosen', 'registered' ) ) {
-			wp_register_style( 'chosen', plugins_url( 'js/chosen/chosen.css', __FILE__ ) );
-		}
-
-		// Enqueue Chosen
+		if ( ! wp_script_is( 'chosen', 'registered' ) )
+			wp_register_script( 'chosen', $this->includes_url . 'js/chosen/jquery.chosen.min.js', array( 'jquery' ), '0.9.8' );
 		wp_enqueue_script( 'chosen' );
-		wp_enqueue_style(  'chosen' ); 
+
+		if ( ! wp_style_is( 'chosen', 'registered' ) )
+			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.css' );
+		wp_enqueue_style( 'chosen' );
 
 		?>
 
