@@ -103,7 +103,7 @@ function guard_setting_allow_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_allowed_groups"><?php _e( 'Select which users you want to have access', 'guard' ); ?></label>
+	<label for="_guard_allowed_groups"><?php _e( 'Select which users will have access', 'guard' ); ?></label>
 
 	<?php
 }
@@ -339,7 +339,7 @@ function guard_network_setting_allowed_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_network_allowed_users"><?php _e( 'Select which users you want to have access', 'guard' ); ?></label>
+	<label for="_guard_network_allowed_users"><?php _e( 'Select which users will have access', 'guard' ); ?></label>
 
 	<?php
 }
