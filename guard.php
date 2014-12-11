@@ -288,8 +288,8 @@ final class Guard {
 			) );
 
 			// Hook admin bar styles. After footer scripts
-			add_action( 'wp_footer',    array( $this, 'print_scripts' ), 21 );
-			add_action( 'admin_footer', array( $this, 'print_scripts' ), 21 );
+			add_action( 'wp_footer',    array( $this, 'admin_bar_scripts' ), 21 );
+			add_action( 'admin_footer', array( $this, 'admin_bar_scripts' ), 21 );
 		}
 	}
 
@@ -300,7 +300,7 @@ final class Guard {
 	 *
 	 * @uses is_admin_bar_showing()
 	 */
-	public function print_scripts() {
+	public function admin_bar_scripts() {
 
 		// For the admin bar
 		if ( is_admin_bar_showing() ) { ?>
