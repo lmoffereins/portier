@@ -416,11 +416,11 @@ final class Guard {
 
 		// Register Chosen when not done already
 		if ( ! wp_script_is( 'chosen', 'registered' ) )
-			wp_register_script( 'chosen', $this->includes_url . 'js/chosen/jquery.chosen.min.js', array( 'jquery' ), '0.9.8' );
+			wp_register_script( 'chosen', $this->includes_url . 'js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
 		wp_enqueue_script( 'chosen' );
 
 		if ( ! wp_style_is( 'chosen', 'registered' ) )
-			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.css' );
+			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.min.css', false, '1.2.0' );
 		wp_enqueue_style( 'chosen' );
 
 		?>
