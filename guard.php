@@ -208,6 +208,7 @@ final class Guard {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses guard_is_site_protected()
 	 * @uses is_user_logged_in() To check if the user is logged in
 	 * @uses guard_is_user_allowed() To check if the user is allowed
 	 * @uses do_action() Calls 'guard_site_protect'
@@ -235,6 +236,9 @@ final class Guard {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses guard_is_site_protected()
+	 * @uses get_option()
+	 * 
 	 * @param string $message The current login messages
 	 * @return string $message
 	 */
@@ -258,6 +262,7 @@ final class Guard {
 	 * 
 	 * @since 1.0.0
 	 *
+	 * @uses is_network_admin()
 	 * @uses current_user_can()
 	 * @uses guard_is_site_protected()
 	 * @uses guard_get_protection_details()

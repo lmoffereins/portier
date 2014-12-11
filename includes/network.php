@@ -35,8 +35,6 @@ final class Guard_Network {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-
-		// Get Guard
 		$guard = guard();
 
 		// Plugin
@@ -67,6 +65,8 @@ final class Guard_Network {
 	/**
 	 * Ensure Guard is only used for the network
 	 *
+	 * Remove plugin hooks for the single site context.
+	 * 
 	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_only()
@@ -79,7 +79,6 @@ final class Guard_Network {
 		if ( ! guard_is_network_only() )
 			return;
 
-		// Get Guard and remove plugin hooks for the single site context
 		$guard = guard();
 
 		// Protection
