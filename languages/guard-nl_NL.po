@@ -1,79 +1,286 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Guard\n"
+"Project-Id-Version: Guard v1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-16 14:18+0100\n"
-"PO-Revision-Date: 2012-10-16 17:01+0100\n"
+"PO-Revision-Date: 2014-12-11 12:29:03+0000\n"
 "Last-Translator: Laurens Offereins\n"
 "Language-Team: \n"
-"Language: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Poedit 1.5.4\n"
-"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
-"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Bookmarks: \n"
 "X-Poedit-SearchPath-0: ..\n"
+"X-Textdomain-Support: yes"
 
-#: ../guard.php:103
+#: guard.php:463
+#: includes/network.php:421
+#@ guard
 msgid "Access Settings"
-msgstr "Instellingen toegang"
+msgstr "Toegang Instellen"
 
-#: ../guard.php:104
-msgid "Additional Settings"
-msgstr "Overige instellingen"
-
-#: ../guard.php:106
+#: includes/settings.php:30
+#@ guard
 msgid "Protect my site"
 msgstr "Bescherm mijn site"
 
-#: ../guard.php:109
+#: includes/settings.php:48
+#: includes/settings.php:231
+#@ guard
 msgid "Allowed users"
 msgstr "Toegestane gebruikers"
 
-#: ../guard.php:112
-msgid "Custom login message"
-msgstr "Speciaal loginbericht"
-
-#: ../guard.php:117
-msgid ""
-"Here you enable the Guard plugin. By checking the <em>Protect my site</em> "
-"input, this site will only be accessible for admins and allowed users, "
-"specified by you in the select option below. No other shall pass!"
-msgstr ""
-"Stel hier de Guard plugin in werking. Door de <em>Bescherm mijn site</em> "
-"optie aan te vinken, zal deze site alleen toegankelijk zijn voor admins en "
-"toegestane gebruikers, speciaal geselecteerd in de optie hieronder. Niemand "
-"anders komt er langs!"
-
-#: ../guard.php:121
-msgid "Below you can set additional Guard options."
-msgstr "Stel hieronder overige Guard instellingen in."
-
-#: ../guard.php:125
-msgid "Enable site protection."
-msgstr "Activeer site bescherming."
-
-#: ../guard.php:134
+#: includes/settings.php:99
+#: includes/settings.php:335
+#@ guard
 msgid "Select a user"
 msgstr "Selecteer een gebruiker"
 
-#: ../guard.php:139
-msgid "Select which users you want to have access."
-msgstr "Selecteer welke gebruikers je toegang wilt geven."
-
-#: ../guard.php:147
-#, php-format
-msgid ""
-"Serve site guests a nice heads up on the login page. Leave empty if not "
-"applicable.<br> This message will only be shown if <strong>Protect my site</"
-"strong> is activated.<br/>Allowed HTML tags %s, %s and %s."
-msgstr ""
-"Stel sitebezoekers op de hoogte van de afscherming. Houdt dit leeg als je "
-"geen extra bericht wilt.<br> Dit bericht wordt getoond als <strong>Berscherm "
-"mijn site</strong> is aangevinkt.<br/> Toegestane HTML tags zijn %s, %s en "
-"%s."
-
-#: ../guard.php:167
+#: guard.php:492
+#: includes/network.php:589
+#@ guard
 msgid "Settings"
 msgstr "Instellingen"
+
+#. translators: plugin header field 'Name'
+#: guard.php:0
+#: guard.php:351
+#: guard.php:391
+#: includes/network.php:323
+#@ guard
+msgid "Guard"
+msgstr "Guard"
+
+#. translators: plugin header field 'PluginURI'
+#: guard.php:0
+#@ guard
+msgid "https://github.com/lmoffereins/guard"
+msgstr ""
+
+#. translators: plugin header field 'Description'
+#: guard.php:0
+#@ guard
+msgid "Restrict access to your (multi)site"
+msgstr "Beperk toegang tot je (multi)site"
+
+#. translators: plugin header field 'Author'
+#: guard.php:0
+#@ guard
+msgid "Laurens Offereins"
+msgstr ""
+
+#. translators: plugin header field 'AuthorURI'
+#: guard.php:0
+#@ guard
+msgid "https://github.com/lmoffereins"
+msgstr ""
+
+#. translators: plugin header field 'Version'
+#: guard.php:0
+#@ guard
+msgid "1.0.0"
+msgstr ""
+
+#: guard.php:274
+#@ guard
+msgid "Site protection is active"
+msgstr "Sitebescherming is actief"
+
+#: guard.php:274
+#@ guard
+msgid "Site protection is not active"
+msgstr "Sitebescherming is niet actief"
+
+#: guard.php:350
+#@ guard
+msgid "Guard Settings"
+msgstr "Guard Instellingen"
+
+#: includes/extend/buddypress.php:87
+#@ guard
+msgid "Allowed groups"
+msgstr "Toegestane groepen"
+
+#: includes/extend/buddypress.php:118
+#@ guard
+msgid "Select a group"
+msgstr "Selecteer een groep"
+
+#: includes/extend/buddypress.php:255
+#, php-format
+#@ guard
+msgid "%d allowed group"
+msgid_plural "%d allowed groups"
+msgstr[0] "%d toegestane groep"
+msgstr[1] "%d toegestane groepen"
+
+#: includes/functions.php:109
+#, php-format
+#@ guard
+msgid "%d allowed user"
+msgid_plural "%d allowed users"
+msgstr[0] "%d toegestane gebruiker"
+msgstr[1] "%d toegestane gebruikers"
+
+#: includes/network.php:322
+#: includes/network.php:379
+#@ guard
+msgid "Guard Network Settings"
+msgstr "Guard Netwerk Instellingen"
+
+#: includes/network.php:371
+#@ guard
+msgid "Main"
+msgstr "Algemeen"
+
+#: includes/network.php:371
+#@ guard
+msgid "Sites"
+msgstr "Sites"
+
+#: includes/network.php:420
+#@ guard
+msgid "Main Settings"
+msgstr "Algemene Instellingen"
+
+#: includes/network.php:485
+#: includes/network.php:693
+#@ default
+msgid "Cheatin&#8217; uh?"
+msgstr ""
+
+#: includes/network.php:498
+#@ default
+msgid "<strong>ERROR</strong>: options page not found."
+msgstr ""
+
+#: includes/network.php:523
+#: includes/network.php:553
+#: includes/network.php:723
+#@ default
+#@ guard
+msgid "Settings saved."
+msgstr "Instellingen bijgewerkt."
+
+#: includes/network.php:555
+#@ guard
+msgid "Something went wrong"
+msgstr "Er is iets fout gegaan"
+
+#: includes/network.php:615
+#@ guard
+msgid "Guard is only active for the network. There are no site settings here."
+msgstr "Guard is alleen actief voor het netwerk. Er zijn geen site instellingen hier."
+
+#: includes/network.php:625
+#@ guard
+msgid "Manage Site Protection"
+msgstr "Beheer Sitebescherming"
+
+#: includes/network.php:643
+#, php-format
+#@ guard
+msgctxt "Site at url"
+msgid "%1$s at %2$s"
+msgstr "%1$s op %2$s"
+
+#: includes/network.php:703
+#@ guard
+msgid "<strong>ERROR</strong>: site ids not found."
+msgstr "<strong>ERROR</strong>: site ids niet gevonden."
+
+#: includes/settings.php:39
+#: includes/settings.php:222
+#@ guard
+msgid "Login message"
+msgstr "Loginbericht"
+
+#: includes/settings.php:81
+#@ guard
+msgid "Enable site protection"
+msgstr "Activeer sitebescherming"
+
+#: includes/settings.php:106
+#: includes/settings.php:342
+#@ guard
+msgid "Select which users will have access"
+msgstr "Selecteer de gebruikers die toegang krijgen"
+
+#: includes/settings.php:123
+#@ guard
+msgid "When site protection is active, this message will be shown at the login screen."
+msgstr "Wanneer sitebescherming actief is, wordt dit bericht getoond op het loginscherm."
+
+#: includes/settings.php:124
+#: includes/settings.php:359
+#, php-format
+#@ guard
+msgid "Allowed HTML tags are: %s, %s and %s."
+msgstr "Toegestane HTML tags zijn: %s, %s en %s."
+
+#: includes/settings.php:184
+#@ guard
+msgid "Network only"
+msgstr "Alleen het Netwerk"
+
+#: includes/settings.php:193
+#@ guard
+msgid "Redirect to allowed site"
+msgstr "Stuur naar toegestane site"
+
+#: includes/settings.php:202
+#, php-format
+#@ guard
+msgctxt "Setting label for hide-my-sites option"
+msgid "Hide %s"
+msgstr "Verberg %s"
+
+#: includes/settings.php:202
+#: includes/settings.php:317
+#@ default
+msgid "My Sites"
+msgstr ""
+
+#: includes/settings.php:213
+#@ guard
+msgid "Protect this network"
+msgstr "Bescherm dit netwerk"
+
+#: includes/settings.php:272
+#@ guard
+msgid "Disable this plugin for individual sites"
+msgstr "Maak deze plugin inactief voor individuele sites"
+
+#: includes/settings.php:287
+#@ guard
+msgid "Enable network protection"
+msgstr "Activeer netwerkbescherming"
+
+#: includes/settings.php:302
+#@ guard
+msgid "Instead of just logging the user out, try to redirect the user from protected sites to an allowed site or the network home, when available"
+msgstr "Probeer de gebruiker van een beschermde site naar een toegestane site te sturen, indien mogelijk, in plaats van hem uit te loggen."
+
+#: includes/settings.php:317
+#, php-format
+#@ guard
+msgid "Hide the %s links and page when a user has access to only one site"
+msgstr "Verberg the %s links en pagina als een gebruiker maar tot een enkele site toegang heeft"
+
+#: includes/settings.php:358
+#@ guard
+msgid "When network protection is active, this message will be shown at the login screen."
+msgstr "Wanneer netwerkbescherming actief is, wordt dit bericht getoond op het loginscherm."
+
+#: includes/extend/buddypress.php:125
+#@ guard
+msgid "Select the groups whose members will have access"
+msgstr "Selecteer de groepen wiens leden toegang krijgen"
+
