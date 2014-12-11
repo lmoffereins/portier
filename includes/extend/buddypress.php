@@ -122,7 +122,7 @@ class Guard_BuddyPress {
 			<?php endforeach; ?>
 
 		</select>
-		<label for="_guard_bp_allowed_groups"><?php _e( "Select the groups whose members you want to have access", 'guard' ); ?></label>
+		<label for="_guard_bp_allowed_groups"><?php _e( "Select the groups whose members will have access", 'guard' ); ?></label>
 
 		<?php
 	}

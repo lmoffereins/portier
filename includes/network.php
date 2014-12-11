@@ -409,9 +409,10 @@ final class Guard_Network {
 	 * @since 1.0.0
 	 *
 	 * @uses add_settings_section() To create the settings sections
-	 * @uses add_settings_field() To create a setting with it's field
 	 * @uses guard_network_settings()
+	 * @uses add_settings_field() To create a setting with it's field
 	 * @uses register_setting() To enable the setting being saved to the DB
+	 * @uses add_action()
 	 */
 	public function register_settings() {
 
@@ -443,7 +444,12 @@ final class Guard_Network {
 	/**
 	 * Handle updating network settings
 	 *
+	 * This method follows the logic of the Settings API for single sites
+	 * very closely as it is in {@link wp-admin/options.php}.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @link http://core.trac.wordpress.org/ticket/15691
 	 *
 	 * @uses wp_reset_vars()
 	 * @uses is_multisite()
