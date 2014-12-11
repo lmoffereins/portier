@@ -386,26 +386,19 @@ final class Guard_Network {
 					endforeach; ?>
 				</h2>
 
-				<?php switch ( $page_tab ) :
+				<?php // Output the settings form on the main page ?>
+				<?php if ( 'main' == $page_tab ) { ?>
 
-					// Main settings page
-					case 'main' : ?>
+				<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
+					<?php settings_fields( 'guard_network' ); ?>
+					<?php do_settings_sections( 'guard_network' ); ?>
+					<?php submit_button(); ?>
+				</form>
 
-					<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
-						<?php settings_fields( 'guard_network' ); ?>
-						<?php do_settings_sections( 'guard_network' ); ?>
-						<?php submit_button(); ?>
-					</form>
-
-					<?php 
-						break;
-
-					// Custom settings page
-					default :
-						do_action( "guard_network_page_{$page_tab}" );
-						break;
-
-				endswitch; ?>
+				<?php // Custom settings page ?>
+				<?php } else { 
+					do_action( "guard_network_page_{$page_tab}" );
+				} ?>
 			</div>
 		<?php
 	}
@@ -627,15 +620,15 @@ final class Guard_Network {
 			<table class="form-table">
 
 				<?php // Walk all sites of this network ?>
-				<?php foreach ( $sites as $details ) : 
-					$blog_id = (int) $details['blog_id']; 
-					switch_to_blog( $blog_id ); 
+				<?php foreach ( $sites as $details ) :
+					$blog_id = (int) $details['blog_id'];
+					switch_to_blog( $blog_id );
 
 					// Define site details
-					$site_link = sprintf( '<a href="%s" title="%s">%s</a>', 
-						add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ), 
-						guard_get_protection_details(), 
-						$details['domain'] . $details['path'] 
+					$site_link = sprintf( '<a href="%s" title="%s">%s</a>',
+						add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ),
+						guard_get_protection_details(),
+						$details['domain'] . $details['path']
 					); ?>
 
 				<tr>
