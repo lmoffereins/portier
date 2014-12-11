@@ -322,7 +322,7 @@ final class Guard_Network {
 			__( 'Guard Network Settings', 'guard' ),
 			__( 'Guard', 'guard' ),
 			'manage_network',
-			'guard_network',
+			'guard',
 			array( $this, 'admin_page' )
 		);
 
@@ -380,7 +380,7 @@ final class Guard_Network {
 				<?php foreach ( $tabs as $tab => $label ) :
 					printf( '<a class="nav-tab%s" href="%s">%s</a>',
 						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
-						add_query_arg( array( 'page' => 'guard_network', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
+						add_query_arg( array( 'page' => 'guard', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
 						$label
 					);
 				endforeach; ?>
@@ -587,7 +587,7 @@ final class Guard_Network {
 
 		// Add settings link for our plugin
 		if ( $file == guard()->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard_network', 'settings.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'settings.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
 		}
 
 		return $links;
