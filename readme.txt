@@ -19,3 +19,5 @@ Supports BuddyPress: provide access for selected user groups.
 
 = 1.0.0 =
 * Initial release
+* Account for both network and site level protection
+* Support BuddyPress groups
