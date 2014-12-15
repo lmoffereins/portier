@@ -50,11 +50,13 @@ final class Guard_Network {
 		add_filter( 'user_has_cap',       array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',               array( $this,  'register_settings' ) );
-		add_action( 'network_admin_menu',       array( $this,  'admin_menu'        ) );
-		add_action( 'network_admin_notices',    array( $this,  'admin_notices'     ) );
-		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'   ) );
-		add_action( 'guard_network_page_sites', array( $this,  'admin_page_sites'  ) );
+		add_action( 'admin_init',               array( $this,  'register_settings'     ) );
+		add_action( 'network_admin_menu',       array( $this,  'admin_menu'            ) );
+		add_action( 'network_admin_notices',    array( $this,  'admin_notices'         ) );
+		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'       ) );
+		add_action( 'guard_network_load_admin', array( $this,  'load_admin_page_sites' ) );
+		add_action( 'guard_network_admin_head', array( $this,  'admin_head_page_sites' ) );
+		add_action( 'guard_network_page_sites', array( $this,  'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -325,8 +327,20 @@ final class Guard_Network {
 			array( $this, 'admin_page' )
 		);
 
+		add_action( "load-$hook",         array( $this, 'load_admin'   ) );
 		add_action( "admin_head-$hook",   array( $this, 'admin_head'   ) );
 		add_action( "admin_footer-$hook", array( $this, 'admin_footer' ) );
+	}
+
+	/**
+	 * Provide a hook for loading the guard network settings page
+	 *
+	 * @since 1.1.0
+	 * 
+	 * @uses do_action() Calls 'guard_network_load_admin'
+	 */
+	public function load_admin() {
+		do_action( 'guard_network_load_admin' );
 	}
 
 	/**
@@ -595,60 +609,118 @@ final class Guard_Network {
 	/** Network Manage Sites ***************************************/
 
 	/**
+	 * Setup the sites list table when loading the Network Sites admin page
+	 *
+	 * @since 1.1.0
+	 *
+	 * @uses _get_guard_network_sites_list_table()
+	 */
+	public function load_admin_page_sites() {
+		global $wp_list_table, $pagenum;
+
+		// Bail when not loading the Network Sites page
+		if ( ! isset( $_GET['tab'] ) || 'sites' != $_GET['tab'] )
+			return;
+
+		// Setup list table globals
+		$wp_list_table = _get_guard_network_sites_list_table();
+		$pagenum = $wp_list_table->get_pagenum();
+	}
+
+	/**
+	 * Output scripts in the Network Sites admin page head
+	 *
+	 * @since 1.1.0
+	 */
+	public function admin_head_page_sites() {
+		global $wp_list_table;
+
+		// Bail when not loading the Network Sites page
+		if ( ! isset( $_GET['tab'] ) || 'sites' != $_GET['tab'] )
+			return;
+
+		// Bail when the specified list table isn't loaded
+		if ( ! is_a( $wp_list_table, 'Guard_Network_Sites_List_Table' ) )
+			return; ?>
+
+		<style type="text/css">
+			.widefat .column-blogname .edit {
+				font-weight: 600;
+			}
+
+				.widefat .column-blogname .edit ~ span {
+					font-style: italic;
+				}
+
+			.widefat .column-protected {
+				width: 20px;
+				padding-right: 5px;
+				font-size: 0; /* Hide column label */
+			}
+
+				.widefat .column-protected:before {
+					text-indent: 0;
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					font-size: 20px;
+					line-height: 1;
+					font-family: dashicons;
+					font-weight: 400;
+					font-style: normal;
+					vertical-align: top;
+					text-align: center;
+					content: "\f332"; /* dashicons-yes */
+					color: #ddd;
+				}
+
+				.widefat thead .column-protected:before,
+				.widefat tfoot .column-protected:before {
+					content: '';
+				}
+
+				.widefat .site-protected .column-protected:before {
+					color: #0074a2;
+				}
+
+			.widefat .column-allowed_users {
+				width: 10%;
+			}
+		</style>
+
+		<?php
+	}
+
+	/**
 	 * Output network sites management admin panel
 	 *
 	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_only()
-	 * @uses wp_get_sites()
-	 * @uses switch_to_blog()
-	 * @uses get_option()
-	 * @uses add_query_arg()
-	 * @uses restore_current_blog()
-	 * @uses wp_nonce_field()
-	 * @uses submit_button()
 	 */
 	public function admin_page_sites() {
+		global $wp_list_table, $pagenum;
 
 		// Bail when Guard is only active for the network
 		if ( guard_is_network_only() ) {
 			echo '<div class="notice notice-error"><p>' . __( 'Guard is only active for the network. There are no site settings here.', 'guard' ) . '</p></div>';
 			return;
-		}
+		} 
 
-		// Get all sites of this network
-		$sites = wp_get_sites(); ?>
+		// Load list table items
+		$wp_list_table->prepare_items(); ?>
+
+		<h3><?php _e( 'Manage Sites Protection', 'guard' ); ?></h3>
+
+		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
+			<input type="hidden" name="page" value="guard" />
+			<input type="hidden" name="tab" value="<?php echo $_GET['tab']; ?>" />
+			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
+			<input type="hidden" name="action" value="blogs" />
+		</form>
 
 		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
-			<input type="hidden" name="guard_network_sites" value="<?php echo implode( ',', wp_list_pluck( $sites, 'blog_id' ) ); ?>" />
-
-			<h3><?php _e( 'Manage Site Protection', 'guard' ); ?></h3>
-			<table class="form-table">
-
-				<?php // Walk all sites of this network ?>
-				<?php foreach ( $sites as $details ) :
-					$blog_id = (int) $details['blog_id'];
-					switch_to_blog( $blog_id );
-
-					// Define site details
-					$site_link = sprintf( '<a href="%s" title="%s">%s</a>',
-						add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ),
-						guard_get_protection_details(),
-						$details['domain'] . $details['path']
-					); ?>
-
-				<tr>
-					<td>
-						<input type="checkbox" id="_guard_site_protect_<?php echo $blog_id; ?>" name="_guard_site_protect[<?php echo $blog_id; ?>]" value="1" <?php checked( get_option( '_guard_site_protect' ) ); ?>/>
-						<label for="_guard_site_protect_<?php echo $blog_id; ?>"><?php printf( _x( '%1$s at %2$s', 'Site at url', 'guard' ), get_option( 'blogname' ), $site_link ); ?></label>
-					</td>
-				</tr>
-
-				<?php restore_current_blog(); endforeach; ?>
-			</table>
-
-			<?php wp_nonce_field( 'guard_network_sites' ); ?>
-			<?php submit_button(); ?>
+			<?php $wp_list_table->display(); ?>
 		</form>
 
 		<?php
@@ -733,3 +805,185 @@ final class Guard_Network {
 }
 
 endif; // class_exists
+
+/**
+ * Define the plugin's sites list table
+ *
+ * @since 1.1.0
+ */
+function _get_guard_network_sites_list_table( $args = array() ) {
+
+	// Bail when the class already exists
+	if ( ! class_exists( 'Guard_Network_Sites_List_Table' ) ) :
+
+	// We depend on the WP MS Sites List Table
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-ms-sites-list-table.php' );
+
+	/**
+	 * The Guard Network Sites List Table
+	 *
+	 * @since 1.1.0
+	 */
+	class Guard_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
+
+		/**
+		 * Constructor
+		 *
+		 * @since 1.1.0
+		 *
+		 * @see WP_List_Table::__construct() for more information on default arguments.
+		 *
+		 * @param array $args An associative array of arguments.
+		 */
+		public function __construct( $args = array() ) {
+			parent::__construct( $args );
+		}
+
+		/**
+		 * Setup the list table's columns
+		 *
+		 * @since 1.1.0
+		 *
+		 * @uses WP_MS_List_Table::get_columns()
+		 * @uses apply_filters() Calls 'guard_network_sites_columns'
+		 * 
+		 * @return array Columns
+		 */
+		public function get_columns() {
+			$columns = parent::get_columns();
+
+			return (array) apply_filters( 'guard_network_sites_columns', array( 
+				'cb'            => $columns['cb'],
+				'protected'     => __( 'Protected', 'guard' ),
+				'blogname'      => $columns['blogname'],
+				'allowed_users' => __( 'Allowed Users', 'guard' ),
+			) );
+		}
+
+		/**
+		 * Setup the list table's bulk actions
+		 * 
+		 * @since 1.1.0
+		 * 
+		 * @return array Bulk actions
+		 */
+		public function get_bulk_actions() {
+			return (array) apply_filters( 'guard_network_sites_bulk_actions', array(
+				'enable'  => __( 'Enable',  'guard' ),
+				'disable' => __( 'Disable', 'guard' ),
+			) );
+		}
+
+		/**
+		 * Output the list table's pagination handles
+		 *
+		 * Removes the mode switcher from inheritance.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $which
+		 */
+		protected function pagination( $which ) {
+			WP_List_Table::pagination( $which );
+		}
+
+		/**
+		 * Output the site row contents
+		 *
+		 * @since 1.1.0
+		 */
+		public function display_rows() {
+			$class = '';
+			foreach ( $this->items as $blog ) {
+				$class = ( 'alternate' == $class ) ? '' : 'alternate';
+				$protected = guard_is_site_protected( $blog['blog_id'] ) ? 'site-protected' : '';
+
+				echo "<tr class='$class$protected'>";
+
+				$blogname = ( is_subdomain_install() ) ? str_replace( '.' . get_current_site()->domain, '', $blog['domain'] ) : $blog['path'];
+
+				list( $columns, $hidden ) = $this->get_column_info();
+
+				foreach ( $columns as $column_name => $column_display_name ) {
+
+					// Switch site context globally
+					switch_to_blog( $blog['blog_id'] );
+
+					$style = '';
+					if ( in_array( $column_name, $hidden ) )
+						$style = ' style="display:none;"';
+
+					switch ( $column_name ) {
+						case 'cb' : ?>
+							<th scope="row" class="check-column">
+								<label class="screen-reader-text" for="blog_<?php echo $blog['blog_id']; ?>"><?php printf( __( 'Select %s' ), $blogname ); ?></label>
+								<input type="checkbox" id="blog_<?php echo $blog['blog_id'] ?>" name="allblogs[]" value="<?php echo esc_attr( $blog['blog_id'] ) ?>" />
+							</th>
+
+							<?php
+							break;
+
+						case 'blogname' :
+							echo "<td class='column-$column_name $column_name'$style>"; ?>
+								<a href="<?php echo esc_url( add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a>
+								<br/><span><?php echo $blogname; ?></span>
+							</td>
+
+							<?php
+							break;
+
+						case 'allowed_users' :
+
+							// Define local variable(s)
+							$users = get_option( '_guard_allowed_users', array() );
+							$count = count( $users );
+							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
+							if ( 0 < $count - 5 ) {
+								$title = sprintf( __( '%s and %d more', 'guard' ), $title, $count - 5 );
+							}
+
+							echo "<td class='column-$column_name $column_name'$style>"; ?>
+								<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'guard' ), $count ); ?></span>
+							</td>
+
+							<?php
+							break;
+
+						default:
+							echo "<td class='$column_name column-$column_name'$style>";
+							/**
+							 * Fires for each registered custom column in the Sites list table.
+							 *
+							 * @since 1.1.0
+							 *
+							 * @param string $column_name The name of the column to display.
+							 * @param int    $blog_id     The site ID.
+							 */
+							do_action( 'guard_network_sites_custom_column', $column_name, $blog['blog_id'] );
+							echo "</td>";
+							break;
+						}
+					}
+				?>
+				</tr>
+				<?php
+
+				// Restore site context
+				restore_current_blog();
+			}
+		}
+	}
+
+	endif; // class_exists
+
+	// Setup the screen argument
+	if ( isset( $args['screen'] ) ) {
+		$args['screen'] = convert_to_screen( $args['screen'] );
+	} elseif ( isset( $GLOBALS['hook_suffix'] ) ) {
+		$args['screen'] = get_current_screen();
+	} else {
+		$args['screen'] = null;
+	}
+
+	return new Guard_Network_Sites_List_Table( $args );
+}
