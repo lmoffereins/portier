@@ -742,7 +742,7 @@ final class Guard_Network {
 		// Clean REQUEST_URI
 		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'guard_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
 
-		<h3><?php _e( 'Manage Sites Protection', 'guard' ); ?></h3>
+		<h3><?php _e( 'Manage Protection', 'guard' ); ?></h3>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
 			<input type="hidden" name="page" value="guard" />
