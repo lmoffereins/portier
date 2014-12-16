@@ -17,6 +17,9 @@ Supports BuddyPress: provide access for selected user groups.
 
 == Changelog ==
 
+= 1.1.0 =
+* Changed Network Sites admin to use a list table
+
 = 1.0.0 =
 * Initial release
 * Account for both network and site level protection

@@ -745,9 +745,9 @@ final class Guard_Network {
 		<h3><?php _e( 'Manage Sites Protection', 'guard' ); ?></h3>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
-			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
 			<input type="hidden" name="page" value="guard" />
 			<input type="hidden" name="tab" value="<?php echo $_GET['tab']; ?>" />
+			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
 		</form>
 
 		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
