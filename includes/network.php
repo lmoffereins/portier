@@ -553,6 +553,9 @@ final class Guard_Network {
 	 *
 	 * @uses Guard_Network::is_network_page()
 	 * @uses apply_filters() Calls 'guard_network_admin_notice'
+	 * @uses apply_filters() Calls 'guard_network_bulk_site_updated_counts'
+	 * @uses apply_filters() Calls 'guard_network_bulk_site_updated_messages'
+	 *
 	 */
 	public function admin_notices() {
 
@@ -560,16 +563,42 @@ final class Guard_Network {
 		if ( ! $this->is_network_page() )
 			return;
 
+		// Define local variable(s)
+		$messages = array();
+		$type = 'updated';
+
 		// Settings were updated
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type ) {
-				$message = __( 'Settings saved.', 'guard' );
+				$messages[] = __( 'Settings saved.', 'guard' );
 			} else {
-				$message = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong', 'guard' ), $_GET['settings-updated'] );
+				$messages[] = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong.', 'guard' ), $_GET['settings-updated'] );
 			}
 
-			echo '<div class="message ' . $type . '"><p>' . $message . '</p></div>';
+		// Bulk sites settings
+		} elseif ( isset( $GLOBALS['wp_list_table'] ) ) {
+
+			$bulk_counts = apply_filters( 'guard_network_bulk_site_updated_counts', array(
+				'enabled'  => isset( $_REQUEST['enabled']  ) ? absint( $_REQUEST['enabled']  ) : 0,
+				'disabled' => isset( $_REQUEST['disabled'] ) ? absint( $_REQUEST['disabled'] ) : 0,
+			) );
+
+			$bulk_messages = apply_filters( 'guard_network_bulk_site_updated_messages', array(
+				'enabled'  => _n( 'Protection enabled for %d site.',  'Protection enabled for %d sites.',  $bulk_counts['enabled'],  'guard' ),
+				'disabled' => _n( 'Protection disabled for %d site.', 'Protection disabled for %d sites.', $bulk_counts['disabled'], 'guard' ),
+			) );
+
+			foreach ( $bulk_counts as $action => $count ) {
+				if ( isset( $bulk_messages[ $action ] ) && ! empty( $count ) ) {
+					$messages[] = sprintf( $bulk_messages[ $action], number_format_i18n( $count ) );
+				}
+			}
+		}
+
+		// Message(s) provided
+		if ( ! empty( $messages ) ) {
+			echo '<div class="notice ' . $type . '"><p>' . join( ' ', $messages ) . '</p></div>';
 		}
 	}
 
@@ -582,7 +611,7 @@ final class Guard_Network {
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
-		return ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard_network' == $GLOBALS['hook_suffix'] );
+		return ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard' == $GLOBALS['hook_suffix'] );
 	}
 
 	/**
@@ -631,6 +660,8 @@ final class Guard_Network {
 	 * Output scripts in the Network Sites admin page head
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global object $wp_list_table
 	 */
 	public function admin_head_page_sites() {
 		global $wp_list_table;
@@ -644,6 +675,14 @@ final class Guard_Network {
 			return; ?>
 
 		<style type="text/css">
+			h3 {
+				float: left;
+			}
+
+			h3, p.search-box {
+				margin: 1em 0 0;
+			}
+
 			.widefat .column-blogname .edit {
 				font-weight: 600;
 			}
@@ -697,9 +736,12 @@ final class Guard_Network {
 	 * @since 1.0.0
 	 *
 	 * @uses guard_is_network_only()
+	 * @uses remove_query_arg()
+	 * @uses apply_filters() Calls 'guard_network_sites_uri_args'
+	 * @global object $wp_list_table
 	 */
 	public function admin_page_sites() {
-		global $wp_list_table, $pagenum;
+		global $wp_list_table;
 
 		// Bail when Guard is only active for the network
 		if ( guard_is_network_only() ) {
@@ -708,15 +750,17 @@ final class Guard_Network {
 		} 
 
 		// Load list table items
-		$wp_list_table->prepare_items(); ?>
+		$wp_list_table->prepare_items(); 
+
+		// Clean REQUEST_URI
+		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'guard_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
 
 		<h3><?php _e( 'Manage Sites Protection', 'guard' ); ?></h3>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
+			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
 			<input type="hidden" name="page" value="guard" />
 			<input type="hidden" name="tab" value="<?php echo $_GET['tab']; ?>" />
-			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
-			<input type="hidden" name="action" value="blogs" />
 		</form>
 
 		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
@@ -735,18 +779,20 @@ final class Guard_Network {
 	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
 	 * @uses current_user_can()
 	 * @uses is_super_admin()
+	 * @uses wp_die()
+	 * @uses wp_get_referer()
+	 * @uses _get_guard_network_sites_list_table()
 	 * @uses check_admin_referer()
 	 * @uses wp_parse_id_list()
-	 * @uses wp_die()
+	 * @uses wp_redirect()
 	 * @uses switch_to_blog()
 	 * @uses update_option()
 	 * @uses restore_current_blog()
+	 * @uses add_query_arg()
+	 * @uses apply_filters() Calls 'guard_network_sites_edit'
 	 * @uses get_settings_errors()
 	 * @uses add_settings_error()
 	 * @uses set_transient()
-	 * @uses add_query_arg()
-	 * @uses wp_get_referer()
-	 * @uses wp_redirect()
 	 */
 	public function handle_sites_settings() {
 
@@ -764,27 +810,44 @@ final class Guard_Network {
 		if ( ! current_user_can( $capability ) || ( is_multisite() && ! is_super_admin() ) )
 			wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
 
-		// Check admin referer
-		check_admin_referer( $option_page );
+		// Setup redirect location
+		$goback = wp_get_referer();
 
-		// Get site ids to walk
-		$sites = isset( $_POST[ $option_page ] ) ? wp_parse_id_list( $_POST[ $option_page ] ) : array();
+		// Get the bulk action
+		$wp_list_table = _get_guard_network_sites_list_table();
+		$doaction = $wp_list_table->current_action();
 
-		// Bail when site ids are not provided
-		if ( empty( $sites ) )
-			wp_die( __( '<strong>ERROR</strong>: site ids not found.', 'guard' ) );
+		if ( $doaction ) {
+			check_admin_referer( 'bulk-sites' );
 
-		// Walk sites
-		foreach ( $sites as $site_id ) {
+			// Get site ids to walk
+			$site_ids = isset( $_POST[ 'allblogs' ] ) ? wp_parse_id_list( $_POST[ 'allblogs' ] ) : array();
 
-			// Switch to site
-			switch_to_blog( $site_id );
+			// Bail when site ids are not provided
+			if ( empty( $site_ids ) ) {
+				wp_redirect( $goback );
+				exit;
+			}
 
-			// Update settings
-			update_option( '_guard_site_protect', in_array( $site_id, array_keys( $_POST['_guard_site_protect'] ) ) );
+			// Check current action
+			switch ( $doaction ) {
+				case 'enable' :
+				case 'disable' :
+					$sites = 0;
+					foreach ( $site_ids as $site_id ) {
+						switch_to_blog( $site_id );
+						if ( update_option( '_guard_site_protect', ( 'enable' === $doaction ) ? 1 : 0 ) ) {
+							$sites++;
+						}
+						restore_current_blog();
+					}
+					$goback = add_query_arg( ( 'enable' === $doaction ) ? 'enabled' : 'disabled', $sites, $goback );
+				break;
 
-			// Switch back
-			restore_current_blog();
+				default :
+					$goback = apply_filters( 'guard_network_sites_edit', $goback, $doaction, $site_ids );
+				break;
+			}
 		}
 
 		/**
@@ -798,7 +861,6 @@ final class Guard_Network {
 		/**
 		 * Redirect back to the settings page that was submitted
 		 */
-		$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
 		wp_redirect( $goback );
 		exit;
 	}
@@ -807,7 +869,7 @@ final class Guard_Network {
 endif; // class_exists
 
 /**
- * Define the plugin's sites list table
+ * Define the plugin's sites list table class
  *
  * @since 1.1.0
  */
@@ -827,24 +889,11 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 	class Guard_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 
 		/**
-		 * Constructor
-		 *
-		 * @since 1.1.0
-		 *
-		 * @see WP_List_Table::__construct() for more information on default arguments.
-		 *
-		 * @param array $args An associative array of arguments.
-		 */
-		public function __construct( $args = array() ) {
-			parent::__construct( $args );
-		}
-
-		/**
 		 * Setup the list table's columns
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses WP_MS_List_Table::get_columns()
+		 * @uses WP_MS_Sites_List_Table::get_columns()
 		 * @uses apply_filters() Calls 'guard_network_sites_columns'
 		 * 
 		 * @return array Columns
@@ -864,6 +913,8 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 * Setup the list table's bulk actions
 		 * 
 		 * @since 1.1.0
+		 *
+		 * @uses apply_filters() Calls 'guard_network_sites_bulk_actions'
 		 * 
 		 * @return array Bulk actions
 		 */
@@ -880,6 +931,9 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 * Removes the mode switcher from inheritance.
 		 *
 		 * @since 1.1.0
+		 * @access protected
+		 *
+		 * @uses WP_List_Table::pagination()
 		 *
 		 * @param string $which
 		 */
@@ -891,12 +945,20 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 * Output the site row contents
 		 *
 		 * @since 1.1.0
+		 *
+		 * @uses guard_is_site_protected()
+		 * @uses is_subdomain_intall()
+		 * @uses switch_to_blog()
+		 * @uses do_action() Calls 'guard_network_sites_custom_column'
+		 * @uses restore_current_blog()
+		 * @uses convert_to_screen()
+		 * @uses get_current_screen()
 		 */
 		public function display_rows() {
 			$class = '';
 			foreach ( $this->items as $blog ) {
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				$protected = guard_is_site_protected( $blog['blog_id'] ) ? 'site-protected' : '';
+				$protected = guard_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
 
 				echo "<tr class='$class$protected'>";
 
@@ -905,8 +967,6 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 				list( $columns, $hidden ) = $this->get_column_info();
 
 				foreach ( $columns as $column_name => $column_display_name ) {
-
-					// Switch site context globally
 					switch_to_blog( $blog['blog_id'] );
 
 					$style = '';
@@ -933,8 +993,6 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 							break;
 
 						case 'allowed_users' :
-
-							// Define local variable(s)
 							$users = get_option( '_guard_allowed_users', array() );
 							$count = count( $users );
 							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
