@@ -306,10 +306,17 @@ final class Guard {
 	 * @uses is_admin_bar_showing()
 	 */
 	public function admin_bar_scripts() {
+		global $_wp_admin_css_colors;
 
 		// For the admin bar
 		if ( ! is_admin_bar_showing() )
-			return; ?>
+			return; 
+
+		// Get the actual color scheme. Default to 'fresh'
+		$scheme = get_user_option( 'admin_color' );
+		if ( ! isset( $_wp_admin_css_colors[ $scheme ] ) )
+			$scheme = 'fresh';
+		$colors = isset( $_wp_admin_css_colors[ $scheme ] ) ? $_wp_admin_css_colors[ $scheme ]->colors : array( 1 => '#999', 2 => '#45bbe6' ); ?>
 
 		<style type="text/css">
 			#wpadminbar #wp-admin-bar-guard > .ab-item {
@@ -328,10 +335,18 @@ final class Guard {
 				opacity: 0.5;
 			}
 
+				#wpadminbar #wp-admin-bar-guard:hover > .ab-item .ab-icon:before {
+					color: <?php echo $colors[1]; ?>;
+				}
+
 			#wpadminbar #wp-admin-bar-guard.active > .ab-item .ab-icon:before {
-				color: #45bbe6; /* The default ab hover color on front */
+				color: <?php echo $colors[2]; ?>;
 				opacity: 1;
 			}
+
+				#wpadminbar #wp-admin-bar-guard.active:hover > .ab-item .ab-icon:before {
+					color: <?php echo $colors[2]; ?>;
+				}
 
 			/* Non-unique specific selector */
 			#wp-pointer-0.wp-pointer-top .wp-pointer-content h3:before {
@@ -454,7 +469,7 @@ final class Guard {
 					$pointer_content = sprintf( 
 						'<h3>%s</h3><p>%s</p>', 
 						__( 'Site Protection', 'guard' ), 
-						__( 'The shield icon will show the current state of the protection of this site. When inactive, the shield is greyed out. When active, the shield has a blue color.', 'guard' )
+						__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is notably colored.', 'guard' )
 					); ?>
 
 				// Pointer
