@@ -308,33 +308,44 @@ final class Guard {
 	public function admin_bar_scripts() {
 
 		// For the admin bar
-		if ( is_admin_bar_showing() ) { ?>
+		if ( ! is_admin_bar_showing() )
+			return; ?>
 
-			<style type="text/css">
-				#wpadminbar #wp-admin-bar-guard > .ab-item {
-					padding: 0 9px 0 7px;
-				}
+		<style type="text/css">
+			#wpadminbar #wp-admin-bar-guard > .ab-item {
+				padding: 0 9px 0 7px;
+			}
 
-				#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon {
-					width: 18px;
-					height: 20px;
-					margin-right: 0;
-				}
+			#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon {
+				width: 18px;
+				height: 20px;
+				margin-right: 0;
+			}
 
-				#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon:before {
-					content: '\f332'; /* dashicons-shield */
-					top: 2px;
-					opacity: 0.5;
-				}
+			#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon:before {
+				content: '\f332'; /* dashicons-shield */
+				top: 2px;
+				opacity: 0.5;
+			}
 
-				#wpadminbar #wp-admin-bar-guard.active > .ab-item .ab-icon:before {
-					color: #45bbe6; /* The default ab hover color on front */
-					opacity: 1;
-				}
-			</style>
+			#wpadminbar #wp-admin-bar-guard.active > .ab-item .ab-icon:before {
+				color: #45bbe6; /* The default ab hover color on front */
+				opacity: 1;
+			}
 
-			<?php
-		}
+			/* Non-unique specific selector */
+			#wp-pointer-0.wp-pointer-top .wp-pointer-content h3:before {
+				content: '\f332';
+			}
+
+			/* Non-unique specific selector */
+			#wp-pointer-0.wp-pointer-top .wp-pointer-arrow {
+				left: auto;
+				right: 27px;
+			}
+		</style>
+
+		<?php
 	}
 
 	/** Admin *****************************************************************/
@@ -428,11 +439,41 @@ final class Guard {
 			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.min.css', false, '1.2.0' );
 		wp_enqueue_style( 'chosen' );
 
-		?>
+		// WP pointer
+		wp_enqueue_script( 'wp-pointer' );
+		wp_enqueue_style( 'wp-pointer' ); 
+
+		// Define pointer variable(s)
+		$hide_pointer = in_array( 'guard_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ); ?>
 
 		<script type="text/javascript">
 			jQuery(document).ready( function($) {
 				$( '.chzn-select' ).chosen();
+
+				<?php if ( is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! $hide_pointer ) : 
+					$pointer_content = sprintf( 
+						'<h3>%s</h3><p>%s</p>', 
+						__( 'Site Protection', 'guard' ), 
+						__( 'The shield icon will show the current state of the protection of this site. When inactive, the shield is greyed out. When active, the shield has a blue color.', 'guard' )
+					); ?>
+
+				// Pointer
+				$( '#wp-admin-bar-guard' ).pointer({
+					content: '<?php echo $pointer_content; ?>',
+					position: {
+						edge: 'top',
+						align: 'center',
+						my: 'right+40 top'
+					},
+					close: function() {
+						$.post( ajaxurl, {
+							pointer: 'guard_protection',
+							action: 'dismiss-wp-pointer'
+						});
+					}
+				}).pointer('open');
+
+				<?php endif; ?>
 			});
 		</script>
 
