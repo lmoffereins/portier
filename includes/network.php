@@ -694,35 +694,22 @@ final class Guard_Network {
 			.widefat .column-protected {
 				width: 20px;
 				padding-right: 5px;
-				font-size: 0; /* Hide column label */
 			}
 
-				.widefat .column-protected:before {
-					text-indent: 0;
-					display: inline-block;
-					width: 20px;
-					height: 20px;
-					font-size: 20px;
-					line-height: 1;
-					font-family: dashicons;
-					font-weight: 400;
-					font-style: normal;
-					vertical-align: top;
-					text-align: center;
-					content: "\f332"; /* dashicons-yes */
+				.widefat th.column-protected {
+					font-size: 0; /* Hide column label */
+				}
+
+				.widefat .column-protected i.dashicons {
 					color: #ddd;
 				}
 
-				.widefat thead .column-protected:before,
-				.widefat tfoot .column-protected:before {
-					content: '';
-				}
-
-				.widefat .site-protected .column-protected:before {
+				.widefat .site-protected .column-protected i.dashicons {
 					color: #0074a2;
 				}
 
-			.widefat .column-allowed_users {
+			/* For count columns */
+			.widefat [class*="column-allowed-"] {
 				width: 10%;
 			}
 		</style>
@@ -905,7 +892,7 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 				'cb'            => $columns['cb'],
 				'protected'     => __( 'Protected', 'guard' ),
 				'blogname'      => $columns['blogname'],
-				'allowed_users' => __( 'Allowed Users', 'guard' ),
+				'allowed-users' => __( 'Allowed Users', 'guard' ),
 			) );
 		}
 
@@ -983,16 +970,25 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 							<?php
 							break;
 
+						case 'protected' :
+							echo "<td class='$column_name column-$column_name'$style>"; ?>
+								<i class="dashicons dashicons-shield" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'guard' ) : _e( 'Site protection is not active', 'guard' ); ?>"></i>
+							</td>
+
+							<?php
+							break;
+
 						case 'blogname' :
+							$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'guard' ) . ')' : '';
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
-								<a href="<?php echo esc_url( add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a>
+								<a href="<?php echo esc_url( add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
 								<br/><span><?php echo $blogname; ?></span>
 							</td>
 
 							<?php
 							break;
 
-						case 'allowed_users' :
+						case 'allowed-users' :
 							$users = get_option( '_guard_allowed_users', array() );
 							$count = count( $users );
 							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );

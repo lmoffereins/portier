@@ -59,7 +59,9 @@ class Guard_BuddyPress {
 			add_filter( 'guard_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
 
 			// Admin
-			add_filter( 'guard_get_protection_details', array( $this, 'protection_details' ) );
+			add_filter( 'guard_get_protection_details',      array( $this, 'protection_details'  )        );
+			add_filter( 'guard_network_sites_columns',       array( $this, 'sites_columns'       )        );
+			add_action( 'guard_network_sites_custom_column', array( $this, 'sites_custom_column' ), 10, 2 );
 		}
 	}
 
@@ -255,6 +257,45 @@ class Guard_BuddyPress {
 		$title .= sprintf( _n( '%d allowed group', '%d allowed groups', $allowed_group_count, 'guard' ), $allowed_group_count );
 
 		return $title;
+	}
+
+	/**
+	 * Append the Allowed Groups sites column
+	 *
+	 * @since 1.1.0
+	 * 
+	 * @param array $columns Columns
+	 * @return array Columns
+	 */
+	public function sites_columns( $columns ) {
+		$columns['allowed-groups'] = __( 'Allowed Groups', 'guard' );
+		return $columns;
+	}
+
+	/**
+	 * Output the Allowed Groups column content
+	 *
+	 * @since 1.1.0
+	 * 
+	 * @param string $column_name Column name
+	 * @param int $site_id Site ID
+	 */
+	public function sites_custom_column( $column_name, $site_id ) {
+
+		// Bail when this is not our column
+		if ( 'allowed-groups' != $column_name )
+			return;
+
+		$groups = get_option( '_guard_bp_allowed_groups', array() );
+		$count  = count( $groups );
+		$title  = implode( ', ', wp_list_pluck( array_map( 'groups_get_group', array_map( function( $id ) { return array( 'group_id' => $id ); }, array_slice( $groups, 0, 5 ) ) ), 'name' ) );
+		if ( 0 < $count - 5 ) {
+			$title = sprintf( __( '%s and %d more', 'guard' ), $title, $count - 5 );
+		} ?>
+
+		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'guard' ), $count ); ?></span>
+
+		<?php
 	}
 }
 
