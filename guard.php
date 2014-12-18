@@ -278,7 +278,7 @@ final class Guard {
 			$active = guard_is_site_protected();
 			$title1 = $active ? __( 'Site protection is active', 'guard' ) : __( 'Site protection is not active', 'guard' );
 			$title2 = $active ? guard_get_protection_details() : $title1;
-			$class  = $active ? 'active' : '';
+			$class  = $active ? 'hover site-protected' : '';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
@@ -306,17 +306,10 @@ final class Guard {
 	 * @uses is_admin_bar_showing()
 	 */
 	public function admin_bar_scripts() {
-		global $_wp_admin_css_colors;
 
 		// For the admin bar
 		if ( ! is_admin_bar_showing() )
-			return; 
-
-		// Get the actual color scheme. Default to 'fresh'
-		$scheme = get_user_option( 'admin_color' );
-		if ( ! isset( $_wp_admin_css_colors[ $scheme ] ) )
-			$scheme = 'fresh';
-		$colors = isset( $_wp_admin_css_colors[ $scheme ] ) ? $_wp_admin_css_colors[ $scheme ]->colors : array( 1 => '#999', 2 => '#45bbe6' ); ?>
+			return; ?>
 
 		<style type="text/css">
 			#wpadminbar #wp-admin-bar-guard > .ab-item {
@@ -330,27 +323,18 @@ final class Guard {
 			}
 
 			#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon:before {
-				content: '\f332'; /* dashicons-shield */
+				content: '\f334'; /* dashicons-shield-alt */
 				top: 2px;
-				opacity: 0.5;
+				opacity: 0.4;
 			}
 
-				#wpadminbar #wp-admin-bar-guard:hover > .ab-item .ab-icon:before {
-					color: <?php echo $colors[1]; ?>;
-				}
-
-			#wpadminbar #wp-admin-bar-guard.active > .ab-item .ab-icon:before {
-				color: <?php echo $colors[2]; ?>;
-				opacity: 1;
-			}
-
-				#wpadminbar #wp-admin-bar-guard.active:hover > .ab-item .ab-icon:before {
-					color: <?php echo $colors[2]; ?>;
+				#wpadminbar #wp-admin-bar-guard.site-protected > .ab-item .ab-icon:before {
+					opacity: 1;
 				}
 
 			/* Non-unique specific selector */
 			#wp-pointer-0.wp-pointer-top .wp-pointer-content h3:before {
-				content: '\f332';
+				content: '\f334'; /* dashicons-shield-alt */
 			}
 
 			/* Non-unique specific selector */

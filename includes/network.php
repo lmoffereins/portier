@@ -972,7 +972,7 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 
 						case 'protected' :
 							echo "<td class='$column_name column-$column_name'$style>"; ?>
-								<i class="dashicons dashicons-shield" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'guard' ) : _e( 'Site protection is not active', 'guard' ); ?>"></i>
+								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'guard' ) : _e( 'Site protection is not active', 'guard' ); ?>"></i>
 							</td>
 
 							<?php
