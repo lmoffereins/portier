@@ -14,7 +14,7 @@ jQuery(document).ready( function($) {
 	// Pointer
 	if ( settings.showPointer ) {
 		$( '#wp-admin-bar-guard' ).pointer({
-			content: '<?php echo $pointer_content; ?>',
+			content: l10n.pointerContent,
 			position: {
 				edge: 'top',
 				align: 'center',
