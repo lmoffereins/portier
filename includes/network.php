@@ -611,7 +611,7 @@ final class Guard_Network {
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
-		return ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard' == $GLOBALS['hook_suffix'] );
+		return is_network_admin() && ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard' == $GLOBALS['hook_suffix'] );
 	}
 
 	/**

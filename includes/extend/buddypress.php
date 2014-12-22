@@ -103,7 +103,7 @@ class Guard_BuddyPress {
 	 * @since 1.0.0
 	 *
 	 * @uses groups_get_groups()
-	 * @uses Guard_Network::is_network_page()
+	 * @uses is_network_admin()
 	 * @uses get_site_option()
 	 * @uses get_option()
 	 */
@@ -114,7 +114,7 @@ class Guard_BuddyPress {
 		$groups = $groups['groups'];
 		
 		// Get selected groups
-		$getter   = is_multisite() && guard()->network->is_network_page() ? 'get_site_option' : 'get_option';
+		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
 		$selected = call_user_func_array( $getter, array( '_guard_bp_allowed_groups', array() ) ); ?>
 
 		<select id="_guard_bp_allowed_groups" name="_guard_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a group', 'guard' ); ?>">
