@@ -440,41 +440,20 @@ final class Guard {
 
 		// WP pointer
 		wp_enqueue_script( 'wp-pointer' );
-		wp_enqueue_style( 'wp-pointer' ); 
+		wp_enqueue_style ( 'wp-pointer' ); 
 
-		// Define pointer variable(s)
-		$hide_pointer = in_array( 'guard_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ); ?>
-
-		<script type="text/javascript">
-			jQuery(document).ready( function($) {
-				$( '.chzn-select' ).chosen();
-
-				<?php if ( is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! $hide_pointer ) : 
-					$pointer_content = sprintf( 
-						'<h3>%s</h3><p>%s</p>', 
-						__( 'Site Protection', 'guard' ), 
-						__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is notably colored.', 'guard' )
-					); ?>
-
-				// Pointer
-				$( '#wp-admin-bar-guard' ).pointer({
-					content: '<?php echo $pointer_content; ?>',
-					position: {
-						edge: 'top',
-						align: 'center',
-						my: 'right+40 top'
-					},
-					close: function() {
-						$.post( ajaxurl, {
-							pointer: 'guard_protection',
-							action: 'dismiss-wp-pointer'
-						});
-					}
-				}).pointer('open');
-
-				<?php endif; ?>
-			});
-		</script>
+		// Plugin admin
+		wp_register_script( 'guard-admin', $this->includes_url . 'js/guard-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
+		wp_enqueue_script ( 'guard-admin' );
+		wp_localize_script( 'guard-admin', 'guardAdminL10n', array(
+			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>', 
+				__( 'Site Protection', 'guard' ), 
+				__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is notably colored.', 'guard' )
+			),
+			'settings' => array(
+				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'guard_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
+			)
+		) ); ?>
 
 		<style type="text/css">
 			.chzn-container-multi .chzn-choices .search-field input {
