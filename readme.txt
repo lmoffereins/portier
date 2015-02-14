@@ -3,7 +3,7 @@ Contributors: Offereins
 Tags: protect, access, restrict, site, blog, user
 Requires at least: 4.0
 Tested up to: 4.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,8 +19,7 @@ Supports BuddyPress: provide access for selected user groups.
 
 = 1.1.0 =
 * Changed Network Sites admin to use a list table
+* Added admin pointer for the admin bar Guard icon
 
 = 1.0.0 =
 * Initial release
-* Account for both network and site level protection
-* Support BuddyPress groups

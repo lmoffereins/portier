@@ -13,7 +13,7 @@
  * Plugin URI:        https://github.com/lmoffereins/guard
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
- * Version:           1.0.0
+ * Version:           1.1.0
  * Text Domain:       guard
  * Domain Path:       /languages/
  * GitHub Plugin URI: lmoffereins/guard
@@ -81,7 +81,7 @@ final class Guard {
 
 		/** Versions **********************************************************/
 
-		$this->version = '1.0.0';
+		$this->version = '1.1.0';
 
 		/** Paths *************************************************************/
 
