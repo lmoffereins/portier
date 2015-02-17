@@ -210,7 +210,7 @@ class Guard_BuddyPress {
 					foreach ( $hierarchy as $gid ) {
 
 						// Add child group ids when found
-						if ( $children = BP_Groups_Hierarchy::has_children( $gid ) ) {
+						if ( $children = @BP_Groups_Hierarchy::has_children( $gid ) ) {
 							foreach ( $children as $child_id )
 								$hierarchy->append( (int) $child_id );
 						}
