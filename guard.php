@@ -208,8 +208,13 @@ final class Guard {
 	 * Redirect users on accessing a page of your site
 	 *
 	 * @since 1.0.0
+	 * @since 1.2.0 Handle feed requests
 	 *
 	 * @uses guard_is_site_protected()
+	 * @uses is_404()
+	 * @uses is_feed()
+	 * @uses WP_Query::set_404()
+	 * @uses status_header()
 	 * @uses is_user_logged_in() To check if the user is logged in
 	 * @uses guard_is_user_allowed() To check if the user is allowed
 	 * @uses do_action() Calls 'guard_site_protect'
@@ -221,8 +226,9 @@ final class Guard {
 		if ( ! guard_is_site_protected() || is_404() )
 			return;
 
-		// Handle feeds
+		// Handle feed requests
 		if ( is_feed() ) {
+			global $wp_query;
 
 			// Block with 404 status
 			$wp_query->is_feed = false;
