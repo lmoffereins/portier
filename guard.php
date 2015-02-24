@@ -135,6 +135,7 @@ final class Guard {
 		add_filter( 'login_message',     array( $this, 'login_message'  ), 1 );
 		add_action( 'admin_bar_menu',    array( $this, 'admin_bar_menu' )    );
 
+
 		// Admin
 		add_action( 'admin_init',       array( $this, 'register_settings' ) );
 		add_action( 'admin_menu',       array( $this, 'admin_menu'        ) );
@@ -217,8 +218,17 @@ final class Guard {
 	public function site_protect() {
 
 		// Bail when protection is not active
-		if ( ! guard_is_site_protected() )
+		if ( ! guard_is_site_protected() || is_404() )
 			return;
+
+		// Handle feeds
+		if ( is_feed() ) {
+
+			// Block with 404 status
+			$wp_query->is_feed = false;
+			$wp_query->set_404();
+			status_header( 404 );
+		}
 
 		// When user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! guard_is_user_allowed() ) {
@@ -292,7 +302,7 @@ final class Guard {
 				),
 			) );
 
-			// Hook admin bar styles. After footer scripts
+			// Hook admin bar styles. After core's footer scripts
 			add_action( 'wp_footer',    array( $this, 'admin_bar_scripts' ), 21 );
 			add_action( 'admin_footer', array( $this, 'admin_bar_scripts' ), 21 );
 		}
@@ -332,12 +342,12 @@ final class Guard {
 					opacity: 1;
 				}
 
-			/* Non-unique specific selector */
+			/* Non-unique specific selector (!) */
 			#wp-pointer-0.wp-pointer-top .wp-pointer-content h3:before {
 				content: '\f334'; /* dashicons-shield-alt */
 			}
 
-			/* Non-unique specific selector */
+			/* Non-unique specific selector (!) */
 			#wp-pointer-0.wp-pointer-top .wp-pointer-arrow {
 				left: auto;
 				right: 27px;
