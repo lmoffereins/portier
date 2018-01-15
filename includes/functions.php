@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Guard Common Functions
+ * Deurwachter Common Functions
  *
- * @package Guard
+ * @package Deurwachter
  * @subpackage Functions
  */
 
@@ -19,12 +19,12 @@ defined( 'ABSPATH' ) || exit;
  * @uses switch_to_blog()
  * @uses get_option()
  * @uses restor_current_blog()
- * @uses apply_filters() Calls 'guard_is_site_protected'
+ * @uses apply_filters() Calls 'deurwachter_is_site_protected'
  * 
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
  * @return bool Site protection is active
  */
-function guard_is_site_protected( $site_id = 0 ) {
+function deurwachter_is_site_protected( $site_id = 0 ) {
 
 	// Network: switch to site
 	if ( ! empty( $site_id ) && is_multisite() ) {
@@ -32,14 +32,14 @@ function guard_is_site_protected( $site_id = 0 ) {
 		switch_to_blog( $site_id );
 	}
 
-	$protected = get_option( '_guard_site_protect' );
+	$protected = get_option( '_deurwachter_site_protect' );
 
 	// Network: reset the switched site
 	if ( ! empty( $site_id ) && is_multisite() ) {
 		restore_current_blog();
 	}
 
-	return (bool) apply_filters( 'guard_is_site_protected', $protected, $site_id );
+	return (bool) apply_filters( 'deurwachter_is_site_protected', $protected, $site_id );
 }
 
 /**
@@ -53,14 +53,14 @@ function guard_is_site_protected( $site_id = 0 ) {
  * @uses switch_to_blog()
  * @uses get_option()
  * @uses restore_current_blog()
- * @uses apply_filters() To call 'guard_is_user_allowed' for
+ * @uses apply_filters() To call 'deurwachter_is_user_allowed' for
  *                        plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
  * @return boolean The user is allowed
  */
-function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
+function deurwachter_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -78,7 +78,7 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 	}
 
 	// Get allowed users array
-	$users = (array) get_option( '_guard_allowed_users', array() );
+	$users = (array) get_option( '_deurwachter_allowed_users', array() );
 
 	// Network: reset the switched site
 	if ( ! empty( $site_id ) && is_multisite() ) {
@@ -89,7 +89,7 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 	$allowed = in_array( $user_id, $users );
 
 	// Filter whether user is allowed
-	return (bool) apply_filters( 'guard_is_user_allowed', $allowed, $user_id, $site_id );
+	return (bool) apply_filters( 'deurwachter_is_user_allowed', $allowed, $user_id, $site_id );
 }
 
 /**
@@ -98,17 +98,17 @@ function guard_is_user_allowed( $user_id = 0, $site_id = 0 ) {
  * @since 1.0.0
  *
  * @uses get_option()
- * @uses apply_filters() Calls 'guard_get_protection_details'
+ * @uses apply_filters() Calls 'deurwachter_get_protection_details'
  * 
  * @return string Protection details
  */
-function guard_get_protection_details() {
+function deurwachter_get_protection_details() {
 
 	// Setup basic protection details: allowed user count
-	$allowed_user_count = count( get_option( '_guard_allowed_users' ) );
-	$details = sprintf( _n( '%d allowed user', '%d allowed users', $allowed_user_count, 'guard' ), $allowed_user_count );
+	$allowed_user_count = count( get_option( '_deurwachter_allowed_users' ) );
+	$details = sprintf( _n( '%d allowed user', '%d allowed users', $allowed_user_count, 'deurwachter' ), $allowed_user_count );
 
-	return apply_filters( 'guard_get_protection_details', $details );
+	return apply_filters( 'deurwachter_get_protection_details', $details );
 }
 
 /**
@@ -118,17 +118,17 @@ function guard_get_protection_details() {
  *
  * @uses is_multisite()
  * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_is_network_protected'
+ * @uses apply_filters() Calls 'deurwachter_is_network_protected'
  * 
  * @return bool Network protection is active
  */
-function guard_is_network_protected() {
+function deurwachter_is_network_protected() {
 
 	// Bail when not on multisite
 	if ( ! is_multisite() )
 		return false;
 
-	return (bool) apply_filters( 'guard_is_network_protected', get_site_option( '_guard_network_protect' ) );
+	return (bool) apply_filters( 'deurwachter_is_network_protected', get_site_option( '_deurwachter_network_protect' ) );
 }
 
 /**
@@ -139,13 +139,13 @@ function guard_is_network_protected() {
  * @uses get_current_user_id()
  * @uses is_super_admin() To check if the current user is a super admin
  * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_network_is_user_allowed' hook
+ * @uses apply_filters() Calls 'deurwachter_network_is_user_allowed' hook
  *                        for plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
  * @return boolean The user is allowed
  */
-function guard_network_is_user_allowed( $user_id = 0 ) {
+function deurwachter_network_is_user_allowed( $user_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -157,13 +157,13 @@ function guard_network_is_user_allowed( $user_id = 0 ) {
 		return true;
 
 	// Get allowed users array
-	$users = (array) get_site_option( '_guard_network_allowed_users', array() );
+	$users = (array) get_site_option( '_deurwachter_network_allowed_users', array() );
 
 	// Is user selected to be allowed?
 	$allowed = in_array( $user_id, $users );
 
 	// Filter whether user is allowed
-	return (bool) apply_filters( 'guard_network_is_user_allowed', $allowed, $user_id );
+	return (bool) apply_filters( 'deurwachter_network_is_user_allowed', $allowed, $user_id );
 }
 
 /**
@@ -172,12 +172,12 @@ function guard_network_is_user_allowed( $user_id = 0 ) {
  * @since 1.0.0
  *
  * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_network_redirect'
+ * @uses apply_filters() Calls 'deurwachter_network_redirect'
  * 
  * @return bool Network redirect is active
  */
-function guard_network_redirect() {
-	return (bool) apply_filters( 'guard_network_redirect', get_site_option( '_guard_network_redirect' ) );
+function deurwachter_network_redirect() {
+	return (bool) apply_filters( 'deurwachter_network_redirect', get_site_option( '_deurwachter_network_redirect' ) );
 }
 
 /**
@@ -186,12 +186,12 @@ function guard_network_redirect() {
  * @since 1.0.0
  *
  * @uses get_site_option()
- * @uses apply_filters() Calls 'guard_is_network_only'
+ * @uses apply_filters() Calls 'deurwachter_is_network_only'
  * 
- * @return bool Guard is for the network level only
+ * @return bool Deurwachter is for the network level only
  */
-function guard_is_network_only() {
-	return (bool) apply_filters( 'guard_is_network_only', get_site_option( '_guard_network_only' ) );
+function deurwachter_is_network_only() {
+	return (bool) apply_filters( 'deurwachter_is_network_only', get_site_option( '_deurwachter_network_only' ) );
 }
 
 /**
@@ -207,7 +207,7 @@ function guard_is_network_only() {
  *
  * @return array Network users
  */
-function guard_get_network_users() {
+function deurwachter_get_network_users() {
 
 	// Define local variable(s)
 	$users   = array();
@@ -224,7 +224,7 @@ function guard_get_network_users() {
 		restore_current_blog();
 	}
 
-	return apply_filters( 'guard_get_network_users', $users );
+	return apply_filters( 'deurwachter_get_network_users', $users );
 }
 
 /**
@@ -236,11 +236,11 @@ function guard_get_network_users() {
  * @uses get_blogs_of_user()
  * @uses get_site_option()
  * @uses is_super_admin()
- * @uses apply_filters() Calls 'guard_network_hide_my_sites'
+ * @uses apply_filters() Calls 'deurwachter_network_hide_my_sites'
  *
  * @return boolean Hide "My Sites"
  */
-function guard_network_hide_my_sites() {
+function deurwachter_network_hide_my_sites() {
 
 	// Define local variable(s)
 	$user_id = get_current_user_id();
@@ -252,9 +252,9 @@ function guard_network_hide_my_sites() {
 		return false;
 
 	// Hiding is active and user site count is less then two
-	if ( get_site_option( '_guard_network_hide_my_sites' ) && count( $sites ) < 2 ) {
+	if ( get_site_option( '_deurwachter_network_hide_my_sites' ) && count( $sites ) < 2 ) {
 		$hide = true;
 	}
 
-	return apply_filters( 'guard_network_hide_my_sites', $hide, $user_id, $sites );
+	return apply_filters( 'deurwachter_network_hide_my_sites', $hide, $user_id, $sites );
 }

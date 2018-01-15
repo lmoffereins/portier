@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Guard\n"
+"Project-Id-Version: Deurwachter\n"
 "POT-Creation-Date: 2012-10-16 13:55+0100\n"
 "PO-Revision-Date: 2012-10-16 13:56+0100\n"
 "Last-Translator: \n"
@@ -15,50 +15,50 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../guard.php:103
+#: ../deurwachter.php:103
 msgid "Access Settings"
 msgstr ""
 
-#: ../guard.php:104
+#: ../deurwachter.php:104
 msgid "Additional Settings"
 msgstr ""
 
-#: ../guard.php:106
+#: ../deurwachter.php:106
 msgid "Protect my site"
 msgstr ""
 
-#: ../guard.php:109
+#: ../deurwachter.php:109
 msgid "Allowed users"
 msgstr ""
 
-#: ../guard.php:112
+#: ../deurwachter.php:112
 msgid "Custom login message"
 msgstr ""
 
-#: ../guard.php:117
+#: ../deurwachter.php:117
 msgid ""
-"Here you enable the Guard plugin. By checking the <em>Protect my site</em> "
+"Here you enable the Deurwachter plugin. By checking the <em>Protect my site</em> "
 "input, this site will only be accessible for admins and allowed users, "
 "specified by you in the select option below. No other shall pass!"
 msgstr ""
 
-#: ../guard.php:121
-msgid "Below you can set additional Guard options."
+#: ../deurwachter.php:121
+msgid "Below you can set additional Deurwachter options."
 msgstr ""
 
-#: ../guard.php:125
+#: ../deurwachter.php:125
 msgid "Enable site protection."
 msgstr ""
 
-#: ../guard.php:134
+#: ../deurwachter.php:134
 msgid "Select a user"
 msgstr ""
 
-#: ../guard.php:139
+#: ../deurwachter.php:139
 msgid "Select which users you want to have access."
 msgstr ""
 
-#: ../guard.php:147
+#: ../deurwachter.php:147
 #, php-format
 msgid ""
 "Serve site guests a nice heads up on the login page. Leave empty if not "
@@ -66,6 +66,6 @@ msgid ""
 "strong> is activated.<br/>Allowed HTML tags %s, %s and %s."
 msgstr ""
 
-#: ../guard.php:167
+#: ../deurwachter.php:167
 msgid "Settings"
 msgstr ""

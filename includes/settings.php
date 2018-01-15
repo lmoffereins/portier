@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Guard Settings Functions
+ * Deurwachter Settings Functions
  *
- * @package Guard
+ * @package Deurwachter
  * @subpackage Settings
  */
 
@@ -17,39 +17,39 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  *
- * @uses apply_filters() Calls 'guard_settings'
+ * @uses apply_filters() Calls 'deurwachter_settings'
  * @return array Settings
  */
-function guard_settings() {
-	return apply_filters( 'guard_settings', array(
+function deurwachter_settings() {
+	return apply_filters( 'deurwachter_settings', array(
 
 		/** Access Settings **********************************************/
 
 		// Site protect switch
-		'_guard_site_protect' => array(
-			'label'             => __( 'Protect my site', 'guard' ),
-			'callback'          => 'guard_setting_protect_site',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard',
+		'_deurwachter_site_protect' => array(
+			'label'             => __( 'Protect my site', 'deurwachter' ),
+			'callback'          => 'deurwachter_setting_protect_site',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter',
 			'sanitize_callback' => 'intval'
 		),
 
 		// Login message
-		'_guard_login_message' => array(
-			'label'             => __( 'Login message', 'guard' ),
-			'callback'          => 'guard_setting_login_message',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard',
-			'sanitize_callback' => 'guard_setting_sanitize_message'
+		'_deurwachter_login_message' => array(
+			'label'             => __( 'Login message', 'deurwachter' ),
+			'callback'          => 'deurwachter_setting_login_message',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter',
+			'sanitize_callback' => 'deurwachter_setting_sanitize_message'
 		),
 
 		// Allowed users
-		'_guard_allowed_users' => array(
-			'label'             => __( 'Allowed users', 'guard' ),
-			'callback'          => 'guard_setting_allow_users',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard',
-			'sanitize_callback' => 'guard_setting_sanitize_ids'
+		'_deurwachter_allowed_users' => array(
+			'label'             => __( 'Allowed users', 'deurwachter' ),
+			'callback'          => 'deurwachter_setting_allow_users',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter',
+			'sanitize_callback' => 'deurwachter_setting_sanitize_ids'
 		),
 	) );
 }
@@ -59,26 +59,26 @@ function guard_settings() {
  *
  * @since 1.0.0
  */
-function guard_access_settings_info() { /* Nothing to show */ }
+function deurwachter_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output additional settings section information header
  *
  * @since 1.0.0
  */
-function guard_additional_settings_info() { /* Nothing to show */ }
+function deurwachter_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the enable site protection input field
  *
  * @since 1.0.0
  *
- * @uses guard_is_site_protected()
+ * @uses deurwachter_is_site_protected()
  */
-function guard_setting_protect_site() { ?>
+function deurwachter_setting_protect_site() { ?>
 
-	<input type="checkbox" id="_guard_site_protect" name="_guard_site_protect" value="1" <?php checked( guard_is_site_protected() ); ?>/>
-	<label for="_guard_site_protect"><?php _e( 'Enable site protection', 'guard' ); ?></label>
+	<input type="checkbox" id="_deurwachter_site_protect" name="_deurwachter_site_protect" value="1" <?php checked( deurwachter_is_site_protected() ); ?>/>
+	<label for="_deurwachter_site_protect"><?php _e( 'Enable site protection', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -91,19 +91,19 @@ function guard_setting_protect_site() { ?>
  * @uses get_option()
  * @uses get_users() To get all users of the site
  */
-function guard_setting_allow_users() {
+function deurwachter_setting_allow_users() {
 
 	// Get the allowed users
-	$allowed = (array) get_option( '_guard_allowed_users', array() );	?>
+	$allowed = (array) get_option( '_deurwachter_allowed_users', array() );	?>
 
-	<select id="_guard_allowed_users" class="chzn-select" name="_guard_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
+	<select id="_deurwachter_allowed_users" class="chzn-select" name="_deurwachter_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'deurwachter' ); ?>">
 
 		<?php foreach ( get_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $allowed ) ); ?>><?php echo $user->user_login; ?></option>
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_allowed_groups"><?php _e( 'Select which users will have access', 'guard' ); ?></label>
+	<label for="_deurwachter_allowed_groups"><?php _e( 'Select which users will have access', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -116,12 +116,12 @@ function guard_setting_allow_users() {
  * @uses esc_textarea()
  * @uses get_option()
  */
-function guard_setting_login_message() { ?>
+function deurwachter_setting_login_message() { ?>
 
-	<textarea name="_guard_login_message" id="_guard_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_guard_login_message' ) ); ?></textarea>
-	<label for="_guard_login_message">
-		<?php _e( 'When site protection is active, this message will be shown at the login screen.', 'guard' ); ?>
-		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
+	<textarea name="_deurwachter_login_message" id="_deurwachter_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_option( '_deurwachter_login_message' ) ); ?></textarea>
+	<label for="_deurwachter_login_message">
+		<?php _e( 'When site protection is active, this message will be shown at the login screen.', 'deurwachter' ); ?>
+		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'deurwachter' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
 	</label>
 
 	<?php
@@ -135,7 +135,7 @@ function guard_setting_login_message() { ?>
  * @param string $input The submitted value
  * @return array $input
  */
-function guard_setting_sanitize_ids( $input ) {
+function deurwachter_setting_sanitize_ids( $input ) {
 	if ( ! empty( $input ) ) {
 		$input = array_unique( array_map( 'absint', (array) $input ) );
 	} else {
@@ -156,7 +156,7 @@ function guard_setting_sanitize_ids( $input ) {
  * @param string $input The submitted value
  * @return string $input
  */
-function guard_setting_sanitize_message( $input ) {
+function deurwachter_setting_sanitize_message( $input ) {
 	return wp_unslash( wp_kses( $input, array(
 		'a'      => array( 'href' ),
 		'em'     => array(),
@@ -171,68 +171,68 @@ function guard_setting_sanitize_message( $input ) {
  *
  * @since 1.0.0
  *
- * @uses apply_filters() Calls 'guard_network_settings'
+ * @uses apply_filters() Calls 'deurwachter_network_settings'
  * @return array Settings
  */
-function guard_network_settings() {
-	return apply_filters( 'guard_network_settings', array(
+function deurwachter_network_settings() {
+	return apply_filters( 'deurwachter_network_settings', array(
 
 		/** Main Settings ************************************************/
 
 		// Network only
-		'_guard_network_only' => array(
-			'label'             => __( 'Network only', 'guard' ),
-			'callback'          => 'guard_network_setting_network_only',
-			'section'           => 'guard-options-main',
-			'page'              => 'guard_network',
+		'_deurwachter_network_only' => array(
+			'label'             => __( 'Network only', 'deurwachter' ),
+			'callback'          => 'deurwachter_network_setting_network_only',
+			'section'           => 'deurwachter-options-main',
+			'page'              => 'deurwachter_network',
 			'sanitize_callback' => 'intval'
 		),
 
 		// Network redirect
-		'_guard_network_redirect' => array(
-			'label'             => __( 'Redirect to allowed site', 'guard' ),
-			'callback'          => 'guard_network_setting_network_redirect',
-			'section'           => 'guard-options-main',
-			'page'              => 'guard_network',
+		'_deurwachter_network_redirect' => array(
+			'label'             => __( 'Redirect to allowed site', 'deurwachter' ),
+			'callback'          => 'deurwachter_network_setting_network_redirect',
+			'section'           => 'deurwachter-options-main',
+			'page'              => 'deurwachter_network',
 			'sanitize_callback' => 'intval'
 		),
 
 		// Hide "My Sites"
-		'_guard_network_hide_my_sites' => array(
-			'label'             => sprintf( _x( 'Hide %s', 'Setting label for hide-my-sites option', 'guard' ), '"' . __( 'My Sites' ) . '"' ),
-			'callback'          => 'guard_network_setting_hide_my_sites',
-			'section'           => 'guard-options-main',
-			'page'              => 'guard_network',
+		'_deurwachter_network_hide_my_sites' => array(
+			'label'             => sprintf( _x( 'Hide %s', 'Setting label for hide-my-sites option', 'deurwachter' ), '"' . __( 'My Sites' ) . '"' ),
+			'callback'          => 'deurwachter_network_setting_hide_my_sites',
+			'section'           => 'deurwachter-options-main',
+			'page'              => 'deurwachter_network',
 			'sanitize_callback' => 'intval'
 		),
 
 		/** Access Settings **********************************************/
 
 		// Network protect switch
-		'_guard_network_protect' => array(
-			'label'             => __( 'Protect this network', 'guard' ),
-			'callback'          => 'guard_network_setting_network_protect',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard_network',
+		'_deurwachter_network_protect' => array(
+			'label'             => __( 'Protect this network', 'deurwachter' ),
+			'callback'          => 'deurwachter_network_setting_network_protect',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter_network',
 			'sanitize_callback' => 'intval'
 		),
 
 		// Login message
-		'_guard_network_login_message' => array(
-			'label'             => __( 'Login message', 'guard' ),
-			'callback'          => 'guard_network_setting_login_message',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard_network',
-			'sanitize_callback' => 'guard_setting_sanitize_message'
+		'_deurwachter_network_login_message' => array(
+			'label'             => __( 'Login message', 'deurwachter' ),
+			'callback'          => 'deurwachter_network_setting_login_message',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter_network',
+			'sanitize_callback' => 'deurwachter_setting_sanitize_message'
 		),
 
 		// Allowed users
-		'_guard_network_allowed_users' => array(
-			'label'             => __( 'Allowed users', 'guard' ),
-			'callback'          => 'guard_network_setting_allowed_users',
-			'section'           => 'guard-options-access',
-			'page'              => 'guard_network',
-			'sanitize_callback' => 'guard_setting_sanitize_ids'
+		'_deurwachter_network_allowed_users' => array(
+			'label'             => __( 'Allowed users', 'deurwachter' ),
+			'callback'          => 'deurwachter_network_setting_allowed_users',
+			'section'           => 'deurwachter-options-access',
+			'page'              => 'deurwachter_network',
+			'sanitize_callback' => 'deurwachter_setting_sanitize_ids'
 		),
 
 	) );
@@ -243,33 +243,33 @@ function guard_network_settings() {
  *
  * @since 1.0.0
  */
-function guard_network_main_settings_info() { /* Nothing to show */ }
+function deurwachter_network_main_settings_info() { /* Nothing to show */ }
 
 /**
  * Output network access settings section information header
  *
  * @since 1.0.0
  */
-function guard_network_access_settings_info() { /* Nothing to show */ }
+function deurwachter_network_access_settings_info() { /* Nothing to show */ }
 
 /**
  * Output network additional settings section information header
  *
  * @since 1.0.0
  */
-function guard_network_additional_settings_info() { /* Nothing to show */ }
+function deurwachter_network_additional_settings_info() { /* Nothing to show */ }
 
 /**
  * Output the network only input field
  *
  * @since 1.0.0
  *
- * @uses guard_is_network_only()
+ * @uses deurwachter_is_network_only()
  */
-function guard_network_setting_network_only() { ?>
+function deurwachter_network_setting_network_only() { ?>
 
-	<input type="checkbox" id="_guard_network_only" name="_guard_network_only" value="1" <?php checked( guard_is_network_only() ); ?>/>
-	<label for="_guard_network_only"><?php _e( 'Disable this plugin for individual sites', 'guard' ); ?></label>
+	<input type="checkbox" id="_deurwachter_network_only" name="_deurwachter_network_only" value="1" <?php checked( deurwachter_is_network_only() ); ?>/>
+	<label for="_deurwachter_network_only"><?php _e( 'Disable this plugin for individual sites', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -279,12 +279,12 @@ function guard_network_setting_network_only() { ?>
  *
  * @since 1.0.0
  *
- * @uses guard_is_network_protected()
+ * @uses deurwachter_is_network_protected()
  */
-function guard_network_setting_network_protect() { ?>
+function deurwachter_network_setting_network_protect() { ?>
 
-	<input type="checkbox" id="_guard_network_protect" name="_guard_network_protect" value="1" <?php checked( guard_is_network_protected() ); ?>/>
-	<label for="_guard_network_protect"><?php _e( 'Enable network protection', 'guard' ); ?></label>
+	<input type="checkbox" id="_deurwachter_network_protect" name="_deurwachter_network_protect" value="1" <?php checked( deurwachter_is_network_protected() ); ?>/>
+	<label for="_deurwachter_network_protect"><?php _e( 'Enable network protection', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -294,12 +294,12 @@ function guard_network_setting_network_protect() { ?>
  *
  * @since 1.0.0
  *
- * @uses guard_network_redirect()
+ * @uses deurwachter_network_redirect()
  */
-function guard_network_setting_network_redirect() { ?>
+function deurwachter_network_setting_network_redirect() { ?>
 
-	<input type="checkbox" id="_guard_network_redirect" name="_guard_network_redirect" value="1" <?php checked( guard_network_redirect() ); ?>/>
-	<label for="_guard_network_redirect"><?php _e( 'Instead of just logging the user out, try to redirect the user from protected sites to an allowed site or the network home, when available', 'guard' ); ?></label>
+	<input type="checkbox" id="_deurwachter_network_redirect" name="_deurwachter_network_redirect" value="1" <?php checked( deurwachter_network_redirect() ); ?>/>
+	<label for="_deurwachter_network_redirect"><?php _e( 'Instead of just logging the user out, try to redirect the user from protected sites to an allowed site or the network home, when available', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -311,10 +311,10 @@ function guard_network_setting_network_redirect() { ?>
  *
  * @uses get_site_option() To get the field's value
  */
-function guard_network_setting_hide_my_sites() { ?>
+function deurwachter_network_setting_hide_my_sites() { ?>
 
-	<input type="checkbox" id="_guard_network_hide_my_sites" name="_guard_network_hide_my_sites" value="1" <?php checked( get_site_option( '_guard_network_hide_my_sites' ) ); ?>/>
-	<label for="_guard_network_hide_my_sites"><?php printf( __( 'Hide the %s links and page when a user has access to only one site', 'guard' ), '"' . __( 'My Sites' ) . '"' ); ?></label>
+	<input type="checkbox" id="_deurwachter_network_hide_my_sites" name="_deurwachter_network_hide_my_sites" value="1" <?php checked( get_site_option( '_deurwachter_network_hide_my_sites' ) ); ?>/>
+	<label for="_deurwachter_network_hide_my_sites"><?php printf( __( 'Hide the %s links and page when a user has access to only one site', 'deurwachter' ), '"' . __( 'My Sites' ) . '"' ); ?></label>
 
 	<?php
 }
@@ -325,21 +325,21 @@ function guard_network_setting_hide_my_sites() { ?>
  * @since 1.0.0
  *
  * @uses get_site_option() To get the field's value
- * @uses guard_get_network_users() To get all users of the network
+ * @uses deurwachter_get_network_users() To get all users of the network
  */
-function guard_network_setting_allowed_users() {
+function deurwachter_network_setting_allowed_users() {
 
 	// Get the allowed network users
-	$allowed = (array) get_site_option( '_guard_network_allowed_users', array() ); ?>
+	$allowed = (array) get_site_option( '_deurwachter_network_allowed_users', array() ); ?>
 
-	<select id="_guard_network_allowed_users" class="chzn-select" name="_guard_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'guard' ); ?>">
+	<select id="_deurwachter_network_allowed_users" class="chzn-select" name="_deurwachter_network_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a user', 'deurwachter' ); ?>">
 
-		<?php foreach ( guard_get_network_users() as $user ) : ?>
+		<?php foreach ( deurwachter_get_network_users() as $user ) : ?>
 			<option value="<?php echo $user->ID; ?>" <?php selected( in_array( $user->ID, $allowed ) ); ?>><?php echo $user->user_login; ?></option>
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_guard_network_allowed_users"><?php _e( 'Select which users will have access', 'guard' ); ?></label>
+	<label for="_deurwachter_network_allowed_users"><?php _e( 'Select which users will have access', 'deurwachter' ); ?></label>
 
 	<?php
 }
@@ -351,12 +351,12 @@ function guard_network_setting_allowed_users() {
  *
  * @uses get_site_option() To get the field's value
  */
-function guard_network_setting_login_message() { ?>
+function deurwachter_network_setting_login_message() { ?>
 
-	<textarea name="_guard_network_login_message" id="_guard_network_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_guard_network_login_message' ) ); ?></textarea>
-	<label for="_guard_network_login_message">
-		<?php _e( 'When network protection is active, this message will be shown at the login screen.', 'guard' ); ?>
-		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'guard' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
+	<textarea name="_deurwachter_network_login_message" id="_deurwachter_network_login_message" style="width:25em;" rows="3"><?php echo esc_textarea( get_site_option( '_deurwachter_network_login_message' ) ); ?></textarea>
+	<label for="_deurwachter_network_login_message">
+		<?php _e( 'When network protection is active, this message will be shown at the login screen.', 'deurwachter' ); ?>
+		<?php printf( __( 'Allowed HTML tags are: %s, %s and %s.', 'deurwachter' ), '<code>&#60;a&#62;</code>', '<code>&#60;em&#62;</code>', '<code>&#60;strong&#62;</code>' ); ?>
 	</label>
 
 	<?php

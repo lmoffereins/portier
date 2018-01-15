@@ -1,47 +1,44 @@
 <?php
 
 /**
- * The Guard Plugin
+ * The Deurwachter Plugin
  *
- * @package Guard
+ * @package Deurwachter
  * @subpackage Main
  */
 
 /**
- * Plugin Name:       Guard
+ * Plugin Name:       Deurwachter (former Guard)
  * Description:       Restrict access to your (multi)site
- * Plugin URI:        https://github.com/lmoffereins/guard
+ * Plugin URI:        https://github.com/lmoffereins/deurwachter
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
  * Version:           1.1.0
- * Text Domain:       guard
+ * Text Domain:       deurwachter
  * Domain Path:       /languages/
- * GitHub Plugin URI: lmoffereins/guard
+ * GitHub Plugin URI: lmoffereins/deurwachter
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Guard' ) ) :
+if ( ! class_exists( 'Deurwachter' ) ) :
 /**
- * Main Guard Class
+ * Main Deurwachter Class
  *
  * @since 1.0.0
  */
-final class Guard {
+final class Deurwachter {
 
 	/** Singleton *************************************************************/
 
 	/**
-	 * Main Guard Instance
+	 * Main Deurwachter Instance
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses Guard::setup_globals() Setup the globals needed
-	 * @uses Guard::includes() Include the required files
-	 * @uses Guard::setup_actions() Setup the hooks and actions
-	 * @see guard()
-	 * @return The one true Guard
+	 * @see deurwachter()
+	 * @return The one true Deurwachter
 	 */
 	public static function instance() {
 
@@ -50,7 +47,7 @@ final class Guard {
 
 		// Only run these methods if they haven't been ran previously
 		if ( null === $instance ) {
-			$instance = new Guard;
+			$instance = new Deurwachter;
 			$instance->setup_globals();
 			$instance->includes();
 			$instance->setup_actions();
@@ -61,12 +58,12 @@ final class Guard {
 	}
 
 	/**
-	 * A dummy constructor to prevent Guard from being loaded more than once.
+	 * A dummy constructor to prevent Deurwachter from being loaded more than once.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @see Guard::instance()
-	 * @see guard()
+	 * @see Deurwachter::instance()
+	 * @see deurwachter()
 	 */
 	private function __construct() { /* Do nothing here */ }
 
@@ -101,7 +98,7 @@ final class Guard {
 		/** Misc **************************************************************/
 
 		$this->extend       = new stdClass();
-		$this->domain       = 'guard';
+		$this->domain       = 'deurwachter';
 	}
 
 	/**
@@ -139,16 +136,16 @@ final class Guard {
 		// Admin
 		add_action( 'admin_init',       array( $this, 'register_settings' ) );
 		add_action( 'admin_menu',       array( $this, 'admin_menu'        ) );
-		add_action( 'guard_admin_head', array( $this, 'enqueue_scripts'   ) );
+		add_action( 'deurwachter_admin_head', array( $this, 'enqueue_scripts'   ) );
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Setup extensions
-		add_action( 'bp_loaded', 'guard_setup_buddypress' );
+		add_action( 'bp_loaded', 'deurwachter_setup_buddypress' );
 
 		// Fire plugin loaded hook
-		do_action( 'guard_loaded' );
+		do_action( 'deurwachter_loaded' );
 	}
 
 	/** Plugin ****************************************************************/
@@ -170,13 +167,13 @@ final class Guard {
 
 		// Setup paths to current locale file
 		$mofile_local  = $this->lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/guard/' . $mofile;
+		$mofile_global = WP_LANG_DIR . '/deurwachter/' . $mofile;
 
-		// Look in global /wp-content/languages/guard folder first
+		// Look in global /wp-content/languages/deurwachter folder first
 		load_textdomain( $this->domain, $mofile_global );
 
 		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
-		load_plugin_textdomain( $this->domain, false, 'guard/languages' );
+		load_plugin_textdomain( $this->domain, false, 'deurwachter/languages' );
 	}
 
 	/**
@@ -199,7 +196,7 @@ final class Guard {
 		require( $this->includes_dir . 'network.php' );
 
 		// Setup network functionality
-		$this->network = new Guard_Network;
+		$this->network = new Deurwachter_Network;
 	}
 
 	/** Protection ************************************************************/
@@ -210,20 +207,20 @@ final class Guard {
 	 * @since 1.0.0
 	 * @since 1.2.0 Handle feed requests
 	 *
-	 * @uses guard_is_site_protected()
+	 * @uses deurwachter_is_site_protected()
 	 * @uses is_404()
 	 * @uses is_feed()
 	 * @uses WP_Query::set_404()
 	 * @uses status_header()
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses guard_is_user_allowed() To check if the user is allowed
-	 * @uses do_action() Calls 'guard_site_protect'
+	 * @uses deurwachter_is_user_allowed() To check if the user is allowed
+	 * @uses do_action() Calls 'deurwachter_site_protect'
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function site_protect() {
 
 		// Bail when protection is not active
-		if ( ! guard_is_site_protected() || is_404() )
+		if ( ! deurwachter_is_site_protected() || is_404() )
 			return;
 
 		// Handle feed requests
@@ -237,10 +234,10 @@ final class Guard {
 		}
 
 		// When user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! guard_is_user_allowed() ) {
+		if ( ! is_user_logged_in() || ! deurwachter_is_user_allowed() ) {
 
 			// Provide hook
-			do_action( 'guard_site_protect' );
+			do_action( 'deurwachter_site_protect' );
 
 			// Logout user and redirect to login page
 			auth_redirect();
@@ -252,7 +249,7 @@ final class Guard {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_is_site_protected()
+	 * @uses deurwachter_is_site_protected()
 	 * @uses get_option()
 	 * 
 	 * @param string $message The current login messages
@@ -261,8 +258,8 @@ final class Guard {
 	public function login_message( $message ) {
 
 		// When protection is active
-		if ( guard_is_site_protected() ) {
-			$login_message = get_option( '_guard_login_message' );
+		if ( deurwachter_is_site_protected() ) {
+			$login_message = get_option( '_deurwachter_login_message' );
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
@@ -280,8 +277,8 @@ final class Guard {
 	 *
 	 * @uses is_network_admin()
 	 * @uses current_user_can()
-	 * @uses guard_is_site_protected()
-	 * @uses guard_get_protection_details()
+	 * @uses deurwachter_is_site_protected()
+	 * @uses deurwachter_get_protection_details()
 	 * 
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
@@ -291,17 +288,17 @@ final class Guard {
 		if ( ! is_network_admin() && current_user_can( 'manage_options' ) ) {
 
 			// When protection is active
-			$active = guard_is_site_protected();
-			$title1 = $active ? __( 'Site protection is active', 'guard' ) : __( 'Site protection is not active', 'guard' );
-			$title2 = $active ? guard_get_protection_details() : $title1;
+			$active = deurwachter_is_site_protected();
+			$title1 = $active ? __( 'Site protection is active', 'deurwachter' ) : __( 'Site protection is not active', 'deurwachter' );
+			$title2 = $active ? deurwachter_get_protection_details() : $title1;
 			$class  = $active ? 'hover site-protected' : '';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
-				'id'        => 'guard',
+				'id'        => 'deurwachter',
 				'parent'    => 'top-secondary',
 				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $title1 . '</span>',
-				'href'      => add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ),
+				'href'      => add_query_arg( 'page', 'deurwachter', admin_url( 'options-general.php' ) ),
 				'meta'      => array(
 					'class'     => $class,
 					'title'     => $title2,
@@ -328,23 +325,23 @@ final class Guard {
 			return; ?>
 
 		<style type="text/css">
-			#wpadminbar #wp-admin-bar-guard > .ab-item {
+			#wpadminbar #wp-admin-bar-deurwachter > .ab-item {
 				padding: 0 9px 0 7px;
 			}
 
-			#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon {
+			#wpadminbar #wp-admin-bar-deurwachter > .ab-item .ab-icon {
 				width: 18px;
 				height: 20px;
 				margin-right: 0;
 			}
 
-			#wpadminbar #wp-admin-bar-guard > .ab-item .ab-icon:before {
+			#wpadminbar #wp-admin-bar-deurwachter > .ab-item .ab-icon:before {
 				content: '\f334'; /* dashicons-shield-alt */
 				top: 2px;
 				opacity: 0.4;
 			}
 
-				#wpadminbar #wp-admin-bar-guard.site-protected > .ab-item .ab-icon:before {
+				#wpadminbar #wp-admin-bar-deurwachter.site-protected > .ab-item .ab-icon:before {
 					opacity: 1;
 				}
 
@@ -378,10 +375,10 @@ final class Guard {
 
 		// Setup settings page
 		$hook = add_options_page(
-			__( 'Guard Settings', 'guard' ),
-			__( 'Guard', 'guard' ),
+			__( 'Deurwachter Settings', 'deurwachter' ),
+			__( 'Deurwachter', 'deurwachter' ),
 			'manage_options',
-			'guard',
+			'deurwachter',
 			array( $this, 'admin_page' )
 		);
 
@@ -395,7 +392,7 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	public function admin_head() {
-		do_action( 'guard_admin_head' );
+		do_action( 'deurwachter_admin_head' );
 	}
 
 	/**
@@ -404,7 +401,7 @@ final class Guard {
 	 * @since 1.0.0
 	 */
 	public function admin_footer() { 
-		do_action( 'guard_admin_footer' );
+		do_action( 'deurwachter_admin_footer' );
 	}
 
 	/**
@@ -419,11 +416,11 @@ final class Guard {
 	public function admin_page() { ?>
 
 		<div class="wrap">
-			<h2><?php _e( 'Guard', 'guard' ); ?></h2>
+			<h2><?php _e( 'Deurwachter', 'deurwachter' ); ?></h2>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'guard' ); ?>
-				<?php do_settings_sections( 'guard' ); ?>
+				<?php settings_fields( 'deurwachter' ); ?>
+				<?php do_settings_sections( 'deurwachter' ); ?>
 				<?php submit_button(); ?>
 			</form>
 		</div>
@@ -446,12 +443,14 @@ final class Guard {
 	public function enqueue_scripts() {
 
 		// Register Chosen when not done already
-		if ( ! wp_script_is( 'chosen', 'registered' ) )
+		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
 			wp_register_script( 'chosen', $this->includes_url . 'js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
+		}
 		wp_enqueue_script( 'chosen' );
 
-		if ( ! wp_style_is( 'chosen', 'registered' ) )
+		if ( ! wp_style_is( 'chosen', 'registered' ) ) {
 			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.min.css', false, '1.2.0' );
+		}
 		wp_enqueue_style( 'chosen' );
 
 		// WP pointer
@@ -459,15 +458,15 @@ final class Guard {
 		wp_enqueue_style ( 'wp-pointer' ); 
 
 		// Plugin admin
-		wp_register_script( 'guard-admin', $this->includes_url . 'js/guard-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
-		wp_enqueue_script ( 'guard-admin' );
-		wp_localize_script( 'guard-admin', 'guardAdminL10n', array(
+		wp_register_script( 'deurwachter-admin', $this->includes_url . 'js/deurwachter-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
+		wp_enqueue_script ( 'deurwachter-admin' );
+		wp_localize_script( 'deurwachter-admin', 'deurwachterAdminL10n', array(
 			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>', 
-				__( 'Site Protection', 'guard' ), 
-				__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is notably colored.', 'guard' )
+				__( 'Site Protection', 'deurwachter' ), 
+				__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is colored accordingly.', 'deurwachter' )
 			),
 			'settings' => array(
-				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'guard_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
+				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'deurwachter_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
 			)
 		) ); ?>
 
@@ -491,17 +490,17 @@ final class Guard {
 	 * @since 1.0.0
 	 *
 	 * @uses add_settings_section() To create the settings sections
-	 * @uses guard_settings()
+	 * @uses deurwachter_settings()
 	 * @uses add_settings_field() To create a setting with it's field
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'guard-options-access', __( 'Access Settings', 'guard' ), 'guard_access_settings_info', 'guard' );
+		add_settings_section( 'deurwachter-options-access', __( 'Access Settings', 'deurwachter' ), 'deurwachter_access_settings_info', 'deurwachter' );
 
 		// Loop all settings to register
-		foreach ( guard_settings() as $setting => $args ) {
+		foreach ( deurwachter_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
 			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
@@ -527,7 +526,7 @@ final class Guard {
 
 		// Add settings link for our plugin
 		if ( $file == $this->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'options-general.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'options-general.php' ) . '">' . __( 'Settings', 'deurwachter' ) . '</a>';
 		}
 
 		return $links;
@@ -535,18 +534,18 @@ final class Guard {
 }
 
 /**
- * The main public function responsible for returning the one true Guard Instance
+ * The main public function responsible for returning the one true Deurwachter instance
  * to functions everywhere.
  *
  * @since 1.0.0
  *
- * @return The one true Guard Instance
+ * @return The one true Deurwachter Instance
  */
-function guard() {
-	return Guard::instance();
+function deurwachter() {
+	return Deurwachter::instance();
 }
 
 // Do the magic
-guard();
+deurwachter();
 
 endif; // class_exists

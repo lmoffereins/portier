@@ -1,11 +1,11 @@
 /**
- * Guard Admin Scripts
+ * Deurwachter Admin Scripts
  *
- * @package Guard
+ * @package Deurwachter
  * @subpackage Administration
  */
 jQuery(document).ready( function($) {
-	var l10n = guardAdminL10n || {}, 
+	var l10n = deurwachterAdminL10n || {}, 
 	    settings = l10n.settings || {};
 
 	// Chosen
@@ -13,7 +13,7 @@ jQuery(document).ready( function($) {
 
 	// Pointer
 	if ( settings.showPointer ) {
-		$( '#wp-admin-bar-guard' ).pointer({
+		$( '#wp-admin-bar-deurwachter' ).pointer({
 			content: l10n.pointerContent,
 			position: {
 				edge: 'top',
@@ -22,7 +22,7 @@ jQuery(document).ready( function($) {
 			},
 			close: function() {
 				$.post( ajaxurl, {
-					pointer: 'guard_protection',
+					pointer: 'deurwachter_protection',
 					action: 'dismiss-wp-pointer'
 				});
 			}

@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Guard Network Functions
+ * Deurwachter Network Functions
  *
- * @package Guard
+ * @package Deurwachter
  * @subpackage Multisite
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Guard_Network' ) ) :
+if ( ! class_exists( 'Deurwachter_Network' ) ) :
 /**
- * Guard Network Class
+ * Deurwachter Network Class
  *
  * @since 1.0.0
  */
-final class Guard_Network {
+final class Deurwachter_Network {
 
 	/**
 	 * Setup class
@@ -35,7 +35,7 @@ final class Guard_Network {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-		$guard = guard();
+		$deurwachter = deurwachter();
 
 		// Plugin
 		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
@@ -43,7 +43,7 @@ final class Guard_Network {
 		// Protection
 		add_action( 'template_redirect',  array( $this, 'network_protect'   ), 0     );
 		add_filter( 'login_message',      array( $this, 'login_message'     ), 0     );
-		add_action( 'guard_site_protect', array( $this, 'network_redirect'  )        );
+		add_action( 'deurwachter_site_protect', array( $this, 'network_redirect'  )        );
 		add_action( 'admin_bar_menu',     array( $this, 'filter_admin_bar'  ), 99    );
 		add_action( 'admin_menu',         array( $this, 'filter_admin_menu' ), 99    );
 		add_action( 'get_blogs_of_user',  array( $this, 'filter_user_sites' ), 10, 3 );
@@ -53,10 +53,10 @@ final class Guard_Network {
 		add_action( 'admin_init',               array( $this,  'register_settings'     ) );
 		add_action( 'network_admin_menu',       array( $this,  'admin_menu'            ) );
 		add_action( 'network_admin_notices',    array( $this,  'admin_notices'         ) );
-		add_action( 'guard_network_admin_head', array( $guard, 'enqueue_scripts'       ) );
-		add_action( 'guard_network_load_admin', array( $this,  'load_admin_page_sites' ) );
-		add_action( 'guard_network_admin_head', array( $this,  'admin_head_page_sites' ) );
-		add_action( 'guard_network_page_sites', array( $this,  'admin_page_sites'      ) );
+		add_action( 'deurwachter_network_admin_head', array( $deurwachter, 'enqueue_scripts'       ) );
+		add_action( 'deurwachter_network_load_admin', array( $this,  'load_admin_page_sites' ) );
+		add_action( 'deurwachter_network_admin_head', array( $this,  'admin_head_page_sites' ) );
+		add_action( 'deurwachter_network_page_sites', array( $this,  'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -65,32 +65,32 @@ final class Guard_Network {
 	/** Plugin *******************************************************/
 
 	/**
-	 * Ensure Guard is only used for the network
+	 * Ensure Deurwachter is only used for the network
 	 *
 	 * Remove plugin hooks for the single site context.
 	 * 
 	 * @since 1.0.0
 	 *
-	 * @uses guard_is_network_only()
+	 * @uses deurwachter_is_network_only()
 	 * @uses remove_action()
 	 * @uses remove_filter()
 	 */
 	public function network_only() {
 
 		// Bail when not marked as network only
-		if ( ! guard_is_network_only() )
+		if ( ! deurwachter_is_network_only() )
 			return;
 
-		$guard = guard();
+		$deurwachter = deurwachter();
 
 		// Protection
-		remove_action( 'template_redirect', array( $guard, 'site_protect'   ), 1 );
-		remove_filter( 'login_message',     array( $guard, 'login_message'  ), 1 );
-		remove_action( 'admin_bar_menu',    array( $guard, 'admin_bar_menu' )    );
+		remove_action( 'template_redirect', array( $deurwachter, 'site_protect'   ), 1 );
+		remove_filter( 'login_message',     array( $deurwachter, 'login_message'  ), 1 );
+		remove_action( 'admin_bar_menu',    array( $deurwachter, 'admin_bar_menu' )    );
 
 		// Admin
-		remove_action( 'admin_init', array( $guard, 'register_settings' ) );
-		remove_action( 'admin_menu', array( $guard, 'admin_menu'        ) );
+		remove_action( 'admin_init', array( $deurwachter, 'register_settings' ) );
+		remove_action( 'admin_menu', array( $deurwachter, 'admin_menu'        ) );
 	}
 
 	/** Protection ***************************************************/
@@ -100,19 +100,19 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_is_network_protected()
+	 * @uses deurwachter_is_network_protected()
 	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses guard_network_is_user_allowed() To check if the network user is allowed
+	 * @uses deurwachter_network_is_user_allowed() To check if the network user is allowed
 	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function network_protect() {
 
 		// Bail when network protection is not active
-		if ( ! guard_is_network_protected() )
+		if ( ! deurwachter_is_network_protected() )
 			return;
 
 		// Redirect when the user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! guard_network_is_user_allowed() ) {
+		if ( ! is_user_logged_in() || ! deurwachter_network_is_user_allowed() ) {
 			auth_redirect();
 		}
 	}
@@ -128,8 +128,8 @@ final class Guard_Network {
 	public function login_message( $message ) {
 
 		// When network protection is active
-		if ( guard_is_network_protected() ) {
-			$login_message = get_site_option( '_guard_network_login_message' );
+		if ( deurwachter_is_network_protected() ) {
+			$login_message = get_site_option( '_deurwachter_network_login_message' );
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
@@ -145,19 +145,19 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_network_redirect()
+	 * @uses deurwachter_network_redirect()
 	 * @uses get_current_user_id()
 	 * @uses get_active_glob_for_user() To get the user's primary (allowed) blog
-	 * @uses guard_is_site_protected()
-	 * @uses guard_is_user_allowed()
+	 * @uses deurwachter_is_site_protected()
+	 * @uses deurwachter_is_user_allowed()
 	 * @uses network_home_url()
-	 * @uses apply_filters() Calls 'guard_network_redirect_location'
+	 * @uses apply_filters() Calls 'deurwachter_network_redirect_location'
 	 * @uses wp_redirect()
 	 */
 	public function network_redirect() {
 
 		// When network redirection is active
-		if ( guard_network_redirect() ) {
+		if ( deurwachter_network_redirect() ) {
 
 			// Define local variable(s)
 			$user_id  = get_current_user_id();
@@ -170,17 +170,17 @@ final class Guard_Network {
 				$site = get_active_blog_for_user( $user_id );
 
 				// Redirect user to their primary site, only when they are allowed there
-				if ( ! empty( $site ) && ( ! guard_is_site_protected( $site->blog_id ) || guard_is_user_allowed( $user_id, $site->blog_id ) ) ) {
+				if ( ! empty( $site ) && ( ! deurwachter_is_site_protected( $site->blog_id ) || deurwachter_is_user_allowed( $user_id, $site->blog_id ) ) ) {
 					$location = $site->siteurl . $site->path;
 				}
 
 			// Try to return the anonymous user to the network home
-			} elseif ( ! guard_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
+			} elseif ( ! deurwachter_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
 				$location = network_home_url();
 			}
 
 			// Provide hook to filter the redirect location
-			$location = apply_filters( 'guard_network_redirect_location', $location, $user_id );
+			$location = apply_filters( 'deurwachter_network_redirect_location', $location, $user_id );
 
 			// Redirect when a location is provided
 			if ( ! empty( $location ) ) {
@@ -197,9 +197,9 @@ final class Guard_Network {
 	 * 
 	 * @since 1.0.0
 	 *
-	 * @uses guard_is_network_only()
-	 * @uses guard_is_site_protected()
-	 * @uses guard_is_user_allowed()
+	 * @uses deurwachter_is_network_only()
+	 * @uses deurwachter_is_site_protected()
+	 * @uses deurwachter_is_user_allowed()
 	 *
 	 * @param array $sites Sites where user is registered
 	 * @param int $user_id User ID
@@ -209,7 +209,7 @@ final class Guard_Network {
 	public function filter_user_sites( $sites, $user_id, $all ) {
 
 		// Do not change site list when requesting all
-		if ( $all || guard_is_network_only() ) {
+		if ( $all || deurwachter_is_network_only() ) {
 			return $sites;
 		}
 
@@ -217,7 +217,7 @@ final class Guard_Network {
 		foreach ( $sites as $site_id => $details ) {
 
 			// Site protection is active and user is not allowed
-			if ( guard_is_site_protected( $site_id ) && ! guard_is_user_allowed( $user_id, $site_id ) ) {
+			if ( deurwachter_is_site_protected( $site_id ) && ! deurwachter_is_user_allowed( $user_id, $site_id ) ) {
 
 				// Remove site from collection
 				unset( $sites[ $site_id ] );
@@ -232,7 +232,7 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_network_hide_my_sites()
+	 * @uses deurwachter_network_hide_my_sites()
 	 * @uses WP_Admin_Bar::remove_menu()
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
@@ -240,7 +240,7 @@ final class Guard_Network {
 	public function filter_admin_bar( $wp_admin_bar ) {
 
 		// Hiding 'My Sites'
-		if ( guard_network_hide_my_sites() ) {
+		if ( deurwachter_network_hide_my_sites() ) {
 
 			// Remove admin bar menu top item
 			$wp_admin_bar->remove_menu( 'my-sites' );
@@ -252,13 +252,13 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_network_hide_my_sites()
+	 * @uses deurwachter_network_hide_my_sites()
 	 * @uses remove_submenu_page()
 	 */
 	public function filter_admin_menu() {
 
 		// Hiding 'My Sites'
-		if ( guard_network_hide_my_sites() ) {
+		if ( deurwachter_network_hide_my_sites() ) {
 
 			// This only removes the admin menu item, not the page
 			remove_submenu_page( 'index.php', 'my-sites.php' );
@@ -275,7 +275,7 @@ final class Guard_Network {
 	 *
 	 * @uses is_admin()
 	 * @uses get_current_screen()
-	 * @uses guard_network_hide_my_sites()
+	 * @uses deurwachter_network_hide_my_sites()
 	 *
 	 * @param array $allcaps All user caps
 	 * @param array $caps Required caps
@@ -291,7 +291,7 @@ final class Guard_Network {
 			&& function_exists( 'get_current_screen' ) && isset( get_current_screen()->id ) && 'my-sites' == get_current_screen()->id
 
 			// Hiding 'My Sites'
-			&& guard_network_hide_my_sites()
+			&& deurwachter_network_hide_my_sites()
 
 			// Requesting the 'read' cap
 			&& in_array( 'read', $caps )
@@ -320,10 +320,10 @@ final class Guard_Network {
 		// Create Settings submenu
 		$hook = add_submenu_page(
 			'settings.php',
-			__( 'Guard Network Settings', 'guard' ),
-			__( 'Guard', 'guard' ),
+			__( 'Deurwachter Network Settings', 'deurwachter' ),
+			__( 'Deurwachter', 'deurwachter' ),
 			'manage_network',
-			'guard',
+			'deurwachter',
 			array( $this, 'admin_page' )
 		);
 
@@ -333,36 +333,36 @@ final class Guard_Network {
 	}
 
 	/**
-	 * Provide a hook for loading the guard network settings page
+	 * Provide a hook for loading the deurwachter network settings page
 	 *
 	 * @since 1.1.0
 	 * 
-	 * @uses do_action() Calls 'guard_network_load_admin'
+	 * @uses do_action() Calls 'deurwachter_network_load_admin'
 	 */
 	public function load_admin() {
-		do_action( 'guard_network_load_admin' );
+		do_action( 'deurwachter_network_load_admin' );
 	}
 
 	/**
-	 * Provide a hook for the guard network settings page head
+	 * Provide a hook for the deurwachter network settings page head
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @uses do_action() Calls 'guard_network_admin_head'
+	 * @uses do_action() Calls 'deurwachter_network_admin_head'
 	 */
 	public function admin_head() {
-		do_action( 'guard_network_admin_head' );
+		do_action( 'deurwachter_network_admin_head' );
 	}
 
 	/**
-	 * Provide a hook for the guard network settings page footer
+	 * Provide a hook for the deurwachter network settings page footer
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @uses do_action() Calls 'guard_network_admin_footer'
+	 * @uses do_action() Calls 'deurwachter_network_admin_footer'
 	 */
 	public function admin_footer() {
-		do_action( 'guard_network_admin_footer' );
+		do_action( 'deurwachter_network_admin_footer' );
 	}
 
 	/**
@@ -370,30 +370,30 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'guard_network_admin_tabs'
+	 * @uses apply_filters() Calls 'deurwachter_network_admin_tabs'
 	 * @uses add_query_arg()
 	 * @uses network_admin_url()
 	 * @uses settings_fields() To output the form validation inputs
 	 * @uses do_settings_section() To output all form fields
 	 * @uses submit_button() To output the form submit button
-	 * @uses do_action() Calls 'guard_network_page_{$page_tab}'
+	 * @uses do_action() Calls 'deurwachter_network_page_{$page_tab}'
 	 */
 	public function admin_page() {
 
 		// Get the admin tabs
-		$tabs = apply_filters( 'guard_network_admin_tabs', array( 'main' => __( 'Main', 'guard' ), 'sites' => __( 'Sites', 'guard' ) ) );
-		// Remove Sites tab when Guard is only active for the network
-		if ( guard_is_network_only() )
+		$tabs = apply_filters( 'deurwachter_network_admin_tabs', array( 'main' => __( 'Main', 'deurwachter' ), 'sites' => __( 'Sites', 'deurwachter' ) ) );
+		// Remove Sites tab when Deurwachter is only active for the network
+		if ( deurwachter_is_network_only() )
 			unset( $tabs['sites'] );
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 		<div class="wrap">
 			<h2 class="nav-tab-wrapper">
-				<?php esc_html_e( 'Guard Network', 'guard' ); ?>
+				<?php esc_html_e( 'Deurwachter Network', 'deurwachter' ); ?>
 				<?php foreach ( $tabs as $tab => $label ) :
 					printf( '<a class="nav-tab%s" href="%s">%s</a>',
 						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
-						add_query_arg( array( 'page' => 'guard', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
+						add_query_arg( array( 'page' => 'deurwachter', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
 						$label
 					);
 				endforeach; ?>
@@ -402,15 +402,15 @@ final class Guard_Network {
 			<?php // Output the settings form on the main page ?>
 			<?php if ( 'main' == $page_tab ) { ?>
 
-			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network' ); ?>">
-				<?php settings_fields( 'guard_network' ); ?>
-				<?php do_settings_sections( 'guard_network' ); ?>
+			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=deurwachter_network' ); ?>">
+				<?php settings_fields( 'deurwachter_network' ); ?>
+				<?php do_settings_sections( 'deurwachter_network' ); ?>
 				<?php submit_button(); ?>
 			</form>
 
 			<?php // Custom settings page ?>
 			<?php } else { 
-				do_action( "guard_network_page_{$page_tab}" );
+				do_action( "deurwachter_network_page_{$page_tab}" );
 			} ?>
 		</div>
 
@@ -423,7 +423,7 @@ final class Guard_Network {
 	 * @since 1.0.0
 	 *
 	 * @uses add_settings_section() To create the settings sections
-	 * @uses guard_network_settings()
+	 * @uses deurwachter_network_settings()
 	 * @uses add_settings_field() To create a setting with it's field
 	 * @uses register_setting() To enable the setting being saved to the DB
 	 * @uses add_action()
@@ -431,11 +431,11 @@ final class Guard_Network {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'guard-options-main',   __( 'Main Settings',   'guard' ), 'guard_network_main_settings_info',   'guard_network' );
-		add_settings_section( 'guard-options-access', __( 'Access Settings', 'guard' ), 'guard_network_access_settings_info', 'guard_network' );
+		add_settings_section( 'deurwachter-options-main',   __( 'Main Settings',   'deurwachter' ), 'deurwachter_network_main_settings_info',   'deurwachter_network' );
+		add_settings_section( 'deurwachter-options-access', __( 'Access Settings', 'deurwachter' ), 'deurwachter_network_access_settings_info', 'deurwachter_network' );
 
 		// Loop all network settings to register
-		foreach ( guard_network_settings() as $setting => $args ) {
+		foreach ( deurwachter_network_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
 			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
@@ -451,8 +451,8 @@ final class Guard_Network {
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_guard_network',       array( $this, 'handle_network_settings' ) );
-		add_action( 'network_admin_edit_guard_network_sites', array( $this, 'handle_sites_settings'   ) );
+		add_action( 'network_admin_edit_deurwachter_network',       array( $this, 'handle_network_settings' ) );
+		add_action( 'network_admin_edit_deurwachter_network_sites', array( $this, 'handle_sites_settings'   ) );
 	}
 
 	/**
@@ -551,10 +551,10 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses Guard_Network::is_network_page()
-	 * @uses apply_filters() Calls 'guard_network_admin_notice'
-	 * @uses apply_filters() Calls 'guard_network_bulk_site_updated_counts'
-	 * @uses apply_filters() Calls 'guard_network_bulk_site_updated_messages'
+	 * @uses Deurwachter_Network::is_network_page()
+	 * @uses apply_filters() Calls 'deurwachter_network_admin_notice'
+	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_counts'
+	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_messages'
 	 *
 	 */
 	public function admin_notices() {
@@ -571,22 +571,22 @@ final class Guard_Network {
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type ) {
-				$messages[] = __( 'Settings saved.', 'guard' );
+				$messages[] = __( 'Settings saved.', 'deurwachter' );
 			} else {
-				$messages[] = apply_filters( 'guard_network_admin_notice', __( 'Something went wrong.', 'guard' ), $_GET['settings-updated'] );
+				$messages[] = apply_filters( 'deurwachter_network_admin_notice', __( 'Something went wrong.', 'deurwachter' ), $_GET['settings-updated'] );
 			}
 
 		// Bulk sites settings
 		} elseif ( isset( $GLOBALS['wp_list_table'] ) ) {
 
-			$bulk_counts = apply_filters( 'guard_network_bulk_site_updated_counts', array(
+			$bulk_counts = apply_filters( 'deurwachter_network_bulk_site_updated_counts', array(
 				'enabled'  => isset( $_REQUEST['enabled']  ) ? absint( $_REQUEST['enabled']  ) : 0,
 				'disabled' => isset( $_REQUEST['disabled'] ) ? absint( $_REQUEST['disabled'] ) : 0,
 			) );
 
-			$bulk_messages = apply_filters( 'guard_network_bulk_site_updated_messages', array(
-				'enabled'  => _n( 'Protection enabled for %d site.',  'Protection enabled for %d sites.',  $bulk_counts['enabled'],  'guard' ),
-				'disabled' => _n( 'Protection disabled for %d site.', 'Protection disabled for %d sites.', $bulk_counts['disabled'], 'guard' ),
+			$bulk_messages = apply_filters( 'deurwachter_network_bulk_site_updated_messages', array(
+				'enabled'  => _n( 'Protection enabled for %d site.',  'Protection enabled for %d sites.',  $bulk_counts['enabled'],  'deurwachter' ),
+				'disabled' => _n( 'Protection disabled for %d site.', 'Protection disabled for %d sites.', $bulk_counts['disabled'], 'deurwachter' ),
 			) );
 
 			foreach ( $bulk_counts as $action => $count ) {
@@ -611,7 +611,7 @@ final class Guard_Network {
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
-		return is_network_admin() && ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_guard' == $GLOBALS['hook_suffix'] );
+		return is_network_admin() && ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_deurwachter' == $GLOBALS['hook_suffix'] );
 	}
 
 	/**
@@ -628,8 +628,8 @@ final class Guard_Network {
 	public function settings_link( $links, $file ) {
 
 		// Add settings link for our plugin
-		if ( $file == guard()->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'guard', 'settings.php' ) . '">' . __( 'Settings', 'guard' ) . '</a>';
+		if ( $file == deurwachter()->basename ) {
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'settings.php' ) . '">' . __( 'Settings', 'deurwachter' ) . '</a>';
 		}
 
 		return $links;
@@ -642,7 +642,7 @@ final class Guard_Network {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @uses _get_guard_network_sites_list_table()
+	 * @uses _get_deurwachter_network_sites_list_table()
 	 */
 	public function load_admin_page_sites() {
 		global $wp_list_table, $pagenum;
@@ -652,7 +652,7 @@ final class Guard_Network {
 			return;
 
 		// Setup list table globals
-		$wp_list_table = _get_guard_network_sites_list_table();
+		$wp_list_table = _get_deurwachter_network_sites_list_table();
 		$pagenum = $wp_list_table->get_pagenum();
 	}
 
@@ -671,7 +671,7 @@ final class Guard_Network {
 			return;
 
 		// Bail when the specified list table isn't loaded
-		if ( ! is_a( $wp_list_table, 'Guard_Network_Sites_List_Table' ) )
+		if ( ! is_a( $wp_list_table, 'Deurwachter_Network_Sites_List_Table' ) )
 			return; ?>
 
 		<style type="text/css">
@@ -722,17 +722,17 @@ final class Guard_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses guard_is_network_only()
+	 * @uses deurwachter_is_network_only()
 	 * @uses remove_query_arg()
-	 * @uses apply_filters() Calls 'guard_network_sites_uri_args'
+	 * @uses apply_filters() Calls 'deurwachter_network_sites_uri_args'
 	 * @global object $wp_list_table
 	 */
 	public function admin_page_sites() {
 		global $wp_list_table;
 
-		// Bail when Guard is only active for the network
-		if ( guard_is_network_only() ) {
-			echo '<div class="notice notice-error"><p>' . __( 'Guard is only active for the network. There are no site settings here.', 'guard' ) . '</p></div>';
+		// Bail when Deurwachter is only active for the network
+		if ( deurwachter_is_network_only() ) {
+			echo '<div class="notice notice-error"><p>' . __( 'Deurwachter is only active for the network. There are no site settings here.', 'deurwachter' ) . '</p></div>';
 			return;
 		} 
 
@@ -740,17 +740,17 @@ final class Guard_Network {
 		$wp_list_table->prepare_items(); 
 
 		// Clean REQUEST_URI
-		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'guard_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
+		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'deurwachter_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
 
-		<h3><?php _e( 'Manage Protection', 'guard' ); ?></h3>
+		<h3><?php _e( 'Manage Protection', 'deurwachter' ); ?></h3>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
-			<input type="hidden" name="page" value="guard" />
+			<input type="hidden" name="page" value="deurwachter" />
 			<input type="hidden" name="tab" value="<?php echo $_GET['tab']; ?>" />
 			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
 		</form>
 
-		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=guard_network_sites' ); ?>">
+		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=deurwachter_network_sites' ); ?>">
 			<?php $wp_list_table->display(); ?>
 		</form>
 
@@ -768,7 +768,7 @@ final class Guard_Network {
 	 * @uses is_super_admin()
 	 * @uses wp_die()
 	 * @uses wp_get_referer()
-	 * @uses _get_guard_network_sites_list_table()
+	 * @uses _get_deurwachter_network_sites_list_table()
 	 * @uses check_admin_referer()
 	 * @uses wp_parse_id_list()
 	 * @uses wp_redirect()
@@ -776,7 +776,7 @@ final class Guard_Network {
 	 * @uses update_option()
 	 * @uses restore_current_blog()
 	 * @uses add_query_arg()
-	 * @uses apply_filters() Calls 'guard_network_sites_edit'
+	 * @uses apply_filters() Calls 'deurwachter_network_sites_edit'
 	 * @uses get_settings_errors()
 	 * @uses add_settings_error()
 	 * @uses set_transient()
@@ -784,7 +784,7 @@ final class Guard_Network {
 	public function handle_sites_settings() {
 
 		// Define local variable(s)
-		$option_page = 'guard_network_sites';
+		$option_page = 'deurwachter_network_sites';
 
 		// Bail when not using within multisite
 		if ( ! is_multisite() )
@@ -801,7 +801,7 @@ final class Guard_Network {
 		$goback = wp_get_referer();
 
 		// Get the bulk action
-		$wp_list_table = _get_guard_network_sites_list_table();
+		$wp_list_table = _get_deurwachter_network_sites_list_table();
 		$doaction = $wp_list_table->current_action();
 
 		if ( $doaction ) {
@@ -823,7 +823,7 @@ final class Guard_Network {
 					$sites = 0;
 					foreach ( $site_ids as $site_id ) {
 						switch_to_blog( $site_id );
-						if ( update_option( '_guard_site_protect', ( 'enable' === $doaction ) ? 1 : 0 ) ) {
+						if ( update_option( '_deurwachter_site_protect', ( 'enable' === $doaction ) ? 1 : 0 ) ) {
 							$sites++;
 						}
 						restore_current_blog();
@@ -832,7 +832,7 @@ final class Guard_Network {
 				break;
 
 				default :
-					$goback = apply_filters( 'guard_network_sites_edit', $goback, $doaction, $site_ids );
+					$goback = apply_filters( 'deurwachter_network_sites_edit', $goback, $doaction, $site_ids );
 				break;
 			}
 		}
@@ -860,20 +860,20 @@ endif; // class_exists
  *
  * @since 1.1.0
  */
-function _get_guard_network_sites_list_table( $args = array() ) {
+function _get_deurwachter_network_sites_list_table( $args = array() ) {
 
 	// Bail when the class already exists
-	if ( ! class_exists( 'Guard_Network_Sites_List_Table' ) ) :
+	if ( ! class_exists( 'Deurwachter_Network_Sites_List_Table' ) ) :
 
 	// We depend on the WP MS Sites List Table
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-ms-sites-list-table.php' );
 
 	/**
-	 * The Guard Network Sites List Table
+	 * The Deurwachter Network Sites List Table
 	 *
 	 * @since 1.1.0
 	 */
-	class Guard_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
+	class Deurwachter_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 
 		/**
 		 * Setup the list table's columns
@@ -881,18 +881,18 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 * @since 1.1.0
 		 *
 		 * @uses WP_MS_Sites_List_Table::get_columns()
-		 * @uses apply_filters() Calls 'guard_network_sites_columns'
+		 * @uses apply_filters() Calls 'deurwachter_network_sites_columns'
 		 * 
 		 * @return array Columns
 		 */
 		public function get_columns() {
 			$columns = parent::get_columns();
 
-			return (array) apply_filters( 'guard_network_sites_columns', array( 
+			return (array) apply_filters( 'deurwachter_network_sites_columns', array( 
 				'cb'            => $columns['cb'],
-				'protected'     => __( 'Protected', 'guard' ),
+				'protected'     => __( 'Protected', 'deurwachter' ),
 				'blogname'      => $columns['blogname'],
-				'allowed-users' => __( 'Allowed Users', 'guard' ),
+				'allowed-users' => __( 'Allowed Users', 'deurwachter' ),
 			) );
 		}
 
@@ -901,14 +901,14 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 * 
 		 * @since 1.1.0
 		 *
-		 * @uses apply_filters() Calls 'guard_network_sites_bulk_actions'
+		 * @uses apply_filters() Calls 'deurwachter_network_sites_bulk_actions'
 		 * 
 		 * @return array Bulk actions
 		 */
 		public function get_bulk_actions() {
-			return (array) apply_filters( 'guard_network_sites_bulk_actions', array(
-				'enable'  => __( 'Enable',  'guard' ),
-				'disable' => __( 'Disable', 'guard' ),
+			return (array) apply_filters( 'deurwachter_network_sites_bulk_actions', array(
+				'enable'  => __( 'Enable',  'deurwachter' ),
+				'disable' => __( 'Disable', 'deurwachter' ),
 			) );
 		}
 
@@ -933,10 +933,10 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses guard_is_site_protected()
+		 * @uses deurwachter_is_site_protected()
 		 * @uses is_subdomain_intall()
 		 * @uses switch_to_blog()
-		 * @uses do_action() Calls 'guard_network_sites_custom_column'
+		 * @uses do_action() Calls 'deurwachter_network_sites_custom_column'
 		 * @uses restore_current_blog()
 		 * @uses convert_to_screen()
 		 * @uses get_current_screen()
@@ -945,7 +945,7 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 			$class = '';
 			foreach ( $this->items as $blog ) {
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				$protected = guard_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
+				$protected = deurwachter_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
 
 				echo "<tr class='$class$protected'>";
 
@@ -972,16 +972,16 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 
 						case 'protected' :
 							echo "<td class='$column_name column-$column_name'$style>"; ?>
-								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'guard' ) : _e( 'Site protection is not active', 'guard' ); ?>"></i>
+								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'deurwachter' ) : _e( 'Site protection is not active', 'deurwachter' ); ?>"></i>
 							</td>
 
 							<?php
 							break;
 
 						case 'blogname' :
-							$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'guard' ) . ')' : '';
+							$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'deurwachter' ) . ')' : '';
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
-								<a href="<?php echo esc_url( add_query_arg( 'page', 'guard', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
+								<a href="<?php echo esc_url( add_query_arg( 'page', 'deurwachter', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
 								<br/><span><?php echo $blogname; ?></span>
 							</td>
 
@@ -989,15 +989,15 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 							break;
 
 						case 'allowed-users' :
-							$users = get_option( '_guard_allowed_users', array() );
+							$users = get_option( '_deurwachter_allowed_users', array() );
 							$count = count( $users );
 							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
 							if ( 0 < $count - 5 ) {
-								$title = sprintf( __( '%s and %d more', 'guard' ), $title, $count - 5 );
+								$title = sprintf( __( '%s and %d more', 'deurwachter' ), $title, $count - 5 );
 							}
 
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
-								<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'guard' ), $count ); ?></span>
+								<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'deurwachter' ), $count ); ?></span>
 							</td>
 
 							<?php
@@ -1013,7 +1013,7 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 							 * @param string $column_name The name of the column to display.
 							 * @param int    $blog_id     The site ID.
 							 */
-							do_action( 'guard_network_sites_custom_column', $column_name, $blog['blog_id'] );
+							do_action( 'deurwachter_network_sites_custom_column', $column_name, $blog['blog_id'] );
 							echo "</td>";
 							break;
 						}
@@ -1039,5 +1039,5 @@ function _get_guard_network_sites_list_table( $args = array() ) {
 		$args['screen'] = null;
 	}
 
-	return new Guard_Network_Sites_List_Table( $args );
+	return new Deurwachter_Network_Sites_List_Table( $args );
 }

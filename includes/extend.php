@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Guard Extend Functions
+ * Deurwachter Extend Functions
  * 
- * @package Guard
+ * @package Deurwachter
  * @subpackage Extend
  */
 
@@ -16,9 +16,9 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  * 
  * @uses buddypress()
- * @uses guard()
+ * @uses deurwachter()
  */
-function guard_setup_buddypress() {
+function deurwachter_setup_buddypress() {
 
 	// Bail when BuddyPress is not active
 	if ( ! function_exists( 'buddypress' ) )
@@ -29,8 +29,8 @@ function guard_setup_buddypress() {
 		return;
 
 	// Include BuddyPress extension
-	require( guard()->includes_dir . 'extend/buddypress.php' );
+	require( deurwachter()->includes_dir . 'extend/buddypress.php' );
 
-	// Initiate BuddyPress for Guard
-	guard()->extend->bp = new Guard_BuddyPress();
+	// Initiate BuddyPress for Deurwachter
+	deurwachter()->extend->bp = new Deurwachter_BuddyPress();
 }
