@@ -35,28 +35,28 @@ final class Deurwachter_Network {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-		$deurwachter = deurwachter();
+		$dwtr = deurwachter();
 
 		// Plugin
 		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
 
 		// Protection
-		add_action( 'template_redirect',  array( $this, 'network_protect'   ), 0     );
-		add_filter( 'login_message',      array( $this, 'login_message'     ), 0     );
+		add_action( 'template_redirect',        array( $this, 'network_protect'   ), 0     );
+		add_filter( 'login_message',            array( $this, 'login_message'     ), 0     );
 		add_action( 'deurwachter_site_protect', array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',     array( $this, 'filter_admin_bar'  ), 99    );
-		add_action( 'admin_menu',         array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',  array( $this, 'filter_user_sites' ), 10, 3 );
-		add_filter( 'user_has_cap',       array( $this, 'user_has_cap'      ), 10, 3 );
+		add_action( 'admin_bar_menu',           array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_menu',               array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',        array( $this, 'filter_user_sites' ), 10, 3 );
+		add_filter( 'user_has_cap',             array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',               array( $this,  'register_settings'     ) );
-		add_action( 'network_admin_menu',       array( $this,  'admin_menu'            ) );
-		add_action( 'network_admin_notices',    array( $this,  'admin_notices'         ) );
-		add_action( 'deurwachter_network_admin_head', array( $deurwachter, 'enqueue_scripts'       ) );
-		add_action( 'deurwachter_network_load_admin', array( $this,  'load_admin_page_sites' ) );
-		add_action( 'deurwachter_network_admin_head', array( $this,  'admin_head_page_sites' ) );
-		add_action( 'deurwachter_network_page_sites', array( $this,  'admin_page_sites'      ) );
+		add_action( 'admin_init',                     array( $this, 'register_settings'     ) );
+		add_action( 'network_admin_menu',             array( $this, 'admin_menu'            ) );
+		add_action( 'network_admin_notices',          array( $this, 'admin_notices'         ) );
+		add_action( 'deurwachter_network_load_admin', array( $this, 'load_admin_page_sites' ) );
+		add_action( 'deurwachter_network_admin_head', array( $dwtr, 'enqueue_admin_scripts' ) );
+		add_action( 'deurwachter_network_admin_head', array( $this, 'admin_head_page_sites' ) );
+		add_action( 'deurwachter_network_page_sites', array( $this, 'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
