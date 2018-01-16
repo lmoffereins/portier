@@ -15,10 +15,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  *
- * @uses is_multisite()
- * @uses switch_to_blog()
- * @uses get_option()
- * @uses restor_current_blog()
  * @uses apply_filters() Calls 'deurwachter_is_site_protected'
  * 
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
@@ -47,14 +43,7 @@ function deurwachter_is_site_protected( $site_id = 0 ) {
  *
  * @since 1.0.0
  *
- * @uses get_current_user_id()
- * @uses is_super_admin() To check if the current user is a super admin
- * @uses is_multisite()
- * @uses switch_to_blog()
- * @uses get_option()
- * @uses restore_current_blog()
- * @uses apply_filters() To call 'deurwachter_is_user_allowed' for
- *                        plugins to override the access granted
+ * @uses apply_filters() Calls 'deurwachter_is_user_allowed'
  *
  * @param int $user_id Optional. Defaults to current user
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
@@ -97,7 +86,6 @@ function deurwachter_is_user_allowed( $user_id = 0, $site_id = 0 ) {
  * 
  * @since 1.0.0
  *
- * @uses get_option()
  * @uses apply_filters() Calls 'deurwachter_get_protection_details'
  * 
  * @return string Protection details
@@ -116,8 +104,6 @@ function deurwachter_get_protection_details() {
  *
  * @since 1.0.0
  *
- * @uses is_multisite()
- * @uses get_site_option()
  * @uses apply_filters() Calls 'deurwachter_is_network_protected'
  * 
  * @return bool Network protection is active
@@ -136,9 +122,6 @@ function deurwachter_is_network_protected() {
  *
  * @since 1.0.0
  *
- * @uses get_current_user_id()
- * @uses is_super_admin() To check if the current user is a super admin
- * @uses get_site_option()
  * @uses apply_filters() Calls 'deurwachter_network_is_user_allowed' hook
  *                        for plugins to override the access granted
  *
@@ -171,7 +154,6 @@ function deurwachter_network_is_user_allowed( $user_id = 0 ) {
  *
  * @since 1.0.0
  *
- * @uses get_site_option()
  * @uses apply_filters() Calls 'deurwachter_network_redirect'
  * 
  * @return bool Network redirect is active
@@ -185,7 +167,6 @@ function deurwachter_network_redirect() {
  *
  * @since 1.0.0
  *
- * @uses get_site_option()
  * @uses apply_filters() Calls 'deurwachter_is_network_only'
  * 
  * @return bool Deurwachter is for the network level only
@@ -199,11 +180,7 @@ function deurwachter_is_network_only() {
  *
  * @since 1.0.0
  *
- * @uses get_current_user_id()
- * @uses get_blogs_of_user()
- * @uses switch_to_blog()
- * @uses get_users()
- * @uses restore_current_blog()
+ * @uses apply_filters() Calls 'deurwachter_get_network_users'
  *
  * @return array Network users
  */
@@ -218,7 +195,7 @@ function deurwachter_get_network_users() {
 
 		// array( 0 => WP_User ) becomes array( $user_id => WP_User )
 		foreach ( get_users() as $user ) {
-			$users[$user->ID] = $user;
+			$users[ $user->ID ] = $user;
 		}
 
 		restore_current_blog();
@@ -232,10 +209,6 @@ function deurwachter_get_network_users() {
  *
  * @since 1.0.0
  *
- * @uses get_current_user_id()
- * @uses get_blogs_of_user()
- * @uses get_site_option()
- * @uses is_super_admin()
  * @uses apply_filters() Calls 'deurwachter_network_hide_my_sites'
  *
  * @return boolean Hide "My Sites"

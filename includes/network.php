@@ -70,10 +70,6 @@ final class Deurwachter_Network {
 	 * Remove plugin hooks for the single site context.
 	 * 
 	 * @since 1.0.0
-	 *
-	 * @uses deurwachter_is_network_only()
-	 * @uses remove_action()
-	 * @uses remove_filter()
 	 */
 	public function network_only() {
 
@@ -99,11 +95,6 @@ final class Deurwachter_Network {
 	 * Redirect user when network is protected
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses deurwachter_is_network_protected()
-	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses deurwachter_network_is_user_allowed() To check if the network user is allowed
-	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function network_protect() {
 
@@ -145,14 +136,7 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses deurwachter_network_redirect()
-	 * @uses get_current_user_id()
-	 * @uses get_active_glob_for_user() To get the user's primary (allowed) blog
-	 * @uses deurwachter_is_site_protected()
-	 * @uses deurwachter_is_user_allowed()
-	 * @uses network_home_url()
 	 * @uses apply_filters() Calls 'deurwachter_network_redirect_location'
-	 * @uses wp_redirect()
 	 */
 	public function network_redirect() {
 
@@ -197,10 +181,6 @@ final class Deurwachter_Network {
 	 * 
 	 * @since 1.0.0
 	 *
-	 * @uses deurwachter_is_network_only()
-	 * @uses deurwachter_is_site_protected()
-	 * @uses deurwachter_is_user_allowed()
-	 *
 	 * @param array $sites Sites where user is registered
 	 * @param int $user_id User ID
 	 * @param boolean $all Whether to return also all hidden sites
@@ -232,9 +212,6 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses deurwachter_network_hide_my_sites()
-	 * @uses WP_Admin_Bar::remove_menu()
-	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function filter_admin_bar( $wp_admin_bar ) {
@@ -251,9 +228,6 @@ final class Deurwachter_Network {
 	 * Modify the admin menu for protected sites
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses deurwachter_network_hide_my_sites()
-	 * @uses remove_submenu_page()
 	 */
 	public function filter_admin_menu() {
 
@@ -272,10 +246,6 @@ final class Deurwachter_Network {
 	 * the My Sites admin page.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses is_admin()
-	 * @uses get_current_screen()
-	 * @uses deurwachter_network_hide_my_sites()
 	 *
 	 * @param array $allcaps All user caps
 	 * @param array $caps Required caps
@@ -310,10 +280,6 @@ final class Deurwachter_Network {
 	 * Create the plugin network admin page menu item
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_submenu_page() To add the menu to the options pane
-	 * @uses add_action() To enable functions hooking into admin page
-	 *                     head en footer
 	 */
 	public function admin_menu() {
 
@@ -371,20 +337,18 @@ final class Deurwachter_Network {
 	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'deurwachter_network_admin_tabs'
-	 * @uses add_query_arg()
-	 * @uses network_admin_url()
-	 * @uses settings_fields() To output the form validation inputs
-	 * @uses do_settings_section() To output all form fields
-	 * @uses submit_button() To output the form submit button
 	 * @uses do_action() Calls 'deurwachter_network_page_{$page_tab}'
 	 */
 	public function admin_page() {
 
 		// Get the admin tabs
 		$tabs = apply_filters( 'deurwachter_network_admin_tabs', array( 'main' => __( 'Main', 'deurwachter' ), 'sites' => __( 'Sites', 'deurwachter' ) ) );
+
 		// Remove Sites tab when Deurwachter is only active for the network
-		if ( deurwachter_is_network_only() )
+		if ( deurwachter_is_network_only() ) {
 			unset( $tabs['sites'] );
+		}
+
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 		<div class="wrap">
@@ -399,8 +363,10 @@ final class Deurwachter_Network {
 				endforeach; ?>
 			</h2>
 
-			<?php // Output the settings form on the main page ?>
-			<?php if ( 'main' == $page_tab ) { ?>
+			<?php
+
+			// Output the settings form on the main page
+			if ( 'main' == $page_tab ) : ?>
 
 			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=deurwachter_network' ); ?>">
 				<?php settings_fields( 'deurwachter_network' ); ?>
@@ -408,10 +374,12 @@ final class Deurwachter_Network {
 				<?php submit_button(); ?>
 			</form>
 
-			<?php // Custom settings page ?>
-			<?php } else { 
+			<?php
+
+			// Custom settings page
+			else :
 				do_action( "deurwachter_network_page_{$page_tab}" );
-			} ?>
+			endif; ?>
 		</div>
 
 		<?php
@@ -421,12 +389,6 @@ final class Deurwachter_Network {
 	 * Setup the plugin network settings
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_settings_section() To create the settings sections
-	 * @uses deurwachter_network_settings()
-	 * @uses add_settings_field() To create a setting with it's field
-	 * @uses register_setting() To enable the setting being saved to the DB
-	 * @uses add_action()
 	 */
 	public function register_settings() {
 
@@ -465,21 +427,8 @@ final class Deurwachter_Network {
 	 *
 	 * @link http://core.trac.wordpress.org/ticket/15691
 	 *
-	 * @uses wp_reset_vars()
-	 * @uses is_multisite()
 	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
-	 * @uses current_user_can()
-	 * @uses is_super_admin()
-	 * @uses wp_die()
-	 * @uses check_admin_referer()
 	 * @uses apply_filters() Calls 'whitelist_options'
-	 * @uses update_site_option()
-	 * @uses get_settings_errors()
-	 * @uses add_settings_error()
-	 * @uses set_transient()
-	 * @uses add_query_arg()
-	 * @uses wp_get_referer()
-	 * @uses wp_redirect()
 	 */
 	public function handle_network_settings() {
 		global $action, $option_page;
@@ -551,7 +500,6 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses Deurwachter_Network::is_network_page()
 	 * @uses apply_filters() Calls 'deurwachter_network_admin_notice'
 	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_counts'
 	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_messages'
@@ -608,6 +556,7 @@ final class Deurwachter_Network {
 	 * @since 1.0.0
 	 *
 	 * @global string $hook_suffix
+	 *
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
@@ -618,8 +567,6 @@ final class Deurwachter_Network {
 	 * Add a settings link to the plugin actions on plugin.php
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_query_arg() To create the url to the settings page
 	 *
 	 * @param array $links The current plugin action links
 	 * @param string $file The current plugin file
@@ -641,8 +588,6 @@ final class Deurwachter_Network {
 	 * Setup the sites list table when loading the Network Sites admin page
 	 *
 	 * @since 1.1.0
-	 *
-	 * @uses _get_deurwachter_network_sites_list_table()
 	 */
 	public function load_admin_page_sites() {
 		global $wp_list_table, $pagenum;
@@ -722,10 +667,9 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses deurwachter_is_network_only()
-	 * @uses remove_query_arg()
-	 * @uses apply_filters() Calls 'deurwachter_network_sites_uri_args'
 	 * @global object $wp_list_table
+	 *
+	 * @uses apply_filters() Calls 'deurwachter_network_sites_uri_args'
 	 */
 	public function admin_page_sites() {
 		global $wp_list_table;
@@ -762,24 +706,8 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses is_multisite()
 	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
-	 * @uses current_user_can()
-	 * @uses is_super_admin()
-	 * @uses wp_die()
-	 * @uses wp_get_referer()
-	 * @uses _get_deurwachter_network_sites_list_table()
-	 * @uses check_admin_referer()
-	 * @uses wp_parse_id_list()
-	 * @uses wp_redirect()
-	 * @uses switch_to_blog()
-	 * @uses update_option()
-	 * @uses restore_current_blog()
-	 * @uses add_query_arg()
 	 * @uses apply_filters() Calls 'deurwachter_network_sites_edit'
-	 * @uses get_settings_errors()
-	 * @uses add_settings_error()
-	 * @uses set_transient()
 	 */
 	public function handle_sites_settings() {
 
@@ -880,7 +808,6 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses WP_MS_Sites_List_Table::get_columns()
 		 * @uses apply_filters() Calls 'deurwachter_network_sites_columns'
 		 * 
 		 * @return array Columns
@@ -920,8 +847,6 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 * @since 1.1.0
 		 * @access protected
 		 *
-		 * @uses WP_List_Table::pagination()
-		 *
 		 * @param string $which
 		 */
 		protected function pagination( $which ) {
@@ -933,13 +858,7 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses deurwachter_is_site_protected()
-		 * @uses is_subdomain_intall()
-		 * @uses switch_to_blog()
 		 * @uses do_action() Calls 'deurwachter_network_sites_custom_column'
-		 * @uses restore_current_blog()
-		 * @uses convert_to_screen()
-		 * @uses get_current_screen()
 		 */
 		public function display_rows() {
 			$class = '';

@@ -156,8 +156,6 @@ final class Deurwachter {
 	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
-	 * @uses load_textdomain() To load the textdomain
-	 * @uses load_plugin_textdomain() To load the plugin textdomain
 	 */
 	public function load_textdomain() {
 
@@ -180,12 +178,10 @@ final class Deurwachter {
 	 * Initialize network functions when network activated
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses is_plugin_active_for_network()
 	 */
 	public function load_for_network() {
 
-		// Load file to use its functions
+		// Load file to use plugin functions
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		// Bail when plugin is not network activated
@@ -205,17 +201,9 @@ final class Deurwachter {
 	 * Redirect users on accessing a page of your site
 	 *
 	 * @since 1.0.0
-	 * @since 1.2.0 Handle feed requests
+	 * @since 2.0.0 Handle feed requests
 	 *
-	 * @uses deurwachter_is_site_protected()
-	 * @uses is_404()
-	 * @uses is_feed()
-	 * @uses WP_Query::set_404()
-	 * @uses status_header()
-	 * @uses is_user_logged_in() To check if the user is logged in
-	 * @uses deurwachter_is_user_allowed() To check if the user is allowed
 	 * @uses do_action() Calls 'deurwachter_site_protect'
-	 * @uses auth_redirect() To log the user out and redirect to wp-login.php
 	 */
 	public function site_protect() {
 
@@ -248,9 +236,6 @@ final class Deurwachter {
 	 * Append our custom login message to the login messages
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses deurwachter_is_site_protected()
-	 * @uses get_option()
 	 * 
 	 * @param string $message The current login messages
 	 * @return string $message
@@ -274,11 +259,6 @@ final class Deurwachter {
 	 * Add the plugin's admin bar menu item
 	 * 
 	 * @since 1.0.0
-	 *
-	 * @uses is_network_admin()
-	 * @uses current_user_can()
-	 * @uses deurwachter_is_site_protected()
-	 * @uses deurwachter_get_protection_details()
 	 * 
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
@@ -366,10 +346,6 @@ final class Deurwachter {
 	 * Create the plugin admin page menu item
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_options_page() To add the menu to the options menu
-	 * @uses add_action() To enable functions hooking into admin page
-	 *                     head en footer
 	 */
 	public function admin_menu() {
 
@@ -408,10 +384,6 @@ final class Deurwachter {
 	 * Output plugin admin page contents
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses settings_fields() To output the form validation inputs
-	 * @uses do_settings_section() To output all form fields
-	 * @uses submit_button() To output the form submit button
 	 */
 	public function admin_page() { ?>
 
@@ -432,13 +404,6 @@ final class Deurwachter {
 	 * Output admin page scripts and styles
 	 * 
 	 * @since 1.0.0
-	 *
-	 * @uses wp_script_is() To check if the script is already registered
-	 * @uses wp_register_script()
-	 * @uses wp_enqueue_script()
-	 * @uses wp_style_is() To check if the style is already registered
-	 * @uses wp_register_style()
-	 * @uses wp_enqueue_style()
 	 */
 	public function enqueue_admin_scripts() {
 
@@ -488,11 +453,6 @@ final class Deurwachter {
 	 * Setup the plugin settings
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_settings_section() To create the settings sections
-	 * @uses deurwachter_settings()
-	 * @uses add_settings_field() To create a setting with it's field
-	 * @uses register_setting() To enable the setting being saved to the DB
 	 */
 	public function register_settings() {
 
@@ -516,8 +476,6 @@ final class Deurwachter {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses add_query_arg() To create the url to the settings page
-	 *
 	 * @param array $links The current plugin action links
 	 * @param string $file The current plugin file
 	 * @return array $links All current plugin action links
@@ -539,7 +497,7 @@ final class Deurwachter {
  *
  * @since 1.0.0
  *
- * @return The one true Deurwachter Instance
+ * @return The one true Deurwachter instance
  */
 function deurwachter() {
 	return Deurwachter::instance();

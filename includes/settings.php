@@ -18,6 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'deurwachter_settings'
+ *
  * @return array Settings
  */
 function deurwachter_settings() {
@@ -72,8 +73,6 @@ function deurwachter_additional_settings_info() { /* Nothing to show */ }
  * Output the enable site protection input field
  *
  * @since 1.0.0
- *
- * @uses deurwachter_is_site_protected()
  */
 function deurwachter_setting_protect_site() { ?>
 
@@ -87,9 +86,6 @@ function deurwachter_setting_protect_site() { ?>
  * Output the allowed users input field
  *
  * @since 1.0.0
- *
- * @uses get_option()
- * @uses get_users() To get all users of the site
  */
 function deurwachter_setting_allow_users() {
 
@@ -112,9 +108,6 @@ function deurwachter_setting_allow_users() {
  * Output the custom message input field
  *
  * @since 1.0.0
- *
- * @uses esc_textarea()
- * @uses get_option()
  */
 function deurwachter_setting_login_message() { ?>
 
@@ -150,9 +143,6 @@ function deurwachter_setting_sanitize_ids( $input ) {
  *
  * @since 1.0.0
  *
- * @uses wp_unslash()
- * @uses wp_kses() To filter out all non allowed HTML tags
- *
  * @param string $input The submitted value
  * @return string $input
  */
@@ -172,6 +162,7 @@ function deurwachter_setting_sanitize_message( $input ) {
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'deurwachter_network_settings'
+ *
  * @return array Settings
  */
 function deurwachter_network_settings() {
@@ -263,8 +254,6 @@ function deurwachter_network_additional_settings_info() { /* Nothing to show */ 
  * Output the network only input field
  *
  * @since 1.0.0
- *
- * @uses deurwachter_is_network_only()
  */
 function deurwachter_network_setting_network_only() { ?>
 
@@ -278,8 +267,6 @@ function deurwachter_network_setting_network_only() { ?>
  * Output the enable network protection input field
  *
  * @since 1.0.0
- *
- * @uses deurwachter_is_network_protected()
  */
 function deurwachter_network_setting_network_protect() { ?>
 
@@ -293,8 +280,6 @@ function deurwachter_network_setting_network_protect() { ?>
  * Output the redirect to main site input field
  *
  * @since 1.0.0
- *
- * @uses deurwachter_network_redirect()
  */
 function deurwachter_network_setting_network_redirect() { ?>
 
@@ -308,8 +293,6 @@ function deurwachter_network_setting_network_redirect() { ?>
  * Output the hide my sites input field
  *
  * @since 1.0.0
- *
- * @uses get_site_option() To get the field's value
  */
 function deurwachter_network_setting_hide_my_sites() { ?>
 
@@ -323,9 +306,6 @@ function deurwachter_network_setting_hide_my_sites() { ?>
  * Output the allowed network users input field
  *
  * @since 1.0.0
- *
- * @uses get_site_option() To get the field's value
- * @uses deurwachter_get_network_users() To get all users of the network
  */
 function deurwachter_network_setting_allowed_users() {
 
@@ -348,8 +328,6 @@ function deurwachter_network_setting_allowed_users() {
  * Output the custom network message input field
  *
  * @since 1.0.0
- *
- * @uses get_site_option() To get the field's value
  */
 function deurwachter_network_setting_login_message() { ?>
 

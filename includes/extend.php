@@ -14,9 +14,6 @@ defined( 'ABSPATH' ) || exit;
  * Setup BuddyPress pugin extension
  *
  * @since 1.0.0
- * 
- * @uses buddypress()
- * @uses deurwachter()
  */
 function deurwachter_setup_buddypress() {
 
