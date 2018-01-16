@@ -249,7 +249,7 @@ final class Deurwachter {
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
-				$message .= '<p class="message">'. $login_message .'<p>';
+				$message .= '<p class="message">' . $login_message . '<p>';
 			}
 		}
 
@@ -270,7 +270,7 @@ final class Deurwachter {
 
 			// When protection is active
 			$active = deurwachter_is_site_protected();
-			$title1 = $active ? __( 'Site protection is active', 'deurwachter' ) : __( 'Site protection is not active', 'deurwachter' );
+			$title1 = $active ? esc_html__( 'Site protection is active', 'deurwachter' ) : esc_html__( 'Site protection is not active', 'deurwachter' );
 			$title2 = $active ? deurwachter_get_protection_details() : $title1;
 			$class  = $active ? 'hover site-protected' : '';
 
@@ -281,8 +281,8 @@ final class Deurwachter {
 				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $title1 . '</span>',
 				'href'      => add_query_arg( 'page', 'deurwachter', admin_url( 'options-general.php' ) ),
 				'meta'      => array(
-					'class'     => $class,
-					'title'     => $title2,
+					'class' => $class,
+					'title' => $title2,
 				),
 			) );
 
@@ -352,8 +352,8 @@ final class Deurwachter {
 
 		// Setup settings page
 		$hook = add_options_page(
-			__( 'Deurwachter Settings', 'deurwachter' ),
-			__( 'Deurwachter', 'deurwachter' ),
+			esc_html__( 'Deurwachter Settings', 'deurwachter' ),
+			esc_html__( 'Deurwachter', 'deurwachter' ),
 			'manage_options',
 			'deurwachter',
 			array( $this, 'admin_page' )
@@ -389,7 +389,7 @@ final class Deurwachter {
 	public function admin_page() { ?>
 
 		<div class="wrap">
-			<h2><?php _e( 'Deurwachter', 'deurwachter' ); ?></h2>
+			<h1 class="wp-heading-inline"><?php esc_html_e( 'Deurwachter', 'deurwachter' ); ?></h1>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'deurwachter' ); ?>
@@ -427,9 +427,9 @@ final class Deurwachter {
 		wp_register_script( 'deurwachter-admin', $this->includes_url . 'assets/js/deurwachter-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
 		wp_enqueue_script ( 'deurwachter-admin' );
 		wp_localize_script( 'deurwachter-admin', 'deurwachterAdminL10n', array(
-			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>', 
-				__( 'Site Protection', 'deurwachter' ), 
-				__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is colored accordingly.', 'deurwachter' )
+			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>',
+				esc_html__( 'Site Protection', 'deurwachter' ),
+				esc_html__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is colored accordingly.', 'deurwachter' )
 			),
 			'settings' => array(
 				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'deurwachter_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
@@ -458,7 +458,7 @@ final class Deurwachter {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'deurwachter-options-access', __( 'Access Settings', 'deurwachter' ), 'deurwachter_access_settings_info', 'deurwachter' );
+		add_settings_section( 'deurwachter-options-access', esc_html__( 'Access Settings', 'deurwachter' ), 'deurwachter_access_settings_info', 'deurwachter' );
 
 		// Loop all settings to register
 		foreach ( deurwachter_settings() as $setting => $args ) {
@@ -485,7 +485,7 @@ final class Deurwachter {
 
 		// Add settings link for our plugin
 		if ( $file == $this->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'options-general.php' ) . '">' . __( 'Settings', 'deurwachter' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'options-general.php' ) . '">' . esc_html__( 'Settings', 'deurwachter' ) . '</a>';
 		}
 
 		return $links;

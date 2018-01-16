@@ -124,7 +124,7 @@ final class Deurwachter_Network {
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
-				$message .= '<p class="message">'. $login_message .'<p>';
+				$message .= '<p class="message">' . $login_message . '<p>';
 			}
 		}
 
@@ -286,8 +286,8 @@ final class Deurwachter_Network {
 		// Create Settings submenu
 		$hook = add_submenu_page(
 			'settings.php',
-			__( 'Deurwachter Network Settings', 'deurwachter' ),
-			__( 'Deurwachter', 'deurwachter' ),
+			esc_html__( 'Deurwachter Network Settings', 'deurwachter' ),
+			esc_html__( 'Deurwachter', 'deurwachter' ),
 			'manage_network',
 			'deurwachter',
 			array( $this, 'admin_page' )
@@ -342,7 +342,10 @@ final class Deurwachter_Network {
 	public function admin_page() {
 
 		// Get the admin tabs
-		$tabs = apply_filters( 'deurwachter_network_admin_tabs', array( 'main' => __( 'Main', 'deurwachter' ), 'sites' => __( 'Sites', 'deurwachter' ) ) );
+		$tabs = apply_filters( 'deurwachter_network_admin_tabs', array(
+			'main'  => esc_html__( 'Main',  'deurwachter' ),
+			'sites' => esc_html__( 'Sites', 'deurwachter' )
+		) );
 
 		// Remove Sites tab when Deurwachter is only active for the network
 		if ( deurwachter_is_network_only() ) {
@@ -352,16 +355,16 @@ final class Deurwachter_Network {
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 		<div class="wrap">
-			<h2 class="nav-tab-wrapper">
+			<h1 class="nav-tab-wrapper">
 				<?php esc_html_e( 'Deurwachter Network', 'deurwachter' ); ?>
 				<?php foreach ( $tabs as $tab => $label ) :
 					printf( '<a class="nav-tab%s" href="%s">%s</a>',
 						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
 						add_query_arg( array( 'page' => 'deurwachter', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
-						$label
+						esc_html( $label )
 					);
 				endforeach; ?>
-			</h2>
+			</h1>
 
 			<?php
 
@@ -393,8 +396,8 @@ final class Deurwachter_Network {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'deurwachter-options-main',   __( 'Main Settings',   'deurwachter' ), 'deurwachter_network_main_settings_info',   'deurwachter_network' );
-		add_settings_section( 'deurwachter-options-access', __( 'Access Settings', 'deurwachter' ), 'deurwachter_network_access_settings_info', 'deurwachter_network' );
+		add_settings_section( 'deurwachter-options-main',   esc_html__( 'Main Settings',   'deurwachter' ), 'deurwachter_network_main_settings_info',   'deurwachter_network' );
+		add_settings_section( 'deurwachter-options-access', esc_html__( 'Access Settings', 'deurwachter' ), 'deurwachter_network_access_settings_info', 'deurwachter_network' );
 
 		// Loop all network settings to register
 		foreach ( deurwachter_network_settings() as $setting => $args ) {
@@ -519,9 +522,9 @@ final class Deurwachter_Network {
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type ) {
-				$messages[] = __( 'Settings saved.', 'deurwachter' );
+				$messages[] = esc_html__( 'Settings saved.', 'deurwachter' );
 			} else {
-				$messages[] = apply_filters( 'deurwachter_network_admin_notice', __( 'Something went wrong.', 'deurwachter' ), $_GET['settings-updated'] );
+				$messages[] = apply_filters( 'deurwachter_network_admin_notice', esc_html__( 'Something went wrong.', 'deurwachter' ), $_GET['settings-updated'] );
 			}
 
 		// Bulk sites settings
@@ -576,7 +579,7 @@ final class Deurwachter_Network {
 
 		// Add settings link for our plugin
 		if ( $file == deurwachter()->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'settings.php' ) . '">' . __( 'Settings', 'deurwachter' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'settings.php' ) . '">' . esc_html__( 'Settings', 'deurwachter' ) . '</a>';
 		}
 
 		return $links;
@@ -676,7 +679,7 @@ final class Deurwachter_Network {
 
 		// Bail when Deurwachter is only active for the network
 		if ( deurwachter_is_network_only() ) {
-			echo '<div class="notice notice-error"><p>' . __( 'Deurwachter is only active for the network. There are no site settings here.', 'deurwachter' ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Deurwachter is only active for the network. There are no site settings here.', 'deurwachter' ) . '</p></div>';
 			return;
 		} 
 
@@ -686,7 +689,7 @@ final class Deurwachter_Network {
 		// Clean REQUEST_URI
 		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'deurwachter_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
 
-		<h3><?php _e( 'Manage Protection', 'deurwachter' ); ?></h3>
+		<h2><?php esc_html_e( 'Manage Protection', 'deurwachter' ); ?></h2>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
 			<input type="hidden" name="page" value="deurwachter" />
@@ -817,9 +820,9 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 
 			return (array) apply_filters( 'deurwachter_network_sites_columns', array( 
 				'cb'            => $columns['cb'],
-				'protected'     => __( 'Protected', 'deurwachter' ),
+				'protected'     => esc_html__( 'Protected', 'deurwachter' ),
 				'blogname'      => $columns['blogname'],
-				'allowed-users' => __( 'Allowed Users', 'deurwachter' ),
+				'allowed-users' => esc_html__( 'Allowed Users', 'deurwachter' ),
 			) );
 		}
 
@@ -834,8 +837,8 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 */
 		public function get_bulk_actions() {
 			return (array) apply_filters( 'deurwachter_network_sites_bulk_actions', array(
-				'enable'  => __( 'Enable',  'deurwachter' ),
-				'disable' => __( 'Disable', 'deurwachter' ),
+				'enable'  => esc_html__( 'Enable',  'deurwachter' ),
+				'disable' => esc_html__( 'Disable', 'deurwachter' ),
 			) );
 		}
 
@@ -891,7 +894,7 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 
 						case 'protected' :
 							echo "<td class='$column_name column-$column_name'$style>"; ?>
-								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? _e( 'Site protection is active', 'deurwachter' ) : _e( 'Site protection is not active', 'deurwachter' ); ?>"></i>
+								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? esc_html_e( 'Site protection is active', 'deurwachter' ) : esc_html_e( 'Site protection is not active', 'deurwachter' ); ?>"></i>
 							</td>
 
 							<?php
@@ -912,7 +915,7 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 							$count = count( $users );
 							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
 							if ( 0 < $count - 5 ) {
-								$title = sprintf( __( '%s and %d more', 'deurwachter' ), $title, $count - 5 );
+								$title = sprintf( esc_html__( '%s and %d more', 'deurwachter' ), $title, $count - 5 );
 							}
 
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
