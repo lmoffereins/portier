@@ -8,7 +8,7 @@
  */
 
 /**
- * Plugin Name:       Deurwachter (former Guard)
+ * Plugin Name:       Deurwachter (formerly Guard)
  * Description:       Restrict access to your (multi)site
  * Plugin URI:        https://github.com/lmoffereins/deurwachter
  * Author:            Laurens Offereins
@@ -113,7 +113,7 @@ final class Deurwachter {
 
 		// Admin
 		if ( is_admin() ) {
-			require( $this->includes_dir . 'settings.php'  );
+			require( $this->includes_dir . 'settings.php' );
 		}
 	}
 
@@ -189,7 +189,7 @@ final class Deurwachter {
 		if ( ! is_plugin_active_for_network( $this->basename ) )
 			return;
 
-		// Load network file
+		// Load network functions
 		require( $this->includes_dir . 'network.php' );
 
 		// Setup network functionality
@@ -202,7 +202,7 @@ final class Deurwachter {
 	 * Redirect users on accessing a page of your site
 	 *
 	 * @since 1.0.0
-	 * @since 2.0.0 Handle feed requests
+	 * @since 1.2.0 Handle feed requests
 	 *
 	 * @uses do_action() Calls 'deurwachter_site_protect'
 	 */
@@ -367,6 +367,8 @@ final class Deurwachter {
 	 * Enqueue script and style in plugin admin page head
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses do_action() Calls 'deurwachter_admin_head'
 	 */
 	public function admin_head() {
 		do_action( 'deurwachter_admin_head' );
@@ -376,6 +378,8 @@ final class Deurwachter {
 	 * Output plugin admin page footer contents
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses do_action() Calls 'deurwachter_admin_footer'
 	 */
 	public function admin_footer() { 
 		do_action( 'deurwachter_admin_footer' );
