@@ -10,6 +10,70 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
+/** Versions ******************************************************************/
+
+/**
+ * Output the Deurwachter version
+ *
+ * @since 1.2.0
+ */
+function deurwachter_version() {
+	echo deurwachter_get_version();
+}
+
+	/**
+	 * Return the Deurwachter version
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string The Deurwachter version
+	 */
+	function deurwachter_get_version() {
+		return deurwachter()->version;
+	}
+
+/**
+ * Output the Deurwachter database version
+ *
+ * @since 1.2.0
+ */
+function deurwachter_db_version() {
+	echo deurwachter_get_db_version();
+}
+
+	/**
+	 * Return the Deurwachter database version
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string The Deurwachter version
+	 */
+	function deurwachter_get_db_version() {
+		return deurwachter()->db_version;
+	}
+
+/**
+ * Output the Deurwachter database version directly from the database
+ *
+ * @since 1.2.0
+ */
+function deurwachter_db_version_raw() {
+	echo deurwachter_get_db_version_raw();
+}
+
+	/**
+	 * Return the Deurwachter database version directly from the database
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string The current Deurwachter version
+	 */
+	function deurwachter_get_db_version_raw() {
+		return get_option( '_deurwachter_db_version', '' );
+	}
+
+/** Protection ****************************************************************/
+
 /**
  * Return whether the given site's protection is active
  *
