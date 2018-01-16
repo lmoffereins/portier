@@ -134,9 +134,9 @@ final class Deurwachter {
 
 
 		// Admin
-		add_action( 'admin_init',       array( $this, 'register_settings' ) );
-		add_action( 'admin_menu',       array( $this, 'admin_menu'        ) );
-		add_action( 'deurwachter_admin_head', array( $this, 'enqueue_scripts'   ) );
+		add_action( 'admin_init',             array( $this, 'register_settings'     ) );
+		add_action( 'admin_menu',             array( $this, 'admin_menu'            ) );
+		add_action( 'deurwachter_admin_head', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -440,16 +440,16 @@ final class Deurwachter {
 	 * @uses wp_register_style()
 	 * @uses wp_enqueue_style()
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_admin_scripts() {
 
 		// Register Chosen when not done already
 		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-			wp_register_script( 'chosen', $this->includes_url . 'js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
+			wp_register_script( 'chosen', $this->includes_url . 'assets/js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
 		}
 		wp_enqueue_script( 'chosen' );
 
 		if ( ! wp_style_is( 'chosen', 'registered' ) ) {
-			wp_register_style( 'chosen', $this->includes_url . 'js/chosen/chosen.min.css', false, '1.2.0' );
+			wp_register_style( 'chosen', $this->includes_url . 'assets/js/chosen/chosen.min.css', false, '1.2.0' );
 		}
 		wp_enqueue_style( 'chosen' );
 
@@ -458,7 +458,7 @@ final class Deurwachter {
 		wp_enqueue_style ( 'wp-pointer' ); 
 
 		// Plugin admin
-		wp_register_script( 'deurwachter-admin', $this->includes_url . 'js/deurwachter-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
+		wp_register_script( 'deurwachter-admin', $this->includes_url . 'assets/js/deurwachter-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
 		wp_enqueue_script ( 'deurwachter-admin' );
 		wp_localize_script( 'deurwachter-admin', 'deurwachterAdminL10n', array(
 			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>', 
