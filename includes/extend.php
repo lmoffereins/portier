@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Deurwachter Extend Functions
+ * Portier Extend Functions
  * 
- * @package Deurwachter
+ * @package Portier
  * @subpackage Extend
  */
 
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-function deurwachter_setup_buddypress() {
+function portier_setup_buddypress() {
 
 	// Bail when BuddyPress is not active
 	if ( ! function_exists( 'buddypress' ) )
@@ -26,8 +26,8 @@ function deurwachter_setup_buddypress() {
 		return;
 
 	// Include BuddyPress extension
-	require( deurwachter()->includes_dir . 'extend/buddypress.php' );
+	require( portier()->includes_dir . 'extend/buddypress.php' );
 
-	// Initiate BuddyPress for Deurwachter
-	deurwachter()->extend->bp = new Deurwachter_BuddyPress();
+	// Initiate BuddyPress for Portier
+	portier()->extend->bp = new Portier_BuddyPress();
 }

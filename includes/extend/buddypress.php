@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Deurwachter BuddyPress Extension Class
+ * Portier BuddyPress Extension Class
  * 
- * @package Deurwachter
+ * @package Portier
  * @subpackage Extend
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Deurwachter_BuddyPress' ) ) :
+if ( ! class_exists( 'Portier_BuddyPress' ) ) :
 /**
- * BuddyPress extension for Deurwachter
+ * BuddyPress extension for Portier
  *
  * @since 1.0.0
  */
-class Deurwachter_BuddyPress {
+class Portier_BuddyPress {
 
 	/**
 	 * Class constructor
@@ -48,20 +48,20 @@ class Deurwachter_BuddyPress {
 	public function setup_actions() {
 
 		// Settings
-		add_filter( 'deurwachter_settings',         array( $this, 'register_settings' ) );
-		add_filter( 'deurwachter_network_settings', array( $this, 'register_settings' ) );
+		add_filter( 'portier_settings',         array( $this, 'register_settings' ) );
+		add_filter( 'portier_network_settings', array( $this, 'register_settings' ) );
 
 		// Groups component
 		if ( bp_is_active( 'groups' ) ) {
 
 			// Filter user access
-			add_filter( 'deurwachter_is_user_allowed',         array( $this, 'is_user_allowed' ), 10, 3 );
-			add_filter( 'deurwachter_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
+			add_filter( 'portier_is_user_allowed',         array( $this, 'is_user_allowed' ), 10, 3 );
+			add_filter( 'portier_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
 
 			// Admin
-			add_filter( 'deurwachter_get_protection_details',      array( $this, 'protection_details'  )        );
-			add_filter( 'deurwachter_network_sites_columns',       array( $this, 'sites_columns'       )        );
-			add_action( 'deurwachter_network_sites_custom_column', array( $this, 'sites_custom_column' ), 10, 2 );
+			add_filter( 'portier_get_protection_details',      array( $this, 'protection_details'  )        );
+			add_filter( 'portier_network_sites_columns',       array( $this, 'sites_columns'       )        );
+			add_action( 'portier_network_sites_custom_column', array( $this, 'sites_custom_column' ), 10, 2 );
 		}
 	}
 
@@ -79,18 +79,18 @@ class Deurwachter_BuddyPress {
 	public function register_settings( $settings ) {
 
 		// Get whether these are the network settings
-		$network = current_filter() == 'deurwachter_network_settings';
+		$network = current_filter() == 'portier_network_settings';
 
 		// Groups component
 		if ( bp_is_active( 'groups' ) ) {
 
 			// Allowed groups
-			$settings['_deurwachter_bp_allowed_groups'] = array(
-				'label'             => __( 'Allowed groups', 'deurwachter' ),
+			$settings['_portier_bp_allowed_groups'] = array(
+				'label'             => __( 'Allowed groups', 'portier' ),
 				'callback'          => array( $this, 'setting_allowed_groups' ),
-				'section'           => 'deurwachter-options-access',
-				'page'              => $network ? 'deurwachter_network' : 'deurwachter',
-				'sanitize_callback' => 'deurwachter_setting_sanitize_ids'
+				'section'           => 'portier-options-access',
+				'page'              => $network ? 'portier_network' : 'portier',
+				'sanitize_callback' => 'portier_setting_sanitize_ids'
 			);
 		}
 
@@ -115,16 +115,16 @@ class Deurwachter_BuddyPress {
 		
 		// Get selected groups
 		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
-		$selected = call_user_func_array( $getter, array( '_deurwachter_bp_allowed_groups', array() ) ); ?>
+		$selected = call_user_func_array( $getter, array( '_portier_bp_allowed_groups', array() ) ); ?>
 
-		<select id="_deurwachter_bp_allowed_groups" name="_deurwachter_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a group', 'deurwachter' ); ?>">
+		<select id="_portier_bp_allowed_groups" name="_portier_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a group', 'portier' ); ?>">
 
 			<?php foreach ( $groups as $group ) : ?>
 				<option value="<?php echo $group->id; ?>" <?php selected( in_array( $group->id, (array) $selected ) ); ?>><?php echo $group->name; ?></option>
 			<?php endforeach; ?>
 
 		</select>
-		<label for="_deurwachter_bp_allowed_groups"><?php _e( "Select the groups whose members will have access", 'deurwachter' ); ?></label>
+		<label for="_portier_bp_allowed_groups"><?php _e( "Select the groups whose members will have access", 'portier' ); ?></label>
 
 		<?php
 	}
@@ -138,7 +138,7 @@ class Deurwachter_BuddyPress {
 	 * @uses switch_to_blog()
 	 * @uses get_option()
 	 * @uses restore_current_blog()
-	 * @uses apply_filters() Calls 'deurwachter_bp_get_allowed_groups'
+	 * @uses apply_filters() Calls 'portier_bp_get_allowed_groups'
 	 * 
 	 * @param int $site_id Optional. Site ID
 	 * @return array The site's groups
@@ -151,14 +151,14 @@ class Deurwachter_BuddyPress {
 			switch_to_blog( $site_id );
 		}
 
-		$groups = (array) get_option( '_deurwachter_bp_allowed_groups', array() );
+		$groups = (array) get_option( '_portier_bp_allowed_groups', array() );
 
 		// Restore switched site
 		if ( ! empty( $site_id ) && is_multisite() ) {
 			restore_current_blog();
 		}
 
-		return (array) apply_filters( 'deurwachter_bp_get_allowed_groups', $groups, $site_id );
+		return (array) apply_filters( 'portier_bp_get_allowed_groups', $groups, $site_id );
 	}
 
 	/**
@@ -167,12 +167,12 @@ class Deurwachter_BuddyPress {
 	 * @since 1.0.0
 	 *
 	 * @uses get_site_option()
-	 * @uses apply_filters() Calls 'deurwachter_bp_get_network_allowed_groups'
+	 * @uses apply_filters() Calls 'portier_bp_get_network_allowed_groups'
 	 * 
 	 * @return array Network's allowed groups
 	 */
 	public function get_network_allowed_groups() {
-		return (array) apply_filters( 'deurwachter_bp_get_network_allowed_groups', (array) get_site_option( '_deurwachter_bp_allowed_groups', array() ) );
+		return (array) apply_filters( 'portier_bp_get_network_allowed_groups', (array) get_site_option( '_portier_bp_allowed_groups', array() ) );
 	}
 
 	/**
@@ -181,8 +181,8 @@ class Deurwachter_BuddyPress {
 	 * @since 1.0.0
 	 * 
 	 * @uses current_filter()
-	 * @uses Deurwachter_BuddyPress::get_network_allowed_groups()
-	 * @uses Deurwachter_BuddyPress::get_allowed_groups()
+	 * @uses Portier_BuddyPress::get_network_allowed_groups()
+	 * @uses Portier_BuddyPress::get_allowed_groups()
 	 * @uses groups_get_groups()
 	 * 
 	 * @param bool $allowed Is the user allowed
@@ -196,7 +196,7 @@ class Deurwachter_BuddyPress {
 		if ( ! $allowed ) {
 
 			// Get the allowed groups
-			$getter    = current_filter() == 'deurwachter_network_is_user_allowed' ? 'get_network_allowed_groups' : 'get_allowed_groups';
+			$getter    = current_filter() == 'portier_network_is_user_allowed' ? 'get_network_allowed_groups' : 'get_allowed_groups';
 			$group_ids = call_user_func_array( array( $this, $getter ), array( $site_id ) );
 
 			// Only check for selected groups
@@ -254,7 +254,7 @@ class Deurwachter_BuddyPress {
 
 		// Get allowed group count
 		$allowed_group_count = count( $this->get_allowed_groups() );
-		$title .= sprintf( _n( '%d allowed group', '%d allowed groups', $allowed_group_count, 'deurwachter' ), $allowed_group_count );
+		$title .= sprintf( _n( '%d allowed group', '%d allowed groups', $allowed_group_count, 'portier' ), $allowed_group_count );
 
 		return $title;
 	}
@@ -268,7 +268,7 @@ class Deurwachter_BuddyPress {
 	 * @return array Columns
 	 */
 	public function sites_columns( $columns ) {
-		$columns['allowed-groups'] = __( 'Allowed Groups', 'deurwachter' );
+		$columns['allowed-groups'] = __( 'Allowed Groups', 'portier' );
 		return $columns;
 	}
 
@@ -286,14 +286,14 @@ class Deurwachter_BuddyPress {
 		if ( 'allowed-groups' != $column_name )
 			return;
 
-		$groups = get_option( '_deurwachter_bp_allowed_groups', array() );
+		$groups = get_option( '_portier_bp_allowed_groups', array() );
 		$count  = count( $groups );
 		$title  = implode( ', ', wp_list_pluck( array_map( 'groups_get_group', array_map( function( $id ) { return array( 'group_id' => $id ); }, array_slice( $groups, 0, 5 ) ) ), 'name' ) );
 		if ( 0 < $count - 5 ) {
-			$title = sprintf( __( '%s and %d more', 'deurwachter' ), $title, $count - 5 );
+			$title = sprintf( __( '%s and %d more', 'portier' ), $title, $count - 5 );
 		} ?>
 
-		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'deurwachter' ), $count ); ?></span>
+		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'portier' ), $count ); ?></span>
 
 		<?php
 	}

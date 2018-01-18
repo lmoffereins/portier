@@ -1,4 +1,4 @@
-=== Deurwachter ===
+=== Portier ===
 Contributors: Offereins
 Tags: protect, access, restrict, site, blog, user
 Requires at least: 4.0
@@ -17,8 +17,8 @@ Supports BuddyPress: provide access for selected user groups.
 
 == Changelog ==
 
-= 2.0.0 =
-* Rename plugin to Deurwachter because of a naming conflict with another plugin in the .org repository
+= 1.2.0 =
+* Rename plugin to Portier because of a naming conflict with another Guard plugin in the .org repository
 
 = 1.1.0 =
 * Changed Network Sites admin to use a list table

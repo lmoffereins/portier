@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Deurwachter Network Functions
+ * Portier Network Functions
  *
- * @package Deurwachter
+ * @package Portier
  * @subpackage Multisite
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Deurwachter_Network' ) ) :
+if ( ! class_exists( 'Portier_Network' ) ) :
 /**
- * Deurwachter Network Class
+ * Portier Network Class
  *
  * @since 1.0.0
  */
-final class Deurwachter_Network {
+final class Portier_Network {
 
 	/**
 	 * Setup class
@@ -35,28 +35,28 @@ final class Deurwachter_Network {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-		$dwtr = deurwachter();
+		$prtr = portier();
 
 		// Plugin
 		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
 
 		// Protection
-		add_action( 'template_redirect',        array( $this, 'network_protect'   ), 0     );
-		add_filter( 'login_message',            array( $this, 'login_message'     ), 0     );
-		add_action( 'deurwachter_site_protect', array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',           array( $this, 'filter_admin_bar'  ), 99    );
-		add_action( 'admin_menu',               array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',        array( $this, 'filter_user_sites' ), 10, 3 );
-		add_filter( 'user_has_cap',             array( $this, 'user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',    array( $this, 'network_protect'   ), 0     );
+		add_filter( 'login_message',        array( $this, 'login_message'     ), 0     );
+		add_action( 'portier_site_protect', array( $this, 'network_redirect'  )        );
+		add_action( 'admin_bar_menu',       array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_menu',           array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',    array( $this, 'filter_user_sites' ), 10, 3 );
+		add_filter( 'user_has_cap',         array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',                     array( $this, 'register_settings'     ) );
-		add_action( 'network_admin_menu',             array( $this, 'admin_menu'            ) );
-		add_action( 'network_admin_notices',          array( $this, 'admin_notices'         ) );
-		add_action( 'deurwachter_network_load_admin', array( $this, 'load_admin_page_sites' ) );
-		add_action( 'deurwachter_network_admin_head', array( $dwtr, 'enqueue_admin_scripts' ) );
-		add_action( 'deurwachter_network_admin_head', array( $this, 'admin_head_page_sites' ) );
-		add_action( 'deurwachter_network_page_sites', array( $this, 'admin_page_sites'      ) );
+		add_action( 'admin_init',                 array( $this, 'register_settings'     ) );
+		add_action( 'network_admin_menu',         array( $this, 'admin_menu'            ) );
+		add_action( 'network_admin_notices',      array( $this, 'admin_notices'         ) );
+		add_action( 'portier_network_load_admin', array( $this, 'load_admin_page_sites' ) );
+		add_action( 'portier_network_admin_head', array( $prtr, 'enqueue_admin_scripts' ) );
+		add_action( 'portier_network_admin_head', array( $this, 'admin_head_page_sites' ) );
+		add_action( 'portier_network_page_sites', array( $this, 'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -65,7 +65,7 @@ final class Deurwachter_Network {
 	/** Plugin *******************************************************/
 
 	/**
-	 * Ensure Deurwachter is only used for the network
+	 * Ensure Portier is only used for the network
 	 *
 	 * Remove plugin hooks for the single site context.
 	 * 
@@ -74,19 +74,19 @@ final class Deurwachter_Network {
 	public function network_only() {
 
 		// Bail when not marked as network only
-		if ( ! deurwachter_is_network_only() )
+		if ( ! portier_is_network_only() )
 			return;
 
-		$deurwachter = deurwachter();
+		$portier = portier();
 
 		// Protection
-		remove_action( 'template_redirect', array( $deurwachter, 'site_protect'   ), 1 );
-		remove_filter( 'login_message',     array( $deurwachter, 'login_message'  ), 1 );
-		remove_action( 'admin_bar_menu',    array( $deurwachter, 'admin_bar_menu' )    );
+		remove_action( 'template_redirect', array( $portier, 'site_protect'   ), 1 );
+		remove_filter( 'login_message',     array( $portier, 'login_message'  ), 1 );
+		remove_action( 'admin_bar_menu',    array( $portier, 'admin_bar_menu' )    );
 
 		// Admin
-		remove_action( 'admin_init', array( $deurwachter, 'register_settings' ) );
-		remove_action( 'admin_menu', array( $deurwachter, 'admin_menu'        ) );
+		remove_action( 'admin_init', array( $portier, 'register_settings' ) );
+		remove_action( 'admin_menu', array( $portier, 'admin_menu'        ) );
 	}
 
 	/** Protection ***************************************************/
@@ -99,11 +99,11 @@ final class Deurwachter_Network {
 	public function network_protect() {
 
 		// Bail when network protection is not active
-		if ( ! deurwachter_is_network_protected() )
+		if ( ! portier_is_network_protected() )
 			return;
 
 		// Redirect when the user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! deurwachter_network_is_user_allowed() ) {
+		if ( ! is_user_logged_in() || ! portier_network_is_user_allowed() ) {
 			auth_redirect();
 		}
 	}
@@ -119,8 +119,8 @@ final class Deurwachter_Network {
 	public function login_message( $message ) {
 
 		// When network protection is active
-		if ( deurwachter_is_network_protected() ) {
-			$login_message = get_site_option( '_deurwachter_network_login_message' );
+		if ( portier_is_network_protected() ) {
+			$login_message = get_site_option( '_portier_network_login_message' );
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
@@ -136,12 +136,12 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'deurwachter_network_redirect_location'
+	 * @uses apply_filters() Calls 'portier_network_redirect_location'
 	 */
 	public function network_redirect() {
 
 		// When network redirection is active
-		if ( deurwachter_network_redirect() ) {
+		if ( portier_network_redirect() ) {
 
 			// Define local variable(s)
 			$user_id  = get_current_user_id();
@@ -154,17 +154,17 @@ final class Deurwachter_Network {
 				$site = get_active_blog_for_user( $user_id );
 
 				// Redirect user to their primary site, only when they are allowed there
-				if ( ! empty( $site ) && ( ! deurwachter_is_site_protected( $site->blog_id ) || deurwachter_is_user_allowed( $user_id, $site->blog_id ) ) ) {
+				if ( ! empty( $site ) && ( ! portier_is_site_protected( $site->blog_id ) || portier_is_user_allowed( $user_id, $site->blog_id ) ) ) {
 					$location = $site->siteurl . $site->path;
 				}
 
 			// Try to return the anonymous user to the network home
-			} elseif ( ! deurwachter_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
+			} elseif ( ! portier_is_site_protected( BLOG_ID_CURRENT_SITE ) ) {
 				$location = network_home_url();
 			}
 
 			// Provide hook to filter the redirect location
-			$location = apply_filters( 'deurwachter_network_redirect_location', $location, $user_id );
+			$location = apply_filters( 'portier_network_redirect_location', $location, $user_id );
 
 			// Redirect when a location is provided
 			if ( ! empty( $location ) ) {
@@ -189,7 +189,7 @@ final class Deurwachter_Network {
 	public function filter_user_sites( $sites, $user_id, $all ) {
 
 		// Do not change site list when requesting all
-		if ( $all || deurwachter_is_network_only() ) {
+		if ( $all || portier_is_network_only() ) {
 			return $sites;
 		}
 
@@ -197,7 +197,7 @@ final class Deurwachter_Network {
 		foreach ( $sites as $site_id => $details ) {
 
 			// Site protection is active and user is not allowed
-			if ( deurwachter_is_site_protected( $site_id ) && ! deurwachter_is_user_allowed( $user_id, $site_id ) ) {
+			if ( portier_is_site_protected( $site_id ) && ! portier_is_user_allowed( $user_id, $site_id ) ) {
 
 				// Remove site from collection
 				unset( $sites[ $site_id ] );
@@ -217,7 +217,7 @@ final class Deurwachter_Network {
 	public function filter_admin_bar( $wp_admin_bar ) {
 
 		// Hiding 'My Sites'
-		if ( deurwachter_network_hide_my_sites() ) {
+		if ( portier_network_hide_my_sites() ) {
 
 			// Remove admin bar menu top item
 			$wp_admin_bar->remove_menu( 'my-sites' );
@@ -232,7 +232,7 @@ final class Deurwachter_Network {
 	public function filter_admin_menu() {
 
 		// Hiding 'My Sites'
-		if ( deurwachter_network_hide_my_sites() ) {
+		if ( portier_network_hide_my_sites() ) {
 
 			// This only removes the admin menu item, not the page
 			remove_submenu_page( 'index.php', 'my-sites.php' );
@@ -261,7 +261,7 @@ final class Deurwachter_Network {
 			&& function_exists( 'get_current_screen' ) && isset( get_current_screen()->id ) && 'my-sites' == get_current_screen()->id
 
 			// Hiding 'My Sites'
-			&& deurwachter_network_hide_my_sites()
+			&& portier_network_hide_my_sites()
 
 			// Requesting the 'read' cap
 			&& in_array( 'read', $caps )
@@ -286,10 +286,10 @@ final class Deurwachter_Network {
 		// Create Settings submenu
 		$hook = add_submenu_page(
 			'settings.php',
-			esc_html__( 'Deurwachter Network Settings', 'deurwachter' ),
-			esc_html__( 'Deurwachter', 'deurwachter' ),
+			esc_html__( 'Portier Network Settings', 'portier' ),
+			esc_html__( 'Portier', 'portier' ),
 			'manage_network',
-			'deurwachter',
+			'portier',
 			array( $this, 'admin_page' )
 		);
 
@@ -299,36 +299,36 @@ final class Deurwachter_Network {
 	}
 
 	/**
-	 * Provide a hook for loading the deurwachter network settings page
+	 * Provide a hook for loading the portier network settings page
 	 *
 	 * @since 1.1.0
 	 * 
-	 * @uses do_action() Calls 'deurwachter_network_load_admin'
+	 * @uses do_action() Calls 'portier_network_load_admin'
 	 */
 	public function load_admin() {
-		do_action( 'deurwachter_network_load_admin' );
+		do_action( 'portier_network_load_admin' );
 	}
 
 	/**
-	 * Provide a hook for the deurwachter network settings page head
+	 * Provide a hook for the portier network settings page head
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @uses do_action() Calls 'deurwachter_network_admin_head'
+	 * @uses do_action() Calls 'portier_network_admin_head'
 	 */
 	public function admin_head() {
-		do_action( 'deurwachter_network_admin_head' );
+		do_action( 'portier_network_admin_head' );
 	}
 
 	/**
-	 * Provide a hook for the deurwachter network settings page footer
+	 * Provide a hook for the portier network settings page footer
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @uses do_action() Calls 'deurwachter_network_admin_footer'
+	 * @uses do_action() Calls 'portier_network_admin_footer'
 	 */
 	public function admin_footer() {
-		do_action( 'deurwachter_network_admin_footer' );
+		do_action( 'portier_network_admin_footer' );
 	}
 
 	/**
@@ -336,19 +336,19 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'deurwachter_network_admin_tabs'
-	 * @uses do_action() Calls 'deurwachter_network_page_{$page_tab}'
+	 * @uses apply_filters() Calls 'portier_network_admin_tabs'
+	 * @uses do_action() Calls 'portier_network_page_{$page_tab}'
 	 */
 	public function admin_page() {
 
 		// Get the admin tabs
-		$tabs = apply_filters( 'deurwachter_network_admin_tabs', array(
-			'main'  => esc_html__( 'Main',  'deurwachter' ),
-			'sites' => esc_html__( 'Sites', 'deurwachter' )
+		$tabs = apply_filters( 'portier_network_admin_tabs', array(
+			'main'  => esc_html__( 'Main',  'portier' ),
+			'sites' => esc_html__( 'Sites', 'portier' )
 		) );
 
-		// Remove Sites tab when Deurwachter is only active for the network
-		if ( deurwachter_is_network_only() ) {
+		// Remove Sites tab when Portier is only active for the network
+		if ( portier_is_network_only() ) {
 			unset( $tabs['sites'] );
 		}
 
@@ -356,11 +356,11 @@ final class Deurwachter_Network {
 
 		<div class="wrap">
 			<h1 class="nav-tab-wrapper">
-				<?php esc_html_e( 'Deurwachter Network', 'deurwachter' ); ?>
+				<?php esc_html_e( 'Portier Network', 'portier' ); ?>
 				<?php foreach ( $tabs as $tab => $label ) :
 					printf( '<a class="nav-tab%s" href="%s">%s</a>',
 						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
-						add_query_arg( array( 'page' => 'deurwachter', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
+						add_query_arg( array( 'page' => 'portier', 'tab' => $tab ), network_admin_url( 'settings.php' ) ),
 						esc_html( $label )
 					);
 				endforeach; ?>
@@ -371,9 +371,9 @@ final class Deurwachter_Network {
 			// Output the settings form on the main page
 			if ( 'main' == $page_tab ) : ?>
 
-			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=deurwachter_network' ); ?>">
-				<?php settings_fields( 'deurwachter_network' ); ?>
-				<?php do_settings_sections( 'deurwachter_network' ); ?>
+			<form method="post" action="<?php echo network_admin_url( 'edit.php?action=portier_network' ); ?>">
+				<?php settings_fields( 'portier_network' ); ?>
+				<?php do_settings_sections( 'portier_network' ); ?>
 				<?php submit_button(); ?>
 			</form>
 
@@ -381,7 +381,7 @@ final class Deurwachter_Network {
 
 			// Custom settings page
 			else :
-				do_action( "deurwachter_network_page_{$page_tab}" );
+				do_action( "portier_network_page_{$page_tab}" );
 			endif; ?>
 		</div>
 
@@ -396,11 +396,11 @@ final class Deurwachter_Network {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'deurwachter-options-main',   esc_html__( 'Main Settings',   'deurwachter' ), 'deurwachter_network_main_settings_info',   'deurwachter_network' );
-		add_settings_section( 'deurwachter-options-access', esc_html__( 'Access Settings', 'deurwachter' ), 'deurwachter_network_access_settings_info', 'deurwachter_network' );
+		add_settings_section( 'portier-options-main',   esc_html__( 'Main Settings',   'portier' ), 'portier_network_main_settings_info',   'portier_network' );
+		add_settings_section( 'portier-options-access', esc_html__( 'Access Settings', 'portier' ), 'portier_network_access_settings_info', 'portier_network' );
 
 		// Loop all network settings to register
-		foreach ( deurwachter_network_settings() as $setting => $args ) {
+		foreach ( portier_network_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
 			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
@@ -416,8 +416,8 @@ final class Deurwachter_Network {
 		 *
 		 * @link http://core.trac.wordpress.org/ticket/15691
 		 */
-		add_action( 'network_admin_edit_deurwachter_network',       array( $this, 'handle_network_settings' ) );
-		add_action( 'network_admin_edit_deurwachter_network_sites', array( $this, 'handle_sites_settings'   ) );
+		add_action( 'network_admin_edit_portier_network',       array( $this, 'handle_network_settings' ) );
+		add_action( 'network_admin_edit_portier_network_sites', array( $this, 'handle_sites_settings'   ) );
 	}
 
 	/**
@@ -503,9 +503,9 @@ final class Deurwachter_Network {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'deurwachter_network_admin_notice'
-	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_counts'
-	 * @uses apply_filters() Calls 'deurwachter_network_bulk_site_updated_messages'
+	 * @uses apply_filters() Calls 'portier_network_admin_notice'
+	 * @uses apply_filters() Calls 'portier_network_bulk_site_updated_counts'
+	 * @uses apply_filters() Calls 'portier_network_bulk_site_updated_messages'
 	 *
 	 */
 	public function admin_notices() {
@@ -522,22 +522,22 @@ final class Deurwachter_Network {
 		if ( isset( $_GET['settings-updated'] ) ) {
 			$type = 'true' == $_GET['settings-updated'] ? 'updated' : 'error';
 			if ( 'updated' == $type ) {
-				$messages[] = esc_html__( 'Settings saved.', 'deurwachter' );
+				$messages[] = esc_html__( 'Settings saved.', 'portier' );
 			} else {
-				$messages[] = apply_filters( 'deurwachter_network_admin_notice', esc_html__( 'Something went wrong.', 'deurwachter' ), $_GET['settings-updated'] );
+				$messages[] = apply_filters( 'portier_network_admin_notice', esc_html__( 'Something went wrong.', 'portier' ), $_GET['settings-updated'] );
 			}
 
 		// Bulk sites settings
 		} elseif ( isset( $GLOBALS['wp_list_table'] ) ) {
 
-			$bulk_counts = apply_filters( 'deurwachter_network_bulk_site_updated_counts', array(
+			$bulk_counts = apply_filters( 'portier_network_bulk_site_updated_counts', array(
 				'enabled'  => isset( $_REQUEST['enabled']  ) ? absint( $_REQUEST['enabled']  ) : 0,
 				'disabled' => isset( $_REQUEST['disabled'] ) ? absint( $_REQUEST['disabled'] ) : 0,
 			) );
 
-			$bulk_messages = apply_filters( 'deurwachter_network_bulk_site_updated_messages', array(
-				'enabled'  => _n( 'Protection enabled for %d site.',  'Protection enabled for %d sites.',  $bulk_counts['enabled'],  'deurwachter' ),
-				'disabled' => _n( 'Protection disabled for %d site.', 'Protection disabled for %d sites.', $bulk_counts['disabled'], 'deurwachter' ),
+			$bulk_messages = apply_filters( 'portier_network_bulk_site_updated_messages', array(
+				'enabled'  => _n( 'Protection enabled for %d site.',  'Protection enabled for %d sites.',  $bulk_counts['enabled'],  'portier' ),
+				'disabled' => _n( 'Protection disabled for %d site.', 'Protection disabled for %d sites.', $bulk_counts['disabled'], 'portier' ),
 			) );
 
 			foreach ( $bulk_counts as $action => $count ) {
@@ -563,7 +563,7 @@ final class Deurwachter_Network {
 	 * @return bool This is the network page
 	 */
 	public function is_network_page() {
-		return is_network_admin() && ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_deurwachter' == $GLOBALS['hook_suffix'] );
+		return is_network_admin() && ( isset( $GLOBALS['hook_suffix'] ) && 'settings_page_portier' == $GLOBALS['hook_suffix'] );
 	}
 
 	/**
@@ -578,8 +578,8 @@ final class Deurwachter_Network {
 	public function settings_link( $links, $file ) {
 
 		// Add settings link for our plugin
-		if ( $file == deurwachter()->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'settings.php' ) . '">' . esc_html__( 'Settings', 'deurwachter' ) . '</a>';
+		if ( $file == portier()->basename ) {
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'portier', 'settings.php' ) . '">' . esc_html__( 'Settings', 'portier' ) . '</a>';
 		}
 
 		return $links;
@@ -600,7 +600,7 @@ final class Deurwachter_Network {
 			return;
 
 		// Setup list table globals
-		$wp_list_table = _get_deurwachter_network_sites_list_table();
+		$wp_list_table = _get_portier_network_sites_list_table();
 		$pagenum = $wp_list_table->get_pagenum();
 	}
 
@@ -619,7 +619,7 @@ final class Deurwachter_Network {
 			return;
 
 		// Bail when the specified list table isn't loaded
-		if ( ! is_a( $wp_list_table, 'Deurwachter_Network_Sites_List_Table' ) )
+		if ( ! is_a( $wp_list_table, 'Portier_Network_Sites_List_Table' ) )
 			return; ?>
 
 		<style type="text/css">
@@ -672,14 +672,14 @@ final class Deurwachter_Network {
 	 *
 	 * @global object $wp_list_table
 	 *
-	 * @uses apply_filters() Calls 'deurwachter_network_sites_uri_args'
+	 * @uses apply_filters() Calls 'portier_network_sites_uri_args'
 	 */
 	public function admin_page_sites() {
 		global $wp_list_table;
 
-		// Bail when Deurwachter is only active for the network
-		if ( deurwachter_is_network_only() ) {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'Deurwachter is only active for the network. There are no site settings here.', 'deurwachter' ) . '</p></div>';
+		// Bail when Portier is only active for the network
+		if ( portier_is_network_only() ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Portier is only active for the network. There are no site settings here.', 'portier' ) . '</p></div>';
 			return;
 		} 
 
@@ -687,17 +687,17 @@ final class Deurwachter_Network {
 		$wp_list_table->prepare_items(); 
 
 		// Clean REQUEST_URI
-		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'deurwachter_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
+		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'portier_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
 
-		<h2><?php esc_html_e( 'Manage Protection', 'deurwachter' ); ?></h2>
+		<h2><?php esc_html_e( 'Manage Protection', 'portier' ); ?></h2>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
-			<input type="hidden" name="page" value="deurwachter" />
+			<input type="hidden" name="page" value="portier" />
 			<input type="hidden" name="tab" value="<?php echo $_GET['tab']; ?>" />
 			<?php $wp_list_table->search_box( __( 'Search Sites' ), 'site' ); ?>
 		</form>
 
-		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=deurwachter_network_sites' ); ?>">
+		<form method="post" action="<?php echo network_admin_url( 'edit.php?action=portier_network_sites' ); ?>">
 			<?php $wp_list_table->display(); ?>
 		</form>
 
@@ -710,12 +710,12 @@ final class Deurwachter_Network {
 	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'option_page_capability_{$option_page}'
-	 * @uses apply_filters() Calls 'deurwachter_network_sites_edit'
+	 * @uses apply_filters() Calls 'portier_network_sites_edit'
 	 */
 	public function handle_sites_settings() {
 
 		// Define local variable(s)
-		$option_page = 'deurwachter_network_sites';
+		$option_page = 'portier_network_sites';
 
 		// Bail when not using within multisite
 		if ( ! is_multisite() )
@@ -732,7 +732,7 @@ final class Deurwachter_Network {
 		$goback = wp_get_referer();
 
 		// Get the bulk action
-		$wp_list_table = _get_deurwachter_network_sites_list_table();
+		$wp_list_table = _get_portier_network_sites_list_table();
 		$doaction = $wp_list_table->current_action();
 
 		if ( $doaction ) {
@@ -754,7 +754,7 @@ final class Deurwachter_Network {
 					$sites = 0;
 					foreach ( $site_ids as $site_id ) {
 						switch_to_blog( $site_id );
-						if ( update_option( '_deurwachter_site_protect', ( 'enable' === $doaction ) ? 1 : 0 ) ) {
+						if ( update_option( '_portier_site_protect', ( 'enable' === $doaction ) ? 1 : 0 ) ) {
 							$sites++;
 						}
 						restore_current_blog();
@@ -763,7 +763,7 @@ final class Deurwachter_Network {
 				break;
 
 				default :
-					$goback = apply_filters( 'deurwachter_network_sites_edit', $goback, $doaction, $site_ids );
+					$goback = apply_filters( 'portier_network_sites_edit', $goback, $doaction, $site_ids );
 				break;
 			}
 		}
@@ -791,38 +791,38 @@ endif; // class_exists
  *
  * @since 1.1.0
  */
-function _get_deurwachter_network_sites_list_table( $args = array() ) {
+function _get_portier_network_sites_list_table( $args = array() ) {
 
 	// Bail when the class already exists
-	if ( ! class_exists( 'Deurwachter_Network_Sites_List_Table' ) ) :
+	if ( ! class_exists( 'Portier_Network_Sites_List_Table' ) ) :
 
 	// We depend on the WP MS Sites List Table
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-ms-sites-list-table.php' );
 
 	/**
-	 * The Deurwachter Network Sites List Table
+	 * The Portier Network Sites List Table
 	 *
 	 * @since 1.1.0
 	 */
-	class Deurwachter_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
+	class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 
 		/**
 		 * Setup the list table's columns
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses apply_filters() Calls 'deurwachter_network_sites_columns'
+		 * @uses apply_filters() Calls 'portier_network_sites_columns'
 		 * 
 		 * @return array Columns
 		 */
 		public function get_columns() {
 			$columns = parent::get_columns();
 
-			return (array) apply_filters( 'deurwachter_network_sites_columns', array( 
+			return (array) apply_filters( 'portier_network_sites_columns', array( 
 				'cb'            => $columns['cb'],
-				'protected'     => esc_html__( 'Protected', 'deurwachter' ),
+				'protected'     => esc_html__( 'Protected', 'portier' ),
 				'blogname'      => $columns['blogname'],
-				'allowed-users' => esc_html__( 'Allowed Users', 'deurwachter' ),
+				'allowed-users' => esc_html__( 'Allowed Users', 'portier' ),
 			) );
 		}
 
@@ -831,14 +831,14 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 * 
 		 * @since 1.1.0
 		 *
-		 * @uses apply_filters() Calls 'deurwachter_network_sites_bulk_actions'
+		 * @uses apply_filters() Calls 'portier_network_sites_bulk_actions'
 		 * 
 		 * @return array Bulk actions
 		 */
 		public function get_bulk_actions() {
-			return (array) apply_filters( 'deurwachter_network_sites_bulk_actions', array(
-				'enable'  => esc_html__( 'Enable',  'deurwachter' ),
-				'disable' => esc_html__( 'Disable', 'deurwachter' ),
+			return (array) apply_filters( 'portier_network_sites_bulk_actions', array(
+				'enable'  => esc_html__( 'Enable',  'portier' ),
+				'disable' => esc_html__( 'Disable', 'portier' ),
 			) );
 		}
 
@@ -861,13 +861,13 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @uses do_action() Calls 'deurwachter_network_sites_custom_column'
+		 * @uses do_action() Calls 'portier_network_sites_custom_column'
 		 */
 		public function display_rows() {
 			$class = '';
 			foreach ( $this->items as $blog ) {
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				$protected = deurwachter_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
+				$protected = portier_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
 
 				echo "<tr class='$class$protected'>";
 
@@ -894,16 +894,16 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 
 						case 'protected' :
 							echo "<td class='$column_name column-$column_name'$style>"; ?>
-								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? esc_html_e( 'Site protection is active', 'deurwachter' ) : esc_html_e( 'Site protection is not active', 'deurwachter' ); ?>"></i>
+								<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? esc_html_e( 'Site protection is active', 'portier' ) : esc_html_e( 'Site protection is not active', 'portier' ); ?>"></i>
 							</td>
 
 							<?php
 							break;
 
 						case 'blogname' :
-							$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'deurwachter' ) . ')' : '';
+							$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'portier' ) . ')' : '';
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
-								<a href="<?php echo esc_url( add_query_arg( 'page', 'deurwachter', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
+								<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
 								<br/><span><?php echo $blogname; ?></span>
 							</td>
 
@@ -911,15 +911,15 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 							break;
 
 						case 'allowed-users' :
-							$users = get_option( '_deurwachter_allowed_users', array() );
+							$users = get_option( '_portier_allowed_users', array() );
 							$count = count( $users );
 							$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
 							if ( 0 < $count - 5 ) {
-								$title = sprintf( esc_html__( '%s and %d more', 'deurwachter' ), $title, $count - 5 );
+								$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
 							}
 
 							echo "<td class='column-$column_name $column_name'$style>"; ?>
-								<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'deurwachter' ), $count ); ?></span>
+								<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'portier' ), $count ); ?></span>
 							</td>
 
 							<?php
@@ -935,7 +935,7 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 							 * @param string $column_name The name of the column to display.
 							 * @param int    $blog_id     The site ID.
 							 */
-							do_action( 'deurwachter_network_sites_custom_column', $column_name, $blog['blog_id'] );
+							do_action( 'portier_network_sites_custom_column', $column_name, $blog['blog_id'] );
 							echo "</td>";
 							break;
 						}
@@ -961,5 +961,5 @@ function _get_deurwachter_network_sites_list_table( $args = array() ) {
 		$args['screen'] = null;
 	}
 
-	return new Deurwachter_Network_Sites_List_Table( $args );
+	return new Portier_Network_Sites_List_Table( $args );
 }

@@ -1,11 +1,11 @@
 /**
- * Deurwachter Admin Scripts
+ * Portier Admin Scripts
  *
- * @package Deurwachter
+ * @package Portier
  * @subpackage Administration
  */
 jQuery(document).ready( function($) {
-	var l10n = deurwachterAdminL10n || {}, 
+	var l10n = portierAdminL10n || {}, 
 	    settings = l10n.settings || {};
 
 	// Chosen
@@ -13,7 +13,7 @@ jQuery(document).ready( function($) {
 
 	// Pointer
 	if ( settings.showPointer ) {
-		$( '#wp-admin-bar-deurwachter' ).pointer({
+		$( '#wp-admin-bar-portier' ).pointer({
 			content: l10n.pointerContent,
 			position: {
 				edge: 'top',
@@ -22,7 +22,7 @@ jQuery(document).ready( function($) {
 			},
 			close: function() {
 				$.post( ajaxurl, {
-					pointer: 'deurwachter_protection',
+					pointer: 'portier_protection',
 					action: 'dismiss-wp-pointer'
 				});
 			}

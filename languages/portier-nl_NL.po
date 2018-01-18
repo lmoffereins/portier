@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Deurwachter v1.0.0\n"
+"Project-Id-Version: Portier v1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-16 14:18+0100\n"
 "PO-Revision-Date: 2014-12-11 15:34:14+0000\n"
@@ -20,102 +20,102 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Textdomain-Support: yes"
 
-#: deurwachter.php:461
+#: portier.php:461
 #: includes/network.php:422
-#@ deurwachter
+#@ portier
 msgid "Access Settings"
 msgstr "Toegang Instellen"
 
 #: includes/settings.php:30
-#@ deurwachter
+#@ portier
 msgid "Protect my site"
 msgstr "Bescherm mijn site"
 
 #: includes/settings.php:48
 #: includes/settings.php:231
-#@ deurwachter
+#@ portier
 msgid "Allowed users"
 msgstr "Toegestane gebruikers"
 
 #: includes/settings.php:99
 #: includes/settings.php:335
-#@ deurwachter
+#@ portier
 msgid "Select a user"
 msgstr "Selecteer een gebruiker"
 
-#: deurwachter.php:490
+#: portier.php:490
 #: includes/network.php:590
-#@ deurwachter
+#@ portier
 msgid "Settings"
 msgstr "Instellingen"
 
 #. translators: plugin header field 'Name'
-#: deurwachter.php:0
-#: deurwachter.php:351
-#: deurwachter.php:391
+#: portier.php:0
+#: portier.php:351
+#: portier.php:391
 #: includes/network.php:323
-#@ deurwachter
-msgid "Deurwachter"
-msgstr "Deurwachter"
+#@ portier
+msgid "Portier"
+msgstr "Portier"
 
 #. translators: plugin header field 'PluginURI'
-#: deurwachter.php:0
-#@ deurwachter
-msgid "https://github.com/lmoffereins/deurwachter"
+#: portier.php:0
+#@ portier
+msgid "https://github.com/lmoffereins/portier"
 msgstr ""
 
 #. translators: plugin header field 'Description'
-#: deurwachter.php:0
-#@ deurwachter
+#: portier.php:0
+#@ portier
 msgid "Restrict access to your (multi)site"
 msgstr "Beperk toegang tot je (multi)site"
 
 #. translators: plugin header field 'Author'
-#: deurwachter.php:0
-#@ deurwachter
+#: portier.php:0
+#@ portier
 msgid "Laurens Offereins"
 msgstr ""
 
 #. translators: plugin header field 'AuthorURI'
-#: deurwachter.php:0
-#@ deurwachter
+#: portier.php:0
+#@ portier
 msgid "https://github.com/lmoffereins"
 msgstr ""
 
 #. translators: plugin header field 'Version'
-#: deurwachter.php:0
-#@ deurwachter
+#: portier.php:0
+#@ portier
 msgid "1.0.0"
 msgstr ""
 
-#: deurwachter.php:274
-#@ deurwachter
+#: portier.php:274
+#@ portier
 msgid "Site protection is active"
 msgstr "Sitebescherming is actief"
 
-#: deurwachter.php:274
-#@ deurwachter
+#: portier.php:274
+#@ portier
 msgid "Site protection is not active"
 msgstr "Sitebescherming is niet actief"
 
-#: deurwachter.php:350
-#@ deurwachter
-msgid "Deurwachter Settings"
-msgstr "Deurwachter Instellingen"
+#: portier.php:350
+#@ portier
+msgid "Portier Settings"
+msgstr "Portier Instellingen"
 
 #: includes/extend/buddypress.php:87
-#@ deurwachter
+#@ portier
 msgid "Allowed groups"
 msgstr "Toegestane groepen"
 
 #: includes/extend/buddypress.php:118
-#@ deurwachter
+#@ portier
 msgid "Select a group"
 msgstr "Selecteer een groep"
 
 #: includes/extend/buddypress.php:255
 #, php-format
-#@ deurwachter
+#@ portier
 msgid "%d allowed group"
 msgid_plural "%d allowed groups"
 msgstr[0] "%d toegestane groep"
@@ -123,29 +123,29 @@ msgstr[1] "%d toegestane groepen"
 
 #: includes/functions.php:109
 #, php-format
-#@ deurwachter
+#@ portier
 msgid "%d allowed user"
 msgid_plural "%d allowed users"
 msgstr[0] "%d toegestane gebruiker"
 msgstr[1] "%d toegestane gebruikers"
 
 #: includes/network.php:322
-#@ deurwachter
-msgid "Deurwachter Network Settings"
-msgstr "Deurwachter Netwerk Instellingen"
+#@ portier
+msgid "Portier Network Settings"
+msgstr "Portier Netwerk Instellingen"
 
 #: includes/network.php:371
-#@ deurwachter
+#@ portier
 msgid "Main"
 msgstr "Algemeen"
 
 #: includes/network.php:371
-#@ deurwachter
+#@ portier
 msgid "Sites"
 msgstr "Sites"
 
 #: includes/network.php:421
-#@ deurwachter
+#@ portier
 msgid "Main Settings"
 msgstr "Algemene Instellingen"
 
@@ -164,79 +164,79 @@ msgstr ""
 #: includes/network.php:554
 #: includes/network.php:724
 #@ default
-#@ deurwachter
+#@ portier
 msgid "Settings saved."
 msgstr "Instellingen bijgewerkt."
 
 #: includes/network.php:556
-#@ deurwachter
+#@ portier
 msgid "Something went wrong"
 msgstr "Er is iets fout gegaan"
 
 #: includes/network.php:616
-#@ deurwachter
-msgid "Deurwachter is only active for the network. There are no site settings here."
-msgstr "Deurwachter is alleen actief voor het netwerk. Er zijn geen site instellingen hier."
+#@ portier
+msgid "Portier is only active for the network. There are no site settings here."
+msgstr "Portier is alleen actief voor het netwerk. Er zijn geen site instellingen hier."
 
 #: includes/network.php:626
-#@ deurwachter
+#@ portier
 msgid "Manage Site Protection"
 msgstr "Beheer Sitebescherming"
 
 #: includes/network.php:644
 #, php-format
-#@ deurwachter
+#@ portier
 msgctxt "Site at url"
 msgid "%1$s at %2$s"
 msgstr "%1$s op %2$s"
 
 #: includes/network.php:704
-#@ deurwachter
+#@ portier
 msgid "<strong>ERROR</strong>: site ids not found."
 msgstr "<strong>ERROR</strong>: site ids niet gevonden."
 
 #: includes/settings.php:39
 #: includes/settings.php:222
-#@ deurwachter
+#@ portier
 msgid "Login message"
 msgstr "Loginbericht"
 
 #: includes/settings.php:81
-#@ deurwachter
+#@ portier
 msgid "Enable site protection"
 msgstr "Activeer sitebescherming"
 
 #: includes/settings.php:106
 #: includes/settings.php:342
-#@ deurwachter
+#@ portier
 msgid "Select which users will have access"
 msgstr "Selecteer de gebruikers die toegang krijgen"
 
 #: includes/settings.php:123
-#@ deurwachter
+#@ portier
 msgid "When site protection is active, this message will be shown at the login screen."
 msgstr "Wanneer sitebescherming actief is, wordt dit bericht getoond op het loginscherm."
 
 #: includes/settings.php:124
 #: includes/settings.php:359
 #, php-format
-#@ deurwachter
+#@ portier
 msgid "Allowed HTML tags are: %s, %s and %s."
 msgstr "Toegestane HTML tags zijn: %s, %s en %s."
 
 #: includes/settings.php:184
-#@ deurwachter
+#@ portier
 msgid "Network only"
 msgstr "Alleen het Netwerk"
 
 #: includes/settings.php:193
-#@ deurwachter
+#@ portier
 msgid "Redirect to allowed site"
 msgstr "Stuur naar toegestane site"
 
 #: includes/settings.php:202
 #, php-format
-#@ deurwachter
+#@ portier
 msgctxt "Setting label for hide-my-sites option"
 msgid "Hide %s"
 msgstr "Verberg %s"
@@ -248,43 +248,43 @@ msgid "My Sites"
 msgstr ""
 
 #: includes/settings.php:213
-#@ deurwachter
+#@ portier
 msgid "Protect this network"
 msgstr "Bescherm dit netwerk"
 
 #: includes/settings.php:272
-#@ deurwachter
+#@ portier
 msgid "Disable this plugin for individual sites"
 msgstr "Maak deze plugin inactief voor individuele sites"
 
 #: includes/settings.php:287
-#@ deurwachter
+#@ portier
 msgid "Enable network protection"
 msgstr "Activeer netwerkbescherming"
 
 #: includes/settings.php:302
-#@ deurwachter
+#@ portier
 msgid "Instead of just logging the user out, try to redirect the user from protected sites to an allowed site or the network home, when available"
 msgstr "Probeer de gebruiker van een beschermde site naar een toegestane site te sturen, indien mogelijk, in plaats van hem uit te loggen."
 
 #: includes/settings.php:317
 #, php-format
-#@ deurwachter
+#@ portier
 msgid "Hide the %s links and page when a user has access to only one site"
 msgstr "Verberg the %s links en pagina als een gebruiker maar tot een enkele site toegang heeft"
 
 #: includes/settings.php:358
-#@ deurwachter
+#@ portier
 msgid "When network protection is active, this message will be shown at the login screen."
 msgstr "Wanneer netwerkbescherming actief is, wordt dit bericht getoond op het loginscherm."
 
 #: includes/extend/buddypress.php:125
-#@ deurwachter
+#@ portier
 msgid "Select the groups whose members will have access"
 msgstr "Selecteer de groepen wiens leden toegang krijgen"
 
 #: includes/network.php:379
-#@ deurwachter
-msgid "Deurwachter Network"
-msgstr "Deurwachter Netwerk"
+#@ portier
+msgid "Portier Network"
+msgstr "Portier Netwerk"
 

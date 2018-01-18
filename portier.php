@@ -1,44 +1,44 @@
 <?php
 
 /**
- * The Deurwachter Plugin
+ * The Portier Plugin
  *
- * @package Deurwachter
+ * @package Portier
  * @subpackage Main
  */
 
 /**
- * Plugin Name:       Deurwachter (formerly Guard)
- * Description:       Restrict access to your (multi)site
- * Plugin URI:        https://github.com/lmoffereins/deurwachter
+ * Plugin Name:       Portier
+ * Description:       Limit user access to your (multi)site. Formerly Guard.
+ * Plugin URI:        https://github.com/lmoffereins/portier
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
  * Version:           1.1.0
- * Text Domain:       deurwachter
+ * Text Domain:       portier
  * Domain Path:       /languages/
- * GitHub Plugin URI: lmoffereins/deurwachter
+ * GitHub Plugin URI: lmoffereins/portier
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Deurwachter' ) ) :
+if ( ! class_exists( 'Portier' ) ) :
 /**
- * Main Deurwachter Class
+ * Main Portier Class
  *
  * @since 1.0.0
  */
-final class Deurwachter {
+final class Portier {
 
 	/** Singleton *************************************************************/
 
 	/**
-	 * Main Deurwachter Instance
+	 * Main Portier Instance
 	 *
 	 * @since 1.0.0
 	 *
-	 * @see deurwachter()
-	 * @return The one true Deurwachter
+	 * @see portier()
+	 * @return The one true Portier
 	 */
 	public static function instance() {
 
@@ -47,7 +47,7 @@ final class Deurwachter {
 
 		// Only run these methods if they haven't been ran previously
 		if ( null === $instance ) {
-			$instance = new Deurwachter;
+			$instance = new Portier;
 			$instance->setup_globals();
 			$instance->includes();
 			$instance->setup_actions();
@@ -58,12 +58,12 @@ final class Deurwachter {
 	}
 
 	/**
-	 * A dummy constructor to prevent Deurwachter from being loaded more than once.
+	 * A dummy constructor to prevent Portier from being loaded more than once.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @see Deurwachter::instance()
-	 * @see deurwachter()
+	 * @see Portier::instance()
+	 * @see portier()
 	 */
 	private function __construct() { /* Do nothing here */ }
 
@@ -99,7 +99,7 @@ final class Deurwachter {
 		/** Misc **************************************************************/
 
 		$this->extend       = new stdClass();
-		$this->domain       = 'deurwachter';
+		$this->domain       = 'portier';
 	}
 
 	/**
@@ -135,18 +135,18 @@ final class Deurwachter {
 
 
 		// Admin
-		add_action( 'admin_init',             array( $this, 'register_settings'     ) );
-		add_action( 'admin_menu',             array( $this, 'admin_menu'            ) );
-		add_action( 'deurwachter_admin_head', array( $this, 'enqueue_admin_scripts' ) );
+		add_action( 'admin_init',         array( $this, 'register_settings'     ) );
+		add_action( 'admin_menu',         array( $this, 'admin_menu'            ) );
+		add_action( 'portier_admin_head', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
 
 		// Setup extensions
-		add_action( 'bp_loaded', 'deurwachter_setup_buddypress' );
+		add_action( 'bp_loaded', 'portier_setup_buddypress' );
 
 		// Fire plugin loaded hook
-		do_action( 'deurwachter_loaded' );
+		do_action( 'portier_loaded' );
 	}
 
 	/** Plugin ****************************************************************/
@@ -166,13 +166,13 @@ final class Deurwachter {
 
 		// Setup paths to current locale file
 		$mofile_local  = $this->lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/deurwachter/' . $mofile;
+		$mofile_global = WP_LANG_DIR . '/portier/' . $mofile;
 
-		// Look in global /wp-content/languages/deurwachter folder first
+		// Look in global /wp-content/languages/portier folder first
 		load_textdomain( $this->domain, $mofile_global );
 
 		// Look in global /wp-content/languages/plugins/ and local plugin languages folder
-		load_plugin_textdomain( $this->domain, false, 'deurwachter/languages' );
+		load_plugin_textdomain( $this->domain, false, 'portier/languages' );
 	}
 
 	/**
@@ -193,7 +193,7 @@ final class Deurwachter {
 		require( $this->includes_dir . 'network.php' );
 
 		// Setup network functionality
-		$this->network = new Deurwachter_Network;
+		$this->network = new Portier_Network;
 	}
 
 	/** Protection ************************************************************/
@@ -204,12 +204,12 @@ final class Deurwachter {
 	 * @since 1.0.0
 	 * @since 1.2.0 Handle feed requests
 	 *
-	 * @uses do_action() Calls 'deurwachter_site_protect'
+	 * @uses do_action() Calls 'portier_site_protect'
 	 */
 	public function site_protect() {
 
 		// Bail when protection is not active
-		if ( ! deurwachter_is_site_protected() || is_404() )
+		if ( ! portier_is_site_protected() || is_404() )
 			return;
 
 		// Handle feed requests
@@ -223,10 +223,10 @@ final class Deurwachter {
 		}
 
 		// When user is not logged in or is not allowed
-		if ( ! is_user_logged_in() || ! deurwachter_is_user_allowed() ) {
+		if ( ! is_user_logged_in() || ! portier_is_user_allowed() ) {
 
 			// Provide hook
-			do_action( 'deurwachter_site_protect' );
+			do_action( 'portier_site_protect' );
 
 			// Logout user and redirect to login page
 			auth_redirect();
@@ -244,8 +244,8 @@ final class Deurwachter {
 	public function login_message( $message ) {
 
 		// When protection is active
-		if ( deurwachter_is_site_protected() ) {
-			$login_message = get_option( '_deurwachter_login_message' );
+		if ( portier_is_site_protected() ) {
+			$login_message = get_option( '_portier_login_message' );
 
 			// Append message when it's provided
 			if ( ! empty( $login_message ) ) {
@@ -269,17 +269,17 @@ final class Deurwachter {
 		if ( ! is_network_admin() && current_user_can( 'manage_options' ) ) {
 
 			// When protection is active
-			$active = deurwachter_is_site_protected();
-			$title1 = $active ? esc_html__( 'Site protection is active', 'deurwachter' ) : esc_html__( 'Site protection is not active', 'deurwachter' );
-			$title2 = $active ? deurwachter_get_protection_details() : $title1;
+			$active = portier_is_site_protected();
+			$title1 = $active ? esc_html__( 'Site protection is active', 'portier' ) : esc_html__( 'Site protection is not active', 'portier' );
+			$title2 = $active ? portier_get_protection_details() : $title1;
 			$class  = $active ? 'hover site-protected' : '';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
-				'id'        => 'deurwachter',
+				'id'        => 'portier',
 				'parent'    => 'top-secondary',
 				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $title1 . '</span>',
-				'href'      => add_query_arg( 'page', 'deurwachter', admin_url( 'options-general.php' ) ),
+				'href'      => add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ),
 				'meta'      => array(
 					'class' => $class,
 					'title' => $title2,
@@ -306,23 +306,23 @@ final class Deurwachter {
 			return; ?>
 
 		<style type="text/css">
-			#wpadminbar #wp-admin-bar-deurwachter > .ab-item {
+			#wpadminbar #wp-admin-bar-portier > .ab-item {
 				padding: 0 9px 0 7px;
 			}
 
-			#wpadminbar #wp-admin-bar-deurwachter > .ab-item .ab-icon {
+			#wpadminbar #wp-admin-bar-portier > .ab-item .ab-icon {
 				width: 18px;
 				height: 20px;
 				margin-right: 0;
 			}
 
-			#wpadminbar #wp-admin-bar-deurwachter > .ab-item .ab-icon:before {
+			#wpadminbar #wp-admin-bar-portier > .ab-item .ab-icon:before {
 				content: '\f334'; /* dashicons-shield-alt */
 				top: 2px;
 				opacity: 0.4;
 			}
 
-				#wpadminbar #wp-admin-bar-deurwachter.site-protected > .ab-item .ab-icon:before {
+				#wpadminbar #wp-admin-bar-portier.site-protected > .ab-item .ab-icon:before {
 					opacity: 1;
 				}
 
@@ -352,10 +352,10 @@ final class Deurwachter {
 
 		// Setup settings page
 		$hook = add_options_page(
-			esc_html__( 'Deurwachter Settings', 'deurwachter' ),
-			esc_html__( 'Deurwachter', 'deurwachter' ),
+			esc_html__( 'Portier Settings', 'portier' ),
+			esc_html__( 'Portier', 'portier' ),
 			'manage_options',
-			'deurwachter',
+			'portier',
 			array( $this, 'admin_page' )
 		);
 
@@ -368,10 +368,10 @@ final class Deurwachter {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses do_action() Calls 'deurwachter_admin_head'
+	 * @uses do_action() Calls 'portier_admin_head'
 	 */
 	public function admin_head() {
-		do_action( 'deurwachter_admin_head' );
+		do_action( 'portier_admin_head' );
 	}
 
 	/**
@@ -379,10 +379,10 @@ final class Deurwachter {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses do_action() Calls 'deurwachter_admin_footer'
+	 * @uses do_action() Calls 'portier_admin_footer'
 	 */
 	public function admin_footer() { 
-		do_action( 'deurwachter_admin_footer' );
+		do_action( 'portier_admin_footer' );
 	}
 
 	/**
@@ -393,11 +393,11 @@ final class Deurwachter {
 	public function admin_page() { ?>
 
 		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php esc_html_e( 'Deurwachter', 'deurwachter' ); ?></h1>
+			<h1 class="wp-heading-inline"><?php esc_html_e( 'Portier', 'portier' ); ?></h1>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'deurwachter' ); ?>
-				<?php do_settings_sections( 'deurwachter' ); ?>
+				<?php settings_fields( 'portier' ); ?>
+				<?php do_settings_sections( 'portier' ); ?>
 				<?php submit_button(); ?>
 			</form>
 		</div>
@@ -428,15 +428,15 @@ final class Deurwachter {
 		wp_enqueue_style ( 'wp-pointer' ); 
 
 		// Plugin admin
-		wp_register_script( 'deurwachter-admin', $this->includes_url . 'assets/js/deurwachter-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
-		wp_enqueue_script ( 'deurwachter-admin' );
-		wp_localize_script( 'deurwachter-admin', 'deurwachterAdminL10n', array(
+		wp_register_script( 'portier-admin', $this->includes_url . 'assets/js/portier-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), $this->version );
+		wp_enqueue_script ( 'portier-admin' );
+		wp_localize_script( 'portier-admin', 'portierAdminL10n', array(
 			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>',
-				esc_html__( 'Site Protection', 'deurwachter' ),
-				esc_html__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is colored accordingly.', 'deurwachter' )
+				esc_html__( 'Site Protection', 'portier' ),
+				esc_html__( 'The shield icon will show the current state of the protection of this site. When site protection is active, it is colored accordingly.', 'portier' )
 			),
 			'settings' => array(
-				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'deurwachter_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
+				'showPointer' => is_admin_bar_showing() && current_user_can( 'manage_options' ) && ! in_array( 'portier_protection', explode( ',', get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) ) ),
 			)
 		) ); ?>
 
@@ -462,10 +462,10 @@ final class Deurwachter {
 	public function register_settings() {
 
 		// Create settings sections
-		add_settings_section( 'deurwachter-options-access', esc_html__( 'Access Settings', 'deurwachter' ), 'deurwachter_access_settings_info', 'deurwachter' );
+		add_settings_section( 'portier-options-access', esc_html__( 'Access Settings', 'portier' ), 'portier_access_settings_info', 'portier' );
 
 		// Loop all settings to register
-		foreach ( deurwachter_settings() as $setting => $args ) {
+		foreach ( portier_settings() as $setting => $args ) {
 
 			// Only render field when label and callback are present
 			if ( isset( $args['label'] ) && isset( $args['callback'] ) ) {
@@ -489,7 +489,7 @@ final class Deurwachter {
 
 		// Add settings link for our plugin
 		if ( $file == $this->basename ) {
-			$links['settings'] = '<a href="' . add_query_arg( 'page', 'deurwachter', 'options-general.php' ) . '">' . esc_html__( 'Settings', 'deurwachter' ) . '</a>';
+			$links['settings'] = '<a href="' . add_query_arg( 'page', 'portier', 'options-general.php' ) . '">' . esc_html__( 'Settings', 'portier' ) . '</a>';
 		}
 
 		return $links;
@@ -497,18 +497,18 @@ final class Deurwachter {
 }
 
 /**
- * The main public function responsible for returning the one true Deurwachter instance
+ * The main public function responsible for returning the one true Portier instance
  * to functions everywhere.
  *
  * @since 1.0.0
  *
- * @return The one true Deurwachter instance
+ * @return The one true Portier instance
  */
-function deurwachter() {
-	return Deurwachter::instance();
+function portier() {
+	return Portier::instance();
 }
 
 // Do the magic
-deurwachter();
+portier();
 
 endif; // class_exists
