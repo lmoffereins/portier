@@ -41,6 +41,9 @@ class Portier_Admin {
 
 		// Plugin links
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
+
+		// Updater
+		add_action( 'admin_init', 'portier_setup_updater', 999 );
 	}
 
 	/** Public methods ********************************************************/

@@ -115,6 +115,7 @@ final class Portier {
 		if ( is_admin() ) {
 			require( $this->includes_dir . 'admin.php'    );
 			require( $this->includes_dir . 'settings.php' );
+			require( $this->includes_dir . 'update.php'   );
 		}
 	}
 
