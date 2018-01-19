@@ -3,7 +3,7 @@ Contributors: offereins
 Tags: protect, access, restrict, site, blog, user
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,8 +27,13 @@ This plugin is not hosted in the official WordPress repository. Instead, updatin
 
 == Changelog ==
 
+= 1.2.1 =
+* Update POT-file
+* Update Dutch translation
+
 = 1.2.0 =
 * Rename plugin to Portier because of a naming conflict with another Guard plugin in the .org repository
+* Added support for BuddyPress member types
 
 = 1.1.0 =
 * Changed Network Sites admin to use a list table

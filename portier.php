@@ -13,7 +13,7 @@
  * Plugin URI:        https://github.com/lmoffereins/portier
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
- * Version:           1.2.0
+ * Version:           1.2.1
  * Text Domain:       portier
  * Domain Path:       /languages/
  * GitHub Plugin URI: lmoffereins/portier
@@ -78,8 +78,8 @@ final class Portier {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '1.2.0';
-		$this->db_version = 120;
+		$this->version      = '1.2.1';
+		$this->db_version   = 121;
 
 		/** Paths *************************************************************/
 
