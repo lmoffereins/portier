@@ -56,7 +56,8 @@ final class Portier_Network {
 
 		// Admin
 		if ( is_admin() ) {
-			require( $this->includes_dir . 'admin.php' );
+			require( $this->includes_dir . 'admin.php'    );
+			require( $this->includes_dir . 'settings.php' );
 		}
 	}
 
@@ -79,6 +80,7 @@ final class Portier_Network {
 		add_action( 'get_blogs_of_user',    array( $this, 'filter_user_sites' ), 10, 3 );
 		add_filter( 'user_has_cap',         array( $this, 'user_has_cap'      ), 10, 3 );
 
+		// Admin
 		if ( is_admin() ) {
 			add_action( 'init', 'portier_network_admin' );
 		}
