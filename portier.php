@@ -188,7 +188,7 @@ final class Portier {
 			return;
 
 		// Load network functions
-		require( $this->includes_dir . 'network.php' );
+		require( $this->includes_dir . 'network/network.php' );
 
 		// Setup network functionality
 		$this->network = new Portier_Network;
