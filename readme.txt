@@ -13,7 +13,17 @@ Restrict access to your (multi)site
 
 Restrict access to your site(s) or network for selected users. Additionally show a message at the login screen to notify the user.
 
-Supports BuddyPress: provide access for selected user groups.
+Supports BuddyPress:
+* provide access for selected user groups
+* provide access for selected member types
+
+== Installation ==
+
+If you download Portier manually, make sure it is uploaded to "/wp-content/plugins/portier/".
+
+Activate Portier in the "Plugins" admin panel using the "Activate" link. If you're using WordPress Multisite, you can choose to activate Portier network wide for full integration with all of your sites.
+
+This plugin is not hosted in the official WordPress repository. Instead, updating is supported through use of the [GitHub Updater](https://github.com/afragen/github-updater/) plugin by @afragen and friends.
 
 == Changelog ==
 
