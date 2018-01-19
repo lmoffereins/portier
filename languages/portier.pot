@@ -1,71 +1,290 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Portier\n"
-"POT-Creation-Date: 2012-10-16 13:55+0100\n"
-"PO-Revision-Date: 2012-10-16 13:56+0100\n"
+"POT-Creation-Date: 2018-01-19 14:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: English\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Loco - https://localise.biz/\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION"
 
-#: ../portier.php:103
+#: portier.php:271
+#: includes/classes/class-portier-network-sites-list-table.php:114
+msgid "Site protection is active"
+msgstr ""
+
+#: portier.php:271
+#: includes/classes/class-portier-network-sites-list-table.php:114
+msgid "Site protection is not active"
+msgstr ""
+
+#: includes/admin.php:60
+msgid "Portier Settings"
+msgstr ""
+
+#. Name of the plugin
+#: includes/admin.php:61 includes/admin.php:101 includes/network/admin.php:64
+msgid "Portier"
+msgstr ""
+
+#: includes/admin.php:141
+msgid "Site Protection"
+msgstr ""
+
+#: includes/admin.php:142
+msgid ""
+"The shield icon will show the current state of the protection of this site. "
+"When site protection is active, it is colored accordingly."
+msgstr ""
+
+#: includes/admin.php:171 includes/network/admin.php:177
 msgid "Access Settings"
 msgstr ""
 
-#: ../portier.php:104
-msgid "Additional Settings"
+#: includes/admin.php:198 includes/network/admin.php:359
+msgid "Settings"
 msgstr ""
 
-#: ../portier.php:106
+#: includes/functions.php:161
+#, php-format
+msgid "%d allowed user"
+msgid_plural "%d allowed users"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/settings.php:29
 msgid "Protect my site"
 msgstr ""
 
-#: ../portier.php:109
+#: includes/settings.php:38 includes/network/settings.php:67
+msgid "Login message"
+msgstr ""
+
+#: includes/settings.php:47 includes/network/settings.php:76
 msgid "Allowed users"
 msgstr ""
 
-#: ../portier.php:112
-msgid "Custom login message"
+#: includes/settings.php:78
+msgid "Enable site protection"
 msgstr ""
 
-#: ../portier.php:117
-msgid ""
-"Here you enable the Portier plugin. By checking the <em>Protect my site</em> "
-"input, this site will only be accessible for admins and allowed users, "
-"specified by you in the select option below. No other shall pass!"
-msgstr ""
-
-#: ../portier.php:121
-msgid "Below you can set additional Portier options."
-msgstr ""
-
-#: ../portier.php:125
-msgid "Enable site protection."
-msgstr ""
-
-#: ../portier.php:134
+#: includes/settings.php:93 includes/network/settings.php:169
 msgid "Select a user"
 msgstr ""
 
-#: ../portier.php:139
-msgid "Select which users you want to have access."
+#: includes/settings.php:100 includes/network/settings.php:176
+msgid "Select which users will have access"
 msgstr ""
 
-#: ../portier.php:147
-#, php-format
+#: includes/settings.php:114
 msgid ""
-"Serve site guests a nice heads up on the login page. Leave empty if not "
-"applicable.<br> This message will only be shown if <strong>Protect my site</"
-"strong> is activated.<br/>Allowed HTML tags %s, %s and %s."
+"When site protection is active, this message will be shown at the login "
+"screen."
 msgstr ""
 
-#: ../portier.php:167
-msgid "Settings"
+#: includes/settings.php:115 includes/network/settings.php:191
+#, php-format
+msgid "Allowed HTML tags are: %s, %s and %s."
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:37
+msgid "Protected"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:39
+msgid "Allowed Users"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:54
+msgid "Enable protection"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:55
+msgid "Disable protection"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:121
+msgid "Main Site"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:137
+#: includes/extend/buddypress.php:374 includes/extend/buddypress.php:388
+#, php-format
+msgid "%s and %d more"
+msgstr ""
+
+#: includes/classes/class-portier-network-sites-list-table.php:141
+#, php-format
+msgid "%d user"
+msgid_plural "%d users"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/extend/buddypress.php:79 includes/extend/buddypress.php:345
+msgid "Allowed Member Types"
+msgstr ""
+
+#: includes/extend/buddypress.php:92
+msgid "Allowed groups"
+msgstr ""
+
+#: includes/extend/buddypress.php:117
+msgid "Select a type"
+msgstr ""
+
+#: includes/extend/buddypress.php:124
+msgid "Select the member types of which users will have access"
+msgstr ""
+
+#: includes/extend/buddypress.php:144
+msgid "Select a group"
+msgstr ""
+
+#: includes/extend/buddypress.php:151
+msgid "Select the groups whose members will have access"
+msgstr ""
+
+#: includes/extend/buddypress.php:321
+#, php-format
+msgid "%d allowed member type"
+msgid_plural "%d allowed member types"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/extend/buddypress.php:327
+#, php-format
+msgid "%d allowed group"
+msgid_plural "%d allowed groups"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/extend/buddypress.php:350
+msgid "Allowed Groups"
+msgstr ""
+
+#: includes/extend/buddypress.php:377
+#, php-format
+msgid "%d type"
+msgid_plural "%d types"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/extend/buddypress.php:391
+#, php-format
+msgid "%d group"
+msgid_plural "%d groups"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/network/admin.php:63
+msgid "Portier Network Settings"
+msgstr ""
+
+#: includes/network/admin.php:120
+msgid "Main"
+msgstr ""
+
+#: includes/network/admin.php:121
+msgid "Sites"
+msgstr ""
+
+#: includes/network/admin.php:132
+msgid "Portier Network"
+msgstr ""
+
+#: includes/network/admin.php:176
+msgid "Main Settings"
+msgstr ""
+
+#: includes/network/admin.php:302
+msgid "Settings saved."
+msgstr ""
+
+#: includes/network/admin.php:304
+msgid "Something went wrong."
+msgstr ""
+
+#: includes/network/admin.php:316
+#, php-format
+msgid "Protection enabled for %d site."
+msgid_plural "Protection enabled for %d sites."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/network/admin.php:317
+#, php-format
+msgid "Protection disabled for %d site."
+msgid_plural "Protection disabled for %d sites."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/network/admin.php:463
+msgid ""
+"Portier is only active for the network. There are no site settings here."
+msgstr ""
+
+#: includes/network/settings.php:29
+msgid "Network only"
+msgstr ""
+
+#: includes/network/settings.php:38
+msgid "Redirect to allowed site"
+msgstr ""
+
+#: includes/network/settings.php:47
+msgid "Hide My Sites"
+msgstr ""
+
+#: includes/network/settings.php:58
+msgid "Protect this network"
+msgstr ""
+
+#: includes/network/settings.php:115
+msgid "Disable this plugin for individual sites"
+msgstr ""
+
+#: includes/network/settings.php:128
+msgid "Enable network protection"
+msgstr ""
+
+#: includes/network/settings.php:141
+msgid ""
+"Instead of just logging the user out, try to redirect the user from "
+"protected sites to an allowed site or the network home, when available"
+msgstr ""
+
+#: includes/network/settings.php:154
+msgid ""
+"Hide the My Sites links and page when a user has access to only one site"
+msgstr ""
+
+#: includes/network/settings.php:190
+msgid ""
+"When network protection is active, this message will be shown at the login "
+"screen."
+msgstr ""
+
+#. Description of the plugin
+msgid "Limit user access to your (multi)site. Formerly Guard."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/lmoffereins/portier"
+msgstr ""
+
+#. Author of the plugin
+msgid "Laurens Offereins"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/lmoffereins"
 msgstr ""
