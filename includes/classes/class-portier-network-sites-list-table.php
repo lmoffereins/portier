@@ -51,8 +51,8 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 	 */
 	public function get_bulk_actions() {
 		return (array) apply_filters( 'portier_network_sites_bulk_actions', array(
-			'enable'  => esc_html__( 'Enable',  'portier' ),
-			'disable' => esc_html__( 'Disable', 'portier' ),
+			'enable'  => esc_html__( 'Enable protection',  'portier' ),
+			'disable' => esc_html__( 'Disable protection', 'portier' ),
 		) );
 	}
 
@@ -83,9 +83,10 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 			$blog = $blog->to_array();
 
 			$class = ( 'alternate' == $class ) ? '' : 'alternate';
-			$protected = portier_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : '';
+			$protected = portier_is_site_protected( $blog['blog_id'] );
+			$class .= $protected ? ' site-protected' : '';
 
-			echo "<tr class='$class$protected'>";
+			echo "<tr class='$class'>";
 
 			$blogname = ( is_subdomain_install() ) ? str_replace( '.' . get_current_site()->domain, '', $blog['domain'] ) : $blog['path'];
 
@@ -110,17 +111,19 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 
 					case 'protected' :
 						echo "<td class='$column_name column-$column_name'$style>"; ?>
-							<i class="dashicons dashicons-shield-alt" title="<?php ! empty( $protected ) ? esc_html_e( 'Site protection is active', 'portier' ) : esc_html_e( 'Site protection is not active', 'portier' ); ?>"></i>
+							<i class="dashicons dashicons-shield-alt" title="<?php $protected ? esc_html_e( 'Site protection is active', 'portier' ) : esc_html_e( 'Site protection is not active', 'portier' ); ?>"></i>
 						</td>
 
 						<?php
 						break;
 
 					case 'blogname' :
-						$main_site = is_main_site( $blog['blog_id'] ) ? ' (' . __( 'Main Site', 'portier' ) . ')' : '';
+						$main_site = is_main_site( $blog['blog_id'] ) ? ' &mdash; <span class="post-state">' . __( 'Main Site', 'portier' ) . '</span>' : '';
 						echo "<td class='column-$column_name $column_name'$style>"; ?>
-							<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ) . $main_site; ?></a>
-							<br/><span><?php echo $blogname; ?></span>
+							<strong>
+								<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a><?php echo $main_site; ?>
+							</strong>
+							<span class="site-domain"><?php echo $blog['domain']; ?></span>
 						</td>
 
 						<?php

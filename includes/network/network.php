@@ -37,13 +37,12 @@ final class Portier_Network {
 	 * @since 1.2.0
 	 */
 	private function setup_globals() {
-		$prtr = portier();
 
 		/** Paths *******************************************************/
 
 		// Includes
-		$this->includes_dir = trailingslashit( $prtr->includes_dir . 'network'  );
-		$this->includes_url = trailingslashit( $prtr->includes_url . 'network'  );
+		$this->includes_dir = trailingslashit( portier()->includes_dir . 'network' );
+		$this->includes_url = trailingslashit( portier()->includes_url . 'network' );
 	}
 
 	/**

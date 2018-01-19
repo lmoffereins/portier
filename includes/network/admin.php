@@ -129,8 +129,10 @@ class Portier_Network_Admin {
 		$page_tab = isset( $_GET['tab'] ) && in_array( $_GET['tab'], array_keys( $tabs ) ) ? $_GET['tab'] : 'main'; ?>
 
 		<div class="wrap">
-			<h1 class="nav-tab-wrapper">
-				<?php esc_html_e( 'Portier Network', 'portier' ); ?>
+			<h1 class="wp-heading-inline"><?php esc_html_e( 'Portier Network', 'portier' ); ?></h1>
+
+			<?php if ( count( $tabs ) > 1 ) : ?>
+			<div class="nav-tab-wrapper">
 				<?php foreach ( $tabs as $tab => $label ) :
 					printf( '<a class="nav-tab%s" href="%s">%s</a>',
 						( $tab == $page_tab ) ? ' nav-tab-active' : '', 
@@ -138,7 +140,8 @@ class Portier_Network_Admin {
 						esc_html( $label )
 					);
 				endforeach; ?>
-			</h1>
+			</div>
+			<?php endif; ?>
 
 			<?php
 
@@ -405,13 +408,17 @@ class Portier_Network_Admin {
 				margin: 1em 0 0;
 			}
 
-			.widefat .column-blogname .edit {
-				font-weight: 600;
+			.widefat .column-blogname strong {
+				display: block;
+				margin-bottom: .2em;
+				font-size: 14px;
 			}
 
-				.widefat .column-blogname .edit ~ span {
-					font-style: italic;
-				}
+			.widefat .column-blogname strong ~ span {
+				font-size: 13px;
+				font-style: italic;
+				line-height: 1.5em;
+			}
 
 			.widefat .column-protected {
 				width: 20px;
@@ -432,7 +439,7 @@ class Portier_Network_Admin {
 
 			/* For count columns */
 			.widefat [class*="column-allowed-"] {
-				width: 10%;
+				width: 12%;
 			}
 		</style>
 
@@ -462,8 +469,6 @@ class Portier_Network_Admin {
 
 		// Clean REQUEST_URI
 		$_SERVER['REQUEST_URI'] = remove_query_arg( apply_filters( 'portier_network_sites_uri_args', array( 'enabled', 'disabled' ) ), $_SERVER['REQUEST_URI'] ); ?>
-
-		<h2><?php esc_html_e( 'Manage Protection', 'portier' ); ?></h2>
 
 		<form action="<?php echo network_admin_url( 'settings.php' ); ?>" method="get" id="ms-search">
 			<input type="hidden" name="page" value="portier" />
