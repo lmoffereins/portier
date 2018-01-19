@@ -84,6 +84,9 @@ final class Portier_Network {
 		if ( is_admin() ) {
 			add_action( 'init', 'portier_network_admin' );
 		}
+
+		// Fire plugin network loaded hook
+		do_action( 'portier_network_loaded' );
 	}
 
 	/** Plugin *******************************************************/
