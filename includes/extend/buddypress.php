@@ -41,9 +41,6 @@ class Portier_BuddyPress {
 	 * Define default class hooks
 	 * 
 	 * @since 1.0.0
-	 *
-	 * @uses add_filter()
-	 * @uses bp_is_active()
 	 */
 	public function setup_actions() {
 
@@ -69,9 +66,6 @@ class Portier_BuddyPress {
 	 * Register BuddyPress extension settings
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses current_filter()
-	 * @uses bp_is_active()
 	 * 
 	 * @param array $settings Settings
 	 * @return array Settings
@@ -101,11 +95,6 @@ class Portier_BuddyPress {
 	 * Output the settings field for allowed groups
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses groups_get_groups()
-	 * @uses is_network_admin()
-	 * @uses get_site_option()
-	 * @uses get_option()
 	 */
 	public function setting_allowed_groups() { 
 
@@ -133,11 +122,6 @@ class Portier_BuddyPress {
 	 * Return the site's allowed user groups
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses is_multisite()
-	 * @uses switch_to_blog()
-	 * @uses get_option()
-	 * @uses restore_current_blog()
 	 * @uses apply_filters() Calls 'portier_bp_get_allowed_groups'
 	 * 
 	 * @param int $site_id Optional. Site ID
@@ -166,7 +150,6 @@ class Portier_BuddyPress {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses get_site_option()
 	 * @uses apply_filters() Calls 'portier_bp_get_network_allowed_groups'
 	 * 
 	 * @return array Network's allowed groups
@@ -179,11 +162,6 @@ class Portier_BuddyPress {
 	 * Filter whether the user is allowed based on group membership
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @uses current_filter()
-	 * @uses Portier_BuddyPress::get_network_allowed_groups()
-	 * @uses Portier_BuddyPress::get_allowed_groups()
-	 * @uses groups_get_groups()
 	 * 
 	 * @param bool $allowed Is the user allowed
 	 * @param int $user_id User ID
