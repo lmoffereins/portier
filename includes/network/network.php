@@ -35,7 +35,7 @@ final class Portier_Network {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
-		$prtr = portier();
+		$admin = portier()->admin;
 
 		// Plugin
 		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
@@ -50,13 +50,13 @@ final class Portier_Network {
 		add_filter( 'user_has_cap',         array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
-		add_action( 'admin_init',                 array( $this, 'register_settings'     ) );
-		add_action( 'network_admin_menu',         array( $this, 'admin_menu'            ) );
-		add_action( 'network_admin_notices',      array( $this, 'admin_notices'         ) );
-		add_action( 'portier_network_load_admin', array( $this, 'load_admin_page_sites' ) );
-		add_action( 'portier_network_admin_head', array( $prtr, 'enqueue_admin_scripts' ) );
-		add_action( 'portier_network_admin_head', array( $this, 'admin_head_page_sites' ) );
-		add_action( 'portier_network_page_sites', array( $this, 'admin_page_sites'      ) );
+		add_action( 'admin_init',                 array( $this,  'register_settings'     ) );
+		add_action( 'network_admin_menu',         array( $this,  'admin_menu'            ) );
+		add_action( 'network_admin_notices',      array( $this,  'admin_notices'         ) );
+		add_action( 'portier_network_load_admin', array( $this,  'load_admin_page_sites' ) );
+		add_action( 'portier_network_admin_head', array( $admin, 'enqueue_admin_scripts' ) );
+		add_action( 'portier_network_admin_head', array( $this,  'admin_head_page_sites' ) );
+		add_action( 'portier_network_page_sites', array( $this,  'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -77,16 +77,16 @@ final class Portier_Network {
 		if ( ! portier_is_network_only() )
 			return;
 
-		$portier = portier();
+		$prtr = portier();
 
 		// Protection
-		remove_action( 'template_redirect', array( $portier, 'site_protect'   ), 1 );
-		remove_filter( 'login_message',     array( $portier, 'login_message'  ), 1 );
-		remove_action( 'admin_bar_menu',    array( $portier, 'admin_bar_menu' )    );
+		remove_action( 'template_redirect', array( $prtr, 'site_protect'   ), 1 );
+		remove_filter( 'login_message',     array( $prtr, 'login_message'  ), 1 );
+		remove_action( 'admin_bar_menu',    array( $prtr, 'admin_bar_menu' )    );
 
 		// Admin
-		remove_action( 'admin_init', array( $portier, 'register_settings' ) );
-		remove_action( 'admin_menu', array( $portier, 'admin_menu'        ) );
+		remove_action( 'admin_init', array( $prtr, 'register_settings' ) );
+		remove_action( 'admin_menu', array( $prtr, 'admin_menu'        ) );
 	}
 
 	/** Protection ***************************************************/
