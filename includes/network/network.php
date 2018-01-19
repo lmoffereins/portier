@@ -52,6 +52,7 @@ final class Portier_Network {
 	 * @since 1.0.0
 	 */
 	private function includes() {
+		require( $this->includes_dir . 'functions.php' );
 
 		// Admin
 		if ( is_admin() ) {
@@ -297,26 +298,3 @@ final class Portier_Network {
 }
 
 endif; // class_exists
-
-/**
- * Return the plugin's sites list table class
- *
- * @since 1.1.0
- */
-function _get_portier_network_sites_list_table( $args = array() ) {
-
-	// Load list table classes
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-ms-sites-list-table.php' );
-	require_once( portier()->includes_dir . 'classes/class-portier-network-sites-list-table.php' );
-
-	// Setup the screen argument
-	if ( isset( $args['screen'] ) ) {
-		$args['screen'] = convert_to_screen( $args['screen'] );
-	} elseif ( isset( $GLOBALS['hook_suffix'] ) ) {
-		$args['screen'] = get_current_screen();
-	} else {
-		$args['screen'] = null;
-	}
-
-	return new Portier_Network_Sites_List_Table( $args );
-}
