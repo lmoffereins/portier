@@ -108,8 +108,10 @@ final class Portier {
 	 * @since 1.0.0
 	 */
 	private function includes() {
-		require( $this->includes_dir . 'extend.php'    );
-		require( $this->includes_dir . 'functions.php' );
+		require( $this->includes_dir . 'actions.php'     );
+		require( $this->includes_dir . 'extend.php'      );
+		require( $this->includes_dir . 'functions.php'   );
+		require( $this->includes_dir . 'sub-actions.php' );
 
 		// Admin
 		if ( is_admin() ) {
@@ -125,6 +127,10 @@ final class Portier {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
+
+		// Add actions to plugin activation and deactivation hooks
+		add_action( 'activate_'   . $this->basename, 'portier_activation'   );
+		add_action( 'deactivate_' . $this->basename, 'portier_deactivation' );
 
 		// Plugin
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain'  ) );
