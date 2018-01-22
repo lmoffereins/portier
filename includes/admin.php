@@ -120,12 +120,12 @@ class Portier_Admin {
 
 		// Register Chosen when not done already
 		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-			wp_register_script( 'chosen', $prtr->includes_url . 'assets/js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
+			wp_register_script( 'chosen', $prtr->assets_url . 'js/chosen/chosen.jquery.min.js', array( 'jquery' ), '1.2.0' );
 		}
 		wp_enqueue_script( 'chosen' );
 
 		if ( ! wp_style_is( 'chosen', 'registered' ) ) {
-			wp_register_style( 'chosen', $prtr->includes_url . 'assets/js/chosen/chosen.min.css', false, '1.2.0' );
+			wp_register_style( 'chosen', $prtr->assets_url . 'js/chosen/chosen.min.css', false, '1.2.0' );
 		}
 		wp_enqueue_style( 'chosen' );
 
@@ -134,7 +134,7 @@ class Portier_Admin {
 		wp_enqueue_style ( 'wp-pointer' ); 
 
 		// Plugin admin
-		wp_register_script( 'portier-admin', $prtr->includes_url . 'assets/js/portier-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), portier_get_version() );
+		wp_register_script( 'portier-admin', $prtr->assets_url . 'js/portier-admin.js', array( 'jquery', 'chosen', 'wp-pointer' ), portier_get_version() );
 		wp_enqueue_script ( 'portier-admin' );
 		wp_localize_script( 'portier-admin', 'portierAdminL10n', array(
 			'pointerContent' => sprintf( '<h3>%s</h3><p>%s</p>',

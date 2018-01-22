@@ -90,8 +90,12 @@ final class Portier {
 		$this->plugin_url   = plugin_dir_url ( $this->file );
 
 		// Includes
-		$this->includes_dir = trailingslashit( $this->plugin_dir . 'includes'  );
-		$this->includes_url = trailingslashit( $this->plugin_url . 'includes'  );
+		$this->includes_dir = trailingslashit( $this->plugin_dir . 'includes' );
+		$this->includes_url = trailingslashit( $this->plugin_url . 'includes' );
+
+		// Assets
+		$this->assets_dir   = trailingslashit( $this->plugin_dir . 'assets' );
+		$this->assets_url   = trailingslashit( $this->plugin_url . 'assets' );
 
 		// Languages
 		$this->lang_dir     = trailingslashit( $this->plugin_dir . 'languages' );
