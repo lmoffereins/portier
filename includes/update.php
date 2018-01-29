@@ -22,7 +22,7 @@ function portier_is_install() {
 }
 
 /**
- * Compare the Portier version to the DB version to determine if updating
+ * Compare the plugin version to the DB version to determine if updating
  *
  * @since 1.2.0
  *
@@ -36,19 +36,19 @@ function portier_is_update() {
 }
 
 /**
- * Determine if Portier is being activated
+ * Determine if the plugin is being activated
  *
- * Note that this function currently is not used in Portier core and is here
- * for third party plugins to use to check for Portier activation.
+ * Note that this function currently is not used in the plugin core and is here
+ * for third party plugins to use to check for the plugin activation.
  *
  * @since 1.2.0
  *
- * @return bool True if activating Portier, false if not
+ * @return bool True if activating the plugin, false if not
  */
 function portier_is_activation( $basename = '' ) {
 	global $pagenow;
 
-	$prtr   = portier();
+	$plugin = portier();
 	$action = false;
 
 	// Bail when not in admin/plugins
@@ -75,8 +75,8 @@ function portier_is_activation( $basename = '' ) {
 	}
 
 	// Set basename if empty
-	if ( empty( $basename ) && ! empty( $prtr->basename ) ) {
-		$basename = $prtr->basename;
+	if ( empty( $basename ) && ! empty( $plugin->basename ) ) {
+		$basename = $plugin->basename;
 	}
 
 	// Bail when no basename
@@ -84,21 +84,21 @@ function portier_is_activation( $basename = '' ) {
 		return false;
 	}
 
-	// Is Portier being activated?
+	// Is the plugin being activated?
 	return in_array( $basename, $plugins );
 }
 
 /**
- * Determine if Portier is being deactivated
+ * Determine if the plugin is being deactivated
  *
  * @since 1.2.0
  * 
- * @return bool True if deactivating Portier, false if not
+ * @return bool True if deactivating the plugin, false if not
  */
 function portier_is_deactivation( $basename = '' ) {
 	global $pagenow;
 
-	$prtr   = portier();
+	$plugin = portier();
 	$action = false;
 
 	// Bail when not in admin/plugins
@@ -125,8 +125,8 @@ function portier_is_deactivation( $basename = '' ) {
 	}
 
 	// Set basename if empty
-	if ( empty( $basename ) && ! empty( $prtr->basename ) ) {
-		$basename = $prtr->basename;
+	if ( empty( $basename ) && ! empty( $plugin->basename ) ) {
+		$basename = $plugin->basename;
 	}
 
 	// Bail when no basename
@@ -134,7 +134,7 @@ function portier_is_deactivation( $basename = '' ) {
 		return false;
 	}
 
-	// Is Portier being deactivated?
+	// Is the plugin being deactivated?
 	return in_array( $basename, $plugins );
 }
 
@@ -148,7 +148,7 @@ function portier_version_bump() {
 }
 
 /**
- * Setup the Portier updater
+ * Setup the plugin updater
  *
  * @since 1.2.0
  */
@@ -163,11 +163,11 @@ function portier_setup_updater() {
 }
 
 /**
- * Portier's version updater looks at what the current database version is, and
+ * Plugin's version updater looks at what the current database version is, and
  * runs whatever other code is needed.
  *
  * This is most-often used when the data schema changes, but should also be used
- * to correct issues with Portier meta-data silently on software update.
+ * to correct issues with the plugin meta-data silently on software update.
  *
  * @since 1.2.0
  */
