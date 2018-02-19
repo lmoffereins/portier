@@ -342,12 +342,12 @@ class Portier_BuddyPress {
 
 		// Allowed member types
 		if ( bp_get_member_types() ) {
-			$columns['allowed-bp-member-types'] = esc_html__( 'Allowed Member Types', 'portier' );
+			$columns['allowed_bp-member-types'] = esc_html__( 'Allowed Member Types', 'portier' );
 		}
 
 		// Allowed groups
 		if ( bp_is_active( 'groups' ) ) {
-			$columns['allowed-bp-groups'] = esc_html__( 'Allowed Groups', 'portier' );
+			$columns['allowed_bp-groups'] = esc_html__( 'Allowed Groups', 'portier' );
 		}
 
 		return $columns;
@@ -366,7 +366,7 @@ class Portier_BuddyPress {
 		switch ( $column_name ) {
 
 			// Allowed member types
-			case 'allowed-bp-member-types' :
+			case 'allowed_bp-member-types' :
 				$types = get_option( '_portier_bp_allowed_member_types', array() );
 				$count = count( $types );
 				$title = implode( ', ', wp_list_pluck( wp_list_pluck( array_map( 'bp_get_member_type_object', array_slice( $types, 0, 5 ) ), 'labels' ), 'name' ) );
@@ -380,7 +380,7 @@ class Portier_BuddyPress {
 				break;
 
 			// Allowed groups
-			case 'allowed-bp-groups' :
+			case 'allowed_bp-groups' :
 				$groups = get_option( '_portier_bp_allowed_groups', array() );
 				$count  = count( $groups );
 				$title  = implode( ', ', wp_list_pluck( array_map( 'groups_get_group', array_map( function( $id ) { return array( 'group_id' => $id ); }, array_slice( $groups, 0, 5 ) ) ), 'name' ) );

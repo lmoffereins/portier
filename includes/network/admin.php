@@ -438,9 +438,31 @@ class Portier_Network_Admin {
 				}
 
 			/* For count columns */
-			.widefat [class*="column-allowed-"] {
-				width: 12%;
+			.widefat [class*="column-allowed_"] {
+				width: 15%;
 			}
+
+		@media screen and (max-width:782px) {
+			.widefat th.column-protected {
+				display: none;
+			}
+
+			.wp-list-table td.column-protected {
+				position: absolute !important;
+			}
+
+			.wp-list-table td.column-protected:before {
+				content: '' !important;
+			}
+
+			.wp-list-table td.column-protected i {
+				margin-top: 5px;
+			}
+
+			.widefat td.column-blogname {
+				padding-left: 38px;
+			}
+		}
 		</style>
 
 		<?php

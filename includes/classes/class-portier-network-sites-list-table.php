@@ -35,8 +35,8 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 		return (array) apply_filters( 'portier_network_sites_columns', array( 
 			'cb'            => $columns['cb'],
 			'protected'     => esc_html__( 'Protected', 'portier' ),
-			'blogname'      => $columns['blogname'],
-			'allowed-users' => esc_html__( 'Allowed Users', 'portier' ),
+			'blogname'      => esc_html__( 'Site', 'portier' ),
+			'allowed_users' => esc_html__( 'Allowed Users', 'portier' ),
 		) );
 	}
 
@@ -73,9 +73,9 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 	/**
 	 * Output the site row contents
 	 *
-	 * @since 1.1.0
+	 * @see WP_List_Table::display_rows()
 	 *
-	 * @uses do_action() Calls 'portier_network_sites_custom_column'
+	 * @since 1.1.0
 	 */
 	public function display_rows() {
 		$class = '';
@@ -83,89 +83,134 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 			$blog = $blog->to_array();
 
 			$class = ( 'alternate' == $class ) ? '' : 'alternate';
+			// Add site-protected class
 			$protected = portier_is_site_protected( $blog['blog_id'] );
 			$class .= $protected ? ' site-protected' : '';
 
 			echo "<tr class='$class'>";
 
-			$blogname = ( is_subdomain_install() ) ? str_replace( '.' . get_current_site()->domain, '', $blog['domain'] ) : $blog['path'];
+			$this->single_row_columns( $blog );
 
-			list( $columns, $hidden ) = $this->get_column_info();
-
-			foreach ( $columns as $column_name => $column_display_name ) {
-				switch_to_blog( $blog['blog_id'] );
-
-				$style = '';
-				if ( in_array( $column_name, $hidden ) )
-					$style = ' style="display:none;"';
-
-				switch ( $column_name ) {
-					case 'cb' : ?>
-						<th scope="row" class="check-column">
-							<label class="screen-reader-text" for="blog_<?php echo $blog['blog_id']; ?>"><?php printf( __( 'Select %s' ), $blogname ); ?></label>
-							<input type="checkbox" id="blog_<?php echo $blog['blog_id'] ?>" name="allblogs[]" value="<?php echo esc_attr( $blog['blog_id'] ) ?>" />
-						</th>
-
-						<?php
-						break;
-
-					case 'protected' :
-						echo "<td class='$column_name column-$column_name'$style>"; ?>
-							<i class="dashicons dashicons-shield-alt" title="<?php $protected ? esc_html_e( 'Site protection is active', 'portier' ) : esc_html_e( 'Site protection is not active', 'portier' ); ?>"></i>
-						</td>
-
-						<?php
-						break;
-
-					case 'blogname' :
-						$main_site = is_main_site( $blog['blog_id'] ) ? ' &mdash; <span class="post-state">' . __( 'Main Site', 'portier' ) . '</span>' : '';
-						echo "<td class='column-$column_name $column_name'$style>"; ?>
-							<strong>
-								<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a><?php echo $main_site; ?>
-							</strong>
-							<span class="site-domain"><?php echo $blog['domain']; ?></span>
-						</td>
-
-						<?php
-						break;
-
-					case 'allowed-users' :
-						$users = get_option( '_portier_allowed_users', array() );
-						$count = count( $users );
-						$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
-						if ( 0 < $count - 5 ) {
-							$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
-						}
-
-						echo "<td class='column-$column_name $column_name'$style>"; ?>
-							<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'portier' ), $count ); ?></span>
-						</td>
-
-						<?php
-						break;
-
-					default:
-						echo "<td class='$column_name column-$column_name'$style>";
-						/**
-						 * Fires for each registered custom column in the Sites list table.
-						 *
-						 * @since 1.1.0
-						 *
-						 * @param string $column_name The name of the column to display.
-						 * @param int    $blog_id     The site ID.
-						 */
-						do_action( 'portier_network_sites_custom_column', $column_name, $blog['blog_id'] );
-						echo "</td>";
-						break;
-					}
-				}
-			?>
-			</tr>
-			<?php
-
-			// Restore site context
-			restore_current_blog();
+			echo "</tr>";
 		}
+	}
+
+	/**
+	 * Remove display of row action links for the list table by using the grandparent's logic
+	 *
+	 * @see WP_List_Table::handle_row_actions()
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site
+	 * @param string $column_name Column name
+	 * @param string $primary Primary column name
+	 */
+	public function handle_row_actions( $blog, $column_name, $primary ) {
+		return $column_name === $primary ? '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details' ) . '</span></button>' : '';
+	}
+
+	/**
+	 * Handles the checkbox column output
+	 *
+	 * @see WP_MS_Sites_List_Table::column_cb()
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site.
+	 */
+	public function column_cb( $blog ) {
+			$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
+		?>
+			<label class="screen-reader-text" for="blog_<?php echo $blog['blog_id']; ?>">
+																	<?php
+																	printf( esc_html__( 'Select %s' ), $blogname );
+			?>
+			</label>
+			<input type="checkbox" id="blog_<?php echo $blog['blog_id']; ?>" name="allblogs[]" value="<?php echo esc_attr( $blog['blog_id'] ); ?>" />
+		<?php
+	}
+
+	/**
+	 * Handles the protected column output
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site
+	 * @param string $classes Cell classes
+	 * @param string $data Data attributes
+	 * @param string $primary Primary column name
+	 */
+	public function _column_protected( $blog, $classes, $data, $primary ) {
+		$protected = portier_is_site_protected( $blog['blog_id'] );
+		echo "<td class='$classes' $data>"; ?>
+			<i class="dashicons dashicons-shield-alt" title="<?php $protected ? esc_attr_e( 'Site protection is active', 'portier' ) : esc_attr_e( 'Site protection is not active', 'portier' ); ?>"></i>
+		</td>
+		<?php
+	}
+
+	/**
+	 * Handles the site name column output
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site
+	 */
+	public function column_blogname( $blog ) {
+		switch_to_blog( $blog['blog_id'] );
+		$main_site = is_main_site( $blog['blog_id'] ) ? ' &mdash; <span class="post-state">' . esc_html__( 'Main Site', 'portier' ) . '</span>' : '';
+		?>
+		<strong>
+			<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a><?php echo $main_site; ?>
+		</strong>
+		<span class="site-domain"><?php echo $blog['domain']; ?></span>
+		<?php
+		restore_current_blog();
+	}
+
+	/**
+	 * Handles the allowed users column output
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site
+	 */
+	public function column_allowed_users( $blog ) {
+		switch_to_blog( $blog['blog_id'] );
+		$users = get_option( '_portier_allowed_users', array() );
+		$count = count( $users );
+		$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
+		if ( 0 < $count - 5 ) {
+			$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
+		}
+		?>
+		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'portier' ), $count ); ?></span>
+		<?php
+		restore_current_blog();
+	}
+
+	/**
+	 * Handles output for the default column
+	 *
+	 * @since 1.3.0
+	 *
+	 * @uses do_action() Calls 'portier_network_sites_custom_column'
+	 *
+	 * @param array $blog Current site
+	 * @param string $column_name Column name
+	 */
+	public function column_default( $blog, $column_name ) {
+		switch_to_blog( $blog['blog_id'] );
+		/**
+		 * Fires for each registered custom column in the Sites list table.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $column_name The name of the column to display.
+		 * @param int    $blog_id     The site ID.
+		 */
+		do_action( 'portier_network_sites_custom_column', $column_name, $blog['blog_id'] );
+		restore_current_blog();
 	}
 }
 
