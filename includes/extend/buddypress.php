@@ -76,7 +76,7 @@ class Portier_BuddyPress {
 
 			// Allowed member types
 			$settings['_portier_bp_allowed_member_types'] = array(
-				'label'             => __( 'Allowed Member Types', 'portier' ),
+				'label'             => esc_html__( 'Allowed Member Types', 'portier' ),
 				'callback'          => array( $this, 'setting_allowed_member_types' ),
 				'section'           => 'portier-options-access',
 				'page'              => $network ? 'portier_network' : 'portier',
@@ -89,7 +89,7 @@ class Portier_BuddyPress {
 
 			// Allowed groups
 			$settings['_portier_bp_allowed_groups'] = array(
-				'label'             => __( 'Allowed groups', 'portier' ),
+				'label'             => esc_html__( 'Allowed groups', 'portier' ),
 				'callback'          => array( $this, 'setting_allowed_groups' ),
 				'section'           => 'portier-options-access',
 				'page'              => $network ? 'portier_network' : 'portier',
@@ -114,14 +114,14 @@ class Portier_BuddyPress {
 		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
 		$selected = (array) call_user_func_array( $getter, array( '_portier_bp_allowed_member_types', array() ) ); ?>
 
-		<select id="_portier_bp_allowed_member_types" name="_portier_bp_allowed_member_types[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a type', 'portier' ); ?>">
+		<select id="_portier_bp_allowed_member_types" name="_portier_bp_allowed_member_types[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php esc_html_e( 'Select a type', 'portier' ); ?>">
 
 			<?php foreach ( $types as $type => $args ) : ?>
 				<option value="<?php echo $type; ?>" <?php selected( in_array( $type, $selected ) ); ?>><?php echo $args->labels['name']; ?></option>
 			<?php endforeach; ?>
 
 		</select>
-		<label for="_portier_bp_allowed_member_types"><?php _e( "Select the member types of which users will have access", 'portier' ); ?></label>
+		<label for="_portier_bp_allowed_member_types"><?php esc_html_e( 'Select the member types of which users will have access', 'portier' ); ?></label>
 
 		<?php
 	}
@@ -141,14 +141,14 @@ class Portier_BuddyPress {
 		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
 		$selected = (array) call_user_func_array( $getter, array( '_portier_bp_allowed_groups', array() ) ); ?>
 
-		<select id="_portier_bp_allowed_groups" name="_portier_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php _e( 'Select a group', 'portier' ); ?>">
+		<select id="_portier_bp_allowed_groups" name="_portier_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php esc_html_e( 'Select a group', 'portier' ); ?>">
 
 			<?php foreach ( $groups as $group ) : ?>
 				<option value="<?php echo $group->id; ?>" <?php selected( in_array( $group->id, $selected ) ); ?>><?php echo $group->name; ?></option>
 			<?php endforeach; ?>
 
 		</select>
-		<label for="_portier_bp_allowed_groups"><?php _e( "Select the groups whose members will have access", 'portier' ); ?></label>
+		<label for="_portier_bp_allowed_groups"><?php esc_html_e( 'Select the groups whose members will have access', 'portier' ); ?></label>
 
 		<?php
 	}
