@@ -33,6 +33,15 @@ function portier_settings() {
 			'sanitize_callback' => 'intval'
 		),
 
+		// Default access
+		'_portier_default_access' => array(
+			'label'             => esc_html__( 'Default access', 'portier' ),
+			'callback'          => 'portier_setting_default_access',
+			'section'           => 'portier-options-access',
+			'page'              => 'portier',
+			'sanitize_callback' => 'portier_setting_sanitize_access_level'
+		),
+
 		// Login message
 		'_portier_login_message' => array(
 			'label'             => esc_html__( 'Login message', 'portier' ),
@@ -61,21 +70,37 @@ function portier_settings() {
 function portier_access_settings_info() { /* Nothing to show */ }
 
 /**
- * Output additional settings section information header
- *
- * @since 1.0.0
- */
-function portier_additional_settings_info() { /* Nothing to show */ }
-
-/**
  * Output the enable site protection input field
  *
  * @since 1.0.0
  */
 function portier_setting_protect_site() { ?>
 
-	<input type="checkbox" id="_portier_site_protect" name="_portier_site_protect" value="1" <?php checked( portier_is_site_protected() ); ?>/>
+	<input type="checkbox" id="_portier_site_protect" name="_portier_site_protect" value="1" <?php checked( get_option( '_portier_site_protect' ) ); ?>/>
 	<label for="_portier_site_protect"><?php esc_html_e( 'Enable site protection', 'portier' ); ?></label>
+
+	<?php
+}
+
+/**
+ * Output the allowed level input field
+ *
+ * @since 1.3.0
+ */
+function portier_setting_default_access() {
+
+	// Get the default access level
+	$level = get_option( '_portier_default_access' ); ?>
+
+	<select id="_portier_default_access" name="_portier_default_access" style="max-width:25em;">
+
+		<option value="0"><?php esc_html_e( 'Allow none', 'portier' ); ?></option>
+		<?php foreach ( portier_default_access_levels() as $option => $label ) : ?>
+			<option value="<?php echo $option; ?>" <?php selected( $option, $level ); ?>><?php echo $label; ?></option>
+		<?php endforeach; ?>
+
+	</select>
+	<label for="_portier_default_access"><?php esc_html_e( 'Select which default level of protection should be applied', 'portier' ); ?></label>
 
 	<?php
 }
@@ -131,6 +156,27 @@ function portier_setting_sanitize_ids( $input ) {
 		$input = array_unique( array_map( 'absint', (array) $input ) );
 	} else {
 		$input = array();
+	}
+
+	return $input;
+}
+
+/**
+ * Sanitize the default access input field
+ *
+ * @since 1.3.0
+ *
+ * @param string $input The submitted value
+ * @return string Sanitized input
+ */
+function portier_setting_sanitize_access_level( $input ) {
+
+	// Get available access levels
+	$levels = portier_default_access_levels();
+
+	// Default to 0
+	if ( ! in_array( $input, array_keys( $levels ), true ) ) {
+		$input = 0;
 	}
 
 	return $input;
