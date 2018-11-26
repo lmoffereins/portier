@@ -54,7 +54,7 @@ function portier_settings() {
 		// Allowed users
 		'_portier_allowed_users' => array(
 			'label'             => esc_html__( 'Allowed users', 'portier' ),
-			'callback'          => 'portier_setting_allow_users',
+			'callback'          => 'portier_setting_allowed_users',
 			'section'           => 'portier-options-access',
 			'page'              => 'portier',
 			'sanitize_callback' => 'portier_setting_sanitize_ids'
@@ -115,10 +115,10 @@ function portier_setting_default_access() {
  *
  * @since 1.0.0
  */
-function portier_setting_allow_users() {
+function portier_setting_allowed_users() {
 
 	// Get the allowed users
-	$allowed = (array) get_option( '_portier_allowed_users', array() );	?>
+	$allowed = (array) get_option( '_portier_allowed_users', array() ); ?>
 
 	<select id="_portier_allowed_users" class="chzn-select" name="_portier_allowed_users[]" multiple style="width:25em;" data-placeholder="<?php esc_html_e( 'Select a user', 'portier' ); ?>">
 
@@ -127,7 +127,7 @@ function portier_setting_allow_users() {
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_portier_allowed_groups"><?php esc_html_e( 'Select which users will have access', 'portier' ); ?></label>
+	<label for="_portier_allowed_users"><?php esc_html_e( 'Select which users will have access', 'portier' ); ?></label>
 
 	<?php
 }
@@ -154,7 +154,7 @@ function portier_setting_login_message() { ?>
  * @since 1.0.0
  *
  * @param string $input The submitted value
- * @return array $input
+ * @return string Sanitized input
  */
 function portier_setting_sanitize_ids( $input ) {
 	if ( ! empty( $input ) ) {
@@ -193,7 +193,7 @@ function portier_setting_sanitize_access_level( $input ) {
  * @since 1.0.0
  *
  * @param string $input The submitted value
- * @return string $input
+ * @return string Sanitized input
  */
 function portier_setting_sanitize_message( $input ) {
 	return wp_unslash( wp_kses( $input, array(
