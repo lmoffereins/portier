@@ -67,7 +67,12 @@ function portier_settings() {
  *
  * @since 1.0.0
  */
-function portier_access_settings_info() { /* Nothing to show */ }
+function portier_access_settings_info() { ?>
+
+	<p><?php esc_html_e( "When you choose to enable site protection, set the default access level to use as the baseline for user access. Any other settings will increase site access rather than decrease it. For example, the 'Allowed users' setting adds selected users to the set of already allowed users. Plugins may add their own access settings here as well.", 'portier' ); ?></p>
+
+	<?php
+}
 
 /**
  * Output the enable site protection input field
