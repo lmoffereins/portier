@@ -220,21 +220,21 @@ final class Portier {
 		if ( ! portier_is_site_protected() || is_404() )
 			return;
 
-		// Handle feed requests
-		if ( is_feed() ) {
-			global $wp_query;
-
-			// Block with 404 status
-			$wp_query->is_feed = false;
-			$wp_query->set_404();
-			status_header( 404 );
-		}
-
 		// When user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! portier_is_user_allowed() ) {
 
 			// Provide hook
 			do_action( 'portier_site_protect' );
+
+			// Handle feed requests
+			if ( is_feed() ) {
+				global $wp_query;
+
+				// Block with 404 status
+				$wp_query->is_feed = false;
+				$wp_query->set_404();
+				status_header( 404 );
+			}
 
 			// Logout user and redirect to login page
 			auth_redirect();
