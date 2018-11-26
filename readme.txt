@@ -2,10 +2,10 @@
 Contributors: offereins
 Tags: protect, access, restrict, site, blog, user
 Requires at least: 4.6
-Tested up to: 4.9
+Tested up to: 4.9.8
 Stable tag: 1.2.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Restrict access to your (multi)site
 
@@ -27,12 +27,15 @@ This plugin is not hosted in the official WordPress repository. Instead, updatin
 
 == Changelog ==
 
+= 1.2.2 =
+* Fixed feed access restrictions that were applied before the current user was checked
+* Fixed admin-bar styles in the front-end
+
 = 1.2.1 =
-* Update POT-file
-* Update Dutch translation
+* Updated translations
 
 = 1.2.0 =
-* Rename plugin to Portier because of a naming conflict with another Guard plugin in the .org repository
+* Renamed plugin to Portier because of a naming conflict with another Guard plugin in the .org repository
 * Added support for BuddyPress member types
 
 = 1.1.0 =
