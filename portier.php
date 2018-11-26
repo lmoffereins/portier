@@ -294,9 +294,9 @@ final class Portier {
 				),
 			) );
 
-			// Hook admin bar styles. After core's footer scripts
-			add_action( 'wp_footer',    array( $this, 'admin_bar_scripts' ), 21 );
-			add_action( 'admin_footer', array( $this, 'admin_bar_scripts' ), 21 );
+			// Hook admin bar styles, after the admin bar is rendered
+			add_action( 'wp_footer',    array( $this, 'admin_bar_scripts' ), 1001 );
+			add_action( 'admin_footer', array( $this, 'admin_bar_scripts' ),   21 );
 		}
 	}
 
