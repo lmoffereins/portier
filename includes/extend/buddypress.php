@@ -364,30 +364,51 @@ class Portier_BuddyPress {
 
 			// Allowed member types
 			case 'allowed_bp-member-types' :
-				$types = get_option( '_portier_bp_allowed_member_types', array() );
+				$types = $this->get_allowed_member_types( $site_id );
 				$count = count( $types );
-				$title = implode( ', ', wp_list_pluck( wp_list_pluck( array_map( 'bp_get_member_type_object', array_slice( $types, 0, 5 ) ), 'labels' ), 'name' ) );
-				if ( 0 < $count - 5 ) {
-					$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
-				} ?>
 
-				<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d type', '%d types', $count, 'portier' ), $count ); ?></span>
-				
-				<?php
+				if ( $count ) {
+					$title = implode( ', ', wp_list_pluck(
+						wp_list_pluck(
+							array_map( 'bp_get_member_type_object', array_slice( $types, 0, 5 ) ),
+							'labels'
+						),
+						'name'
+					) );
+					if ( 0 < $count - 5 ) {
+						$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
+					}
+					?>
+		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d type', '%d types', $count, 'portier' ), $count ); ?></span>
+					<?php
+				} else {
+					echo '&mdash;';
+				}
+
 				break;
 
 			// Allowed groups
 			case 'allowed_bp-groups' :
-				$groups = get_option( '_portier_bp_allowed_groups', array() );
+				$groups = $this->get_allowed_groups( $site_id );
 				$count  = count( $groups );
-				$title  = implode( ', ', wp_list_pluck( array_map( 'groups_get_group', array_map( function( $id ) { return array( 'group_id' => $id ); }, array_slice( $groups, 0, 5 ) ) ), 'name' ) );
-				if ( 0 < $count - 5 ) {
-					$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
-				} ?>
 
-				<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'portier' ), $count ); ?></span>
-				
-				<?php
+				if ( $count ) {
+					$title = implode( ', ', wp_list_pluck(
+						array_map( 'groups_get_group', array_map( function( $id ) {
+							return array( 'group_id' => $id );
+						}, array_slice( $groups, 0, 5 ) ) ),
+						'name'
+					) );
+					if ( 0 < $count - 5 ) {
+						$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
+					}
+					?>
+		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'portier' ), $count ); ?></span>
+					<?php
+				} else {
+					echo '&mdash;';
+				}
+
 			break;
 		}
 	}

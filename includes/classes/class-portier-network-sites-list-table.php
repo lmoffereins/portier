@@ -33,10 +33,11 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 		$columns = parent::get_columns();
 
 		return (array) apply_filters( 'portier_network_sites_columns', array( 
-			'cb'            => $columns['cb'],
-			'protected'     => esc_html__( 'Protected', 'portier' ),
-			'blogname'      => esc_html__( 'Site', 'portier' ),
-			'allowed_users' => esc_html__( 'Allowed Users', 'portier' ),
+			'cb'             => $columns['cb'],
+			'protected'      => esc_html__( 'Protected', 'portier' ),
+			'blogname'       => esc_html__( 'Site', 'portier' ),
+			'default_access' => esc_html__( 'Default Access', 'portier' ),
+			'allowed_users'  => esc_html__( 'Allowed Users', 'portier' ),
 		) );
 	}
 
@@ -84,8 +85,7 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 
 			$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			// Add site-protected class
-			$protected = portier_is_site_protected( $blog['blog_id'] );
-			$class .= $protected ? ' site-protected' : '';
+			$class .= portier_is_site_protected( $blog['blog_id'] ) ? ' site-protected' : ' site-not-protected';
 
 			echo "<tr class='$class'>";
 
@@ -169,6 +169,24 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 	}
 
 	/**
+	 * Handles the default access column output
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $blog Current site
+	 */
+	public function column_default_access( $blog ) {
+		switch_to_blog( $blog['blog_id'] );
+		$levels = portier_default_access_levels();
+		$level  = portier_get_default_access();
+		$title = isset( $levels[ $level ] ) ? $levels[ $level ] : esc_html__( 'Allow none', 'portier' );
+		?>
+		<span title="<?php echo $title; ?>"><?php echo $title; ?></span>
+		<?php
+		restore_current_blog();
+	}
+
+	/**
 	 * Handles the allowed users column output
 	 *
 	 * @since 1.3.0
@@ -179,13 +197,22 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 		switch_to_blog( $blog['blog_id'] );
 		$users = portier_get_allowed_users();
 		$count = count( $users );
-		$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
-		if ( 0 < $count - 5 ) {
-			$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
-		}
-		?>
+
+		if ( $count ) {
+			$title = implode( ', ', wp_list_pluck(
+				array_map( 'get_userdata', array_slice( $users, 0, 5 ) ),
+				'user_login'
+			) );
+			if ( 0 < $count - 5 ) {
+				$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
+			}
+			?>
 		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d user', '%d users', $count, 'portier' ), $count ); ?></span>
-		<?php
+			<?php
+		} else {
+			echo '&mdash;';
+		}
+
 		restore_current_blog();
 	}
 

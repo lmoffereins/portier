@@ -437,9 +437,15 @@ class Portier_Network_Admin {
 					color: #0074a2;
 				}
 
-			/* For count columns */
+			/* For detail columns */
+			.widefat [class*="column-default_access"],
 			.widefat [class*="column-allowed_"] {
 				width: 15%;
+			}
+
+			.widefat .site-not-protected [class*="column-default_access"] span,
+			.widefat .site-not-protected [class*="column-allowed_"] span {
+				opacity: .5;
 			}
 
 		@media screen and (max-width:782px) {
