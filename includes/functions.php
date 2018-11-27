@@ -289,7 +289,9 @@ function portier_get_protection_details( $site_id = 0 ) {
 
 	// Setup basic protection details: allowed user count
 	$user_count = count( portier_get_allowed_users() );
-	$details['allowed_users'] = sprintf( _n( '%d allowed user', '%d allowed users', $user_count, 'portier' ), $user_count );
+	if ( $user_count ) {
+		$details['allowed_users'] = sprintf( _n( '%d allowed user', '%d allowed users', $user_count, 'portier' ), $user_count );
+	}
 
 	// Reset switched site
 	if ( $switched ) {

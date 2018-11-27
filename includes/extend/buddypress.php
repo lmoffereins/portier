@@ -315,13 +315,17 @@ class Portier_BuddyPress {
 		// Get allowed member type count
 		if ( bp_get_member_types() ) {
 			$type_count = count( $this->get_allowed_member_types( $site_id ) );
-			$details['bp_allowed_member_types'] = sprintf( _n( '%d allowed member type', '%d allowed member types', $type_count, 'portier' ), $type_count );
+			if ( $type_count ) {
+				$details['bp_allowed_member_types'] = sprintf( _n( '%d allowed member type', '%d allowed member types', $type_count, 'portier' ), $type_count );
+			}
 		}
 
 		// Get allowed group count
 		if ( bp_is_active( 'groups' ) ) {
 			$group_count = count( $this->get_allowed_groups( $site_id ) );
-			$details['bp_allowed_groups'] = sprintf( _n( '%d allowed group', '%d allowed groups', $group_count, 'portier' ), $group_count );
+			if ( $group_count ) {
+				$details['bp_allowed_groups'] = sprintf( _n( '%d allowed group', '%d allowed groups', $group_count, 'portier' ), $group_count );
+			}
 		}
 
 		return $details;
