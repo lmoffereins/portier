@@ -278,19 +278,19 @@ final class Portier {
 
 			// When protection is active
 			$active = portier_is_site_protected();
-			$title1 = $active ? esc_html__( 'Site protection is active', 'portier' ) : esc_html__( 'Site protection is not active', 'portier' );
-			$title2 = $active ? portier_get_protection_details() : $title1;
+			$status = $active ? esc_html__( 'Site protection is active', 'portier' ) : esc_html__( 'Site protection is not active', 'portier' );
+			$title  = $active ? implode( "\n", portier_get_protection_details() ) : $status;
 			$class  = $active ? 'hover site-protected' : '';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
 				'id'        => 'portier',
 				'parent'    => 'top-secondary',
-				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $title1 . '</span>',
+				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $status . '</span>',
 				'href'      => add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ),
 				'meta'      => array(
 					'class' => $class,
-					'title' => $title2,
+					'title' => $title,
 				),
 			) );
 

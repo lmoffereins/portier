@@ -251,17 +251,50 @@ function portier_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
 /**
  * Return basic site protection details
  * 
+ * @since 1.3.0
+ *
+ * @param string $sep Optional. Detail separator. Defaults to '<br/>'.
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
+ * @return string Protection details
+ */
+function portier_the_protection_details( $sep = "<br/>", $site_id = 0 ) {
+	echo implode( $sep, portier_get_protection_details( $site_id ) );
+}
+
+/**
+ * Return basic site protection details
+ *
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_get_protection_details'
- * 
- * @return string Protection details
+ *
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
+ * @return array Protection details
  */
-function portier_get_protection_details() {
+function portier_get_protection_details( $site_id = 0 ) {
+
+	// Switch site?
+	$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
+
+	// Get default access level
+	$levels = portier_default_access_levels();
+	$level  = portier_get_default_access();
+
+	$details = array(
+		'default_access' => sprintf( esc_html__( 'Default: %s', 'portier' ), isset( $levels[ $level ] )
+			? $levels[ $level ]
+			: esc_html__( 'Allow none', 'portier' )
+		)
+	);
 
 	// Setup basic protection details: allowed user count
-	$allowed_user_count = count( get_option( '_portier_allowed_users' ) );
-	$details = sprintf( _n( '%d allowed user', '%d allowed users', $allowed_user_count, 'portier' ), $allowed_user_count );
+	$user_count = count( portier_get_allowed_users() );
+	$details['allowed_users'] = sprintf( _n( '%d allowed user', '%d allowed users', $user_count, 'portier' ), $user_count );
 
-	return apply_filters( 'portier_get_protection_details', $details );
+	// Reset switched site
+	if ( $switched ) {
+		restore_current_blog();
+	}
+
+	return (array) apply_filters( 'portier_get_protection_details', $details, $site_id );
 }

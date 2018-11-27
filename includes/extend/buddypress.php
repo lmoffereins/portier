@@ -53,7 +53,7 @@ class Portier_BuddyPress {
 		add_filter( 'portier_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
 
 		// Admin
-		add_filter( 'portier_get_protection_details',      array( $this, 'protection_details'  )        );
+		add_filter( 'portier_get_protection_details',      array( $this, 'protection_details'  ), 10, 2 );
 		add_filter( 'portier_network_sites_columns',       array( $this, 'sites_columns'       )        );
 		add_action( 'portier_network_sites_custom_column', array( $this, 'sites_custom_column' ), 10, 2 );
 	}
@@ -306,24 +306,25 @@ class Portier_BuddyPress {
 	 *
 	 * @since 1.0.0
 	 * 
-	 * @param string $title Site protection details
-	 * @return string Site protection details
+	 * @param array $details Site protection details
+	 * @param int $site_id Site ID
+	 * @return array Site protection details
 	 */
-	public function protection_details( $title ) {
+	public function protection_details( $details, $site_id ) {
 
 		// Get allowed member type count
 		if ( bp_get_member_types() ) {
-			$allowed_type_count = count( $this->get_allowed_member_types() );
-			$title .= "\n" . sprintf( _n( '%d allowed member type', '%d allowed member types', $allowed_type_count, 'portier' ), $allowed_type_count );
+			$type_count = count( $this->get_allowed_member_types( $site_id ) );
+			$details['bp_allowed_member_types'] = sprintf( _n( '%d allowed member type', '%d allowed member types', $type_count, 'portier' ), $type_count );
 		}
 
 		// Get allowed group count
 		if ( bp_is_active( 'groups' ) ) {
-			$allowed_group_count = count( $this->get_allowed_groups() );
-			$title .= "\n" . sprintf( _n( '%d allowed group', '%d allowed groups', $allowed_group_count, 'portier' ), $allowed_group_count );
+			$group_count = count( $this->get_allowed_groups( $site_id ) );
+			$details['bp_allowed_groups'] = sprintf( _n( '%d allowed group', '%d allowed groups', $group_count, 'portier' ), $group_count );
 		}
 
-		return $title;
+		return $details;
 	}
 
 	/**
