@@ -75,18 +75,26 @@ function portier_db_version_raw() {
 /** Options *******************************************************************/
 
 /**
- * Return the levels for default access levels
+ * Return the levels for default access
  *
  * @since 1.3.0
  *
  * @uses apply_filters() Calls 'portier_default_access_levels'
- * @return array Default access options
+ * @return array Default access levels
  */
 function portier_default_access_levels() {
-	return (array) apply_filters( 'portier_default_access_levels', array(
-		'site_users'    => esc_html__( 'Allow site users', 'portier' ),
-		'network_users' => esc_html__( 'Allow network users', 'portier' )
-	) );
+
+	// Define list of levels
+	$levels = array(
+		'site_users' => esc_html__( 'Allow site users', 'portier' )
+	);
+
+	// Network levels
+	if ( is_multisite() ) {
+		$levels['network_users'] = esc_html__( 'Allow network users', 'portier' );
+	}
+
+	return (array) apply_filters( 'portier_default_access_levels', $levels );
 }
 
 /**
