@@ -165,16 +165,14 @@ class Portier_BuddyPress {
 	 */
 	public function get_allowed_member_types( $site_id = 0 ) {
 
-		// Switch to site
-		if ( ! empty( $site_id ) && is_multisite() ) {
-			$site_id = (int) $site_id;
-			switch_to_blog( $site_id );
-		}
+		// Switch site?
+		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
 
+		// Get allowed member types
 		$types = (array) get_option( '_portier_bp_allowed_member_types', array() );
 
-		// Restore switched site
-		if ( ! empty( $site_id ) && is_multisite() ) {
+		// Reset switched site
+		if ( $switched ) {
 			restore_current_blog();
 		}
 
@@ -206,16 +204,14 @@ class Portier_BuddyPress {
 	 */
 	public function get_allowed_groups( $site_id = 0 ) {
 
-		// Switch to site
-		if ( ! empty( $site_id ) && is_multisite() ) {
-			$site_id = (int) $site_id;
-			switch_to_blog( $site_id );
-		}
+		// Switch site?
+		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
 
+		// Get allowed groups
 		$groups = (array) get_option( '_portier_bp_allowed_groups', array() );
 
-		// Restore switched site
-		if ( ! empty( $site_id ) && is_multisite() ) {
+		// Reset switched site
+		if ( $switched ) {
 			restore_current_blog();
 		}
 

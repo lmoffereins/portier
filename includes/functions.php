@@ -119,20 +119,18 @@ function portier_default_access() {
  * @uses apply_filters() Calls 'portier_is_site_protected'
  * 
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
- * @return bool Site protection is active
+ * @return bool Is site protection active?
  */
 function portier_is_site_protected( $site_id = 0 ) {
 
-	// Network: switch to site
-	if ( ! empty( $site_id ) && is_multisite() ) {
-		$site_id = (int) $site_id;
-		switch_to_blog( $site_id );
-	}
+	// Switch site?
+	$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
 
+	// Get site protection
 	$protected = get_option( '_portier_site_protect' );
 
-	// Network: reset the switched site
-	if ( ! empty( $site_id ) && is_multisite() ) {
+	// Reset switched site
+	if ( $switched ) {
 		restore_current_blog();
 	}
 
@@ -167,30 +165,29 @@ function portier_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 	// Try alternative means
 	if ( ! $allowed ) {
 
-		// Network: switch to site
-		if ( ! empty( $site_id ) && is_multisite() ) {
-			$site_id = (int) $site_id;
-			switch_to_blog( $site_id );
-		}
+		// Switch site?
+		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
 
-		// Get allowed users array
+		// Get allowed users
 		$users = (array) get_option( '_portier_allowed_users', array() );
 
-		// Network: reset the switched site
-		if ( ! empty( $site_id ) && is_multisite() ) {
+		// Reset switched site
+		if ( $switched ) {
 			restore_current_blog();
 		}
 
 		// Is user selected to be allowed?
 		$allowed = in_array( $user_id, $users );
+
+		// Filter whether user is allowed
+		$allowed = (bool) apply_filters( 'portier_is_user_allowed', $allowed, $user_id, $site_id );
 	}
 
-	// Filter whether user is allowed
-	return (bool) apply_filters( 'portier_is_user_allowed', $allowed, $user_id, $site_id );
+	return $allowed;
 }
 
 /**
- * Returns whether the given user is allowed access for the given site
+ * Return whether the given user is allowed access by default for the given site
  *
  * @since 1.3.0
  *
@@ -219,11 +216,15 @@ function portier_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
 
 		// Allow users of the blog/site
 		case 'site_users' :
+
+			// current_user_can( 'read' ) should be equivalent to is_user_member_of_blog()
 			$allowed = current_user_can_for_blog( $site_id, 'read' );
 			break;
 
-		// Allow users of the network, which is any existing user
+		// Allow users of the network
 		case 'network_users' :
+
+			// A network user is any existing user
 			$allowed = get_user_by( 'id', $user_id )->exists();
 			break;
 
