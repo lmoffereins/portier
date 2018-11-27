@@ -98,13 +98,6 @@ function portier_network_main_settings_info() { /* Nothing to show */ }
 function portier_network_access_settings_info() { /* Nothing to show */ }
 
 /**
- * Output network additional settings section information header
- *
- * @since 1.0.0
- */
-function portier_network_additional_settings_info() { /* Nothing to show */ }
-
-/**
  * Output the network only input field
  *
  * @since 1.0.0

@@ -10,13 +10,40 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
+/** Options *******************************************************************/
+
+/**
+ * Return whether redirection from unallowed sites is active
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'portier_network_redirect'
+ * @return bool Network redirect is active
+ */
+function portier_network_redirect() {
+	return (bool) apply_filters( 'portier_network_redirect', get_site_option( '_portier_network_redirect' ) );
+}
+
+/**
+ * Return whether the plugin is active for the network level only
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'portier_is_network_only'
+ * @return bool Portier is for the network level only
+ */
+function portier_is_network_only() {
+	return (bool) apply_filters( 'portier_is_network_only', get_site_option( '_portier_network_only' ) );
+}
+
+/** Protection ****************************************************************/
+
 /**
  * Return whether the network's protection is active
  *
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_is_network_protected'
- * 
  * @return bool Network protection is active
  */
 function portier_is_network_protected() {
@@ -61,38 +88,11 @@ function portier_network_is_user_allowed( $user_id = 0 ) {
 }
 
 /**
- * Return whether redirection from unallowed sites is active
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'portier_network_redirect'
- * 
- * @return bool Network redirect is active
- */
-function portier_network_redirect() {
-	return (bool) apply_filters( 'portier_network_redirect', get_site_option( '_portier_network_redirect' ) );
-}
-
-/**
- * Return whether the plugin is active for the network level only
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'portier_is_network_only'
- * 
- * @return bool Portier is for the network level only
- */
-function portier_is_network_only() {
-	return (bool) apply_filters( 'portier_is_network_only', get_site_option( '_portier_network_only' ) );
-}
-
-/**
  * Return array of all network users
  *
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_get_network_users'
- *
  * @return array Network users
  */
 function portier_get_network_users() {
@@ -121,7 +121,6 @@ function portier_get_network_users() {
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_network_hide_my_sites'
- *
  * @return boolean Hide "My Sites"
  */
 function portier_network_hide_my_sites() {
