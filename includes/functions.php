@@ -118,7 +118,7 @@ function portier_get_default_access() {
  * @return array Allowed users
  */
 function portier_get_allowed_users() {
-	return (array) apply_filters( 'portier_get_allowed_users', get_option( '_portier_allowed_users', array() ) );
+	return array_filter( (array) apply_filters( 'portier_get_allowed_users', get_option( '_portier_allowed_users', array() ) ) );
 }
 
 /** Protection ****************************************************************/
