@@ -177,7 +177,7 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 	 */
 	public function column_allowed_users( $blog ) {
 		switch_to_blog( $blog['blog_id'] );
-		$users = get_option( '_portier_allowed_users', array() );
+		$users = portier_get_allowed_users();
 		$count = count( $users );
 		$title = implode( ', ', wp_list_pluck( array_map( 'get_userdata', array_slice( $users, 0, 5 ) ), 'user_login' ) );
 		if ( 0 < $count - 5 ) {

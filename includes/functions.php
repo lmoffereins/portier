@@ -102,11 +102,23 @@ function portier_default_access_levels() {
  *
  * @since 1.3.0
  *
- * @uses apply_filters() Calls 'portier_default_access'
+ * @uses apply_filters() Calls 'portier_get_default_access'
  * @return string Default access
  */
-function portier_default_access() {
-	return apply_filters( 'portier_default_access', get_option( '_portier_default_access' ) );
+function portier_get_default_access() {
+	return apply_filters( 'portier_get_default_access', get_option( '_portier_default_access' ) );
+}
+
+/**
+ * Return the additionally selected allowed users
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_get_allowed_users'
+ * @return array Allowed users
+ */
+function portier_get_allowed_users() {
+	return (array) apply_filters( 'portier_get_allowed_users', get_option( '_portier_allowed_users', array() ) );
 }
 
 /** Protection ****************************************************************/
@@ -169,7 +181,7 @@ function portier_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
 
 		// Get allowed users
-		$users = (array) get_option( '_portier_allowed_users', array() );
+		$users = portier_get_allowed_users();
 
 		// Reset switched site
 		if ( $switched ) {
@@ -206,7 +218,7 @@ function portier_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
 
 	// Default to no-access
 	$allowed = false;
-	$level   = portier_default_access();
+	$level   = portier_get_default_access();
 
 	switch ( $level ) {
 
