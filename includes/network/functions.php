@@ -36,6 +36,49 @@ function portier_is_network_only() {
 	return (bool) apply_filters( 'portier_is_network_only', get_site_option( '_portier_network_only' ) );
 }
 
+/**
+ * Return the levels for default network access
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_default_access_levels'
+ * @return array Default network access levels
+ */
+function portier_network_default_access_levels() {
+
+	// Define list of levels
+	$levels = array(
+		'site_users'    => esc_html__( 'Allow site users', 'portier' ),
+		'network_users' => esc_html__( 'Allow network users', 'portier' )
+	);
+
+	return (array) apply_filters( 'portier_network_default_access_levels', $levels );
+}
+
+/**
+ * Return the active default network access level
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_get_default_access'
+ * @return string Default network access
+ */
+function portier_network_get_default_access() {
+	return apply_filters( 'portier_network_get_default_access', get_site_option( '_portier_network_default_access' ) );
+}
+
+/**
+ * Return the additionally selected allowed users for the network
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_get_allowed_users'
+ * @return array Allowed users for the network
+ */
+function portier_network_get_allowed_users() {
+	return array_filter( (array) apply_filters( 'portier_network_get_allowed_users', get_site_option( '_portier_network_allowed_users', array() ) ) );
+}
+
 /** Protection ****************************************************************/
 
 /**
@@ -77,14 +120,77 @@ function portier_network_is_user_allowed( $user_id = 0 ) {
 	if ( is_super_admin( $user_id ) )
 		return true;
 
-	// Get allowed users array
-	$users = (array) get_site_option( '_portier_network_allowed_users', array() );
+	// Get default access
+	$allowed = portier_network_is_user_allowed_by_default( $user_id );
 
-	// Is user selected to be allowed?
-	$allowed = in_array( $user_id, $users );
+	// Try alternative means
+	if ( ! $allowed ) {
 
-	// Filter whether user is allowed
-	return (bool) apply_filters( 'portier_network_is_user_allowed', $allowed, $user_id );
+		// Get allowed users
+		$users = portier_network_get_allowed_users();
+
+		// Is user selected to be allowed?
+		$allowed = in_array( $user_id, $users );
+
+		// Filter whether user is allowed
+		$allowed = (bool) apply_filters( 'portier_network_is_user_allowed', $allowed, $user_id );
+	}
+
+	return $allowed;
+}
+
+/**
+ * Return whether the given user is allowed access by default for the network
+ *
+ * The network-defined access restrictions are enforced before any site access
+ * restrictions are evaluated. This means that more strict network restrictions
+ * are favored over less strict site restrictions.
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_is_user_allowed_by_default'
+ *
+ * @param int $user_id Optional. Defaults to current user
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
+ * @return bool Is the user allowed by default for the network?
+ */
+function portier_network_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
+
+	// Default to current user ID
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
+
+	// Default to no-access
+	$allowed = false;
+	$level   = portier_network_get_default_access();
+
+	switch ( $level ) {
+
+		// Allow none
+		case '0' :
+			break;
+
+		// Allow users of the blog/site
+		case 'site_users' :
+
+			// current_user_can( 'read' ) should be equivalent to is_user_member_of_blog()
+			$allowed = current_user_can_for_blog( $site_id, 'read' );
+			break;
+
+		// Allow users of the network
+		case 'network_users' :
+
+			// A network user is any existing user
+			$allowed = get_user_by( 'id', $user_id )->exists();
+			break;
+
+		// Custom level
+		default :
+			$allowed = (bool) apply_filters( "portier_network_is_user_allowed_by_default-{$level}", $allowed, $user_id, $site_id );
+	}
+
+	return $allowed;
 }
 
 /**

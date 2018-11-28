@@ -62,6 +62,15 @@ function portier_network_settings() {
 			'sanitize_callback' => 'intval'
 		),
 
+		// Default access
+		'_portier_network_default_access' => array(
+			'label'             => esc_html__( 'Default access', 'portier' ),
+			'callback'          => 'portier_network_setting_default_access',
+			'section'           => 'portier-options-access',
+			'page'              => 'portier_network',
+			'sanitize_callback' => 'portier_network_setting_sanitize_access_level'
+		),
+
 		// Login message
 		'_portier_network_login_message' => array(
 			'label'             => esc_html__( 'Login message', 'portier' ),
@@ -95,7 +104,12 @@ function portier_network_main_settings_info() { /* Nothing to show */ }
  *
  * @since 1.0.0
  */
-function portier_network_access_settings_info() { /* Nothing to show */ }
+function portier_network_access_settings_info() { ?>
+
+	<p><?php esc_html_e( "When you choose to enable network protection, set the default access level to use as the baseline for user access. Any other settings will increase site access rather than decrease it. For example, the 'Allowed users' setting adds selected users to the set of already allowed users. Plugins may add their own access settings here as well.", 'portier' ); ?></p>
+
+	<?php
+}
 
 /**
  * Output the network only input field
@@ -150,6 +164,29 @@ function portier_network_setting_hide_my_sites() { ?>
 }
 
 /**
+ * Output the allowed network level input field
+ *
+ * @since 1.3.0
+ */
+function portier_network_setting_default_access() {
+
+	// Get the default access level
+	$level = get_site_option( '_portier_network_default_access' ); ?>
+
+	<select id="_portier_network_default_access" name="_portier_network_default_access" style="max-width:25em;">
+
+		<option value="0"><?php esc_html_e( 'Allow none', 'portier' ); ?></option>
+		<?php foreach ( portier_network_default_access_levels() as $option => $label ) : ?>
+			<option value="<?php echo $option; ?>" <?php selected( $option, $level ); ?>><?php echo $label; ?></option>
+		<?php endforeach; ?>
+
+	</select>
+	<label for="_portier_network_default_access"><?php esc_html_e( 'Select which default level of protection should be applied', 'portier' ); ?></label>
+
+	<?php
+}
+
+/**
  * Output the allowed network users input field
  *
  * @since 1.0.0
@@ -185,4 +222,25 @@ function portier_network_setting_login_message() { ?>
 	</label>
 
 	<?php
+}
+
+/**
+ * Sanitize the default network access input field
+ *
+ * @since 1.3.0
+ *
+ * @param string $input The submitted value
+ * @return string Sanitized input
+ */
+function portier_network_setting_sanitize_access_level( $input ) {
+
+	// Get available access levels
+	$levels = portier_network_default_access_levels();
+
+	// Default to 0
+	if ( ! in_array( $input, array_keys( $levels ), true ) ) {
+		$input = 0;
+	}
+
+	return $input;
 }
