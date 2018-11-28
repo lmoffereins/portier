@@ -102,14 +102,16 @@ function portier_is_network_protected() {
  * Returns whether the given user is allowed access for the network
  *
  * @since 1.0.0
+ * @since 1.3.0 Added `$site_id` parameter
  *
  * @uses apply_filters() Calls 'portier_network_is_user_allowed' hook
  *                        for plugins to override the access granted
  *
  * @param int $user_id Optional. Defaults to current user
- * @return boolean The user is allowed
+ * @param int $site_id Optional. Site ID. Defaults to the current site ID
+ * @return bool Is the user allowed for the network?
  */
-function portier_network_is_user_allowed( $user_id = 0 ) {
+function portier_network_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 
 	// Default to current user ID
 	if ( empty( $user_id ) ) {
@@ -121,7 +123,7 @@ function portier_network_is_user_allowed( $user_id = 0 ) {
 		return true;
 
 	// Get default access
-	$allowed = portier_network_is_user_allowed_by_default( $user_id );
+	$allowed = portier_network_is_user_allowed_by_default( $user_id, $site_id );
 
 	// Try alternative means
 	if ( ! $allowed ) {
@@ -133,7 +135,7 @@ function portier_network_is_user_allowed( $user_id = 0 ) {
 		$allowed = in_array( $user_id, $users );
 
 		// Filter whether user is allowed
-		$allowed = (bool) apply_filters( 'portier_network_is_user_allowed', $allowed, $user_id );
+		$allowed = (bool) apply_filters( 'portier_network_is_user_allowed', $allowed, $user_id, $site_id );
 	}
 
 	return $allowed;
