@@ -120,6 +120,10 @@ final class Portier_Network {
 	/**
 	 * Redirect user when network is protected
 	 *
+	 * The network-defined access restrictions are enforced before any site access
+	 * restrictions are evaluated. This means that more strict network restrictions
+	 * are favored over less strict site restrictions.
+	 *
 	 * @since 1.0.0
 	 */
 	public function network_protect() {
@@ -130,6 +134,20 @@ final class Portier_Network {
 
 		// Redirect when the user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! portier_network_is_user_allowed() ) {
+
+			// Provide hook
+			do_action( 'portier_network_protect' );
+
+			// Handle feed requests
+			if ( is_feed() ) {
+				global $wp_query;
+
+				// Block with 404 status
+				$wp_query->is_feed = false;
+				$wp_query->set_404();
+				status_header( 404 );
+			}
+
 			auth_redirect();
 		}
 	}
