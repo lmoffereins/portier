@@ -97,6 +97,10 @@ final class Portier {
 		$this->assets_dir   = trailingslashit( $this->plugin_dir . 'assets' );
 		$this->assets_url   = trailingslashit( $this->plugin_url . 'assets' );
 
+		// Extensions
+		$this->extend_dir   = trailingslashit( $this->includes_dir . 'extend' );
+		$this->extend_url   = trailingslashit( $this->includes_url . 'extend' );
+
 		// Languages
 		$this->lang_dir     = trailingslashit( $this->plugin_dir . 'languages' );
 
@@ -113,7 +117,6 @@ final class Portier {
 	 */
 	private function includes() {
 		require( $this->includes_dir . 'actions.php'     );
-		require( $this->includes_dir . 'extend.php'      );
 		require( $this->includes_dir . 'functions.php'   );
 		require( $this->includes_dir . 'sub-actions.php' );
 
@@ -123,6 +126,9 @@ final class Portier {
 			require( $this->includes_dir . 'settings.php' );
 			require( $this->includes_dir . 'update.php'   );
 		}
+
+		// Extensions
+		require( $this->extend_dir . 'buddypress.php' );
 	}
 
 	/**
@@ -149,9 +155,6 @@ final class Portier {
 		if ( is_admin() ) {
 			add_action( 'init', 'portier_admin' );
 		}
-
-		// Setup extensions
-		add_action( 'bp_loaded', 'portier_setup_buddypress' );
 
 		// Fire plugin loaded hook
 		do_action( 'portier_loaded' );

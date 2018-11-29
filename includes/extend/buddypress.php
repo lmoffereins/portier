@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Portier BuddyPress Extension Class
+ * Portier Extension for BuddyPress
  * 
  * @package Portier
- * @subpackage Extend
+ * @subpackage BuddyPress
  */
 
 // Exit if accessed directly
@@ -416,6 +416,17 @@ class Portier_BuddyPress {
 			break;
 		}
 	}
+}
+
+/**
+ * Initiate the BuddyPress extension
+ *
+ * @since 1.3.0
+ *
+ * @uses Portier_BuddyPress
+ */
+function portier_buddypress() {
+	portier()->extend->bp = new Portier_BuddyPress();
 }
 
 endif;
