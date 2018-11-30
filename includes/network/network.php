@@ -233,15 +233,22 @@ final class Portier_Network {
 	public function filter_user_sites( $sites, $user_id, $all ) {
 
 		// Do not change site list when requesting all
-		if ( $all || portier_is_network_only() ) {
+		if ( $all ) {
 			return $sites;
 		}
+
+		// Get network params
+		$network_only    = portier_is_network_only();
+		$network_protect = portier_is_network_protected();
 
 		// Walk all sites
 		foreach ( $sites as $site_id => $details ) {
 
-			// Site protection is active and user is not allowed
-			if ( portier_is_site_protected( $site_id ) && ! portier_is_user_allowed( $user_id, $site_id ) ) {
+			// Network protection is actively blocking this site
+			// or site protection is active and user is not allowed
+			if ( ( $network_protect && ! portier_network_is_user_allowed( $user_id, $site_id ) )
+				|| ( ! $network_only && portier_is_site_protected( $site_id ) && ! portier_is_user_allowed( $user_id, $site_id ) )
+			) {
 
 				// Remove site from collection
 				unset( $sites[ $site_id ] );
