@@ -128,7 +128,7 @@ final class Portier {
 		}
 
 		// Extensions
-		require( $this->extend_dir . 'buddypress.php' );
+		require( $this->extend_dir . 'buddypress/buddypress.php' );
 	}
 
 	/**

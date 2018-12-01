@@ -48,12 +48,12 @@ class Portier_BuddyPress {
 		add_filter( 'portier_settings',         array( $this, 'register_settings' ) );
 		add_filter( 'portier_network_settings', array( $this, 'register_settings' ) );
 
-		// Filter user access
-		add_filter( 'portier_is_user_allowed',         array( $this, 'is_user_allowed' ), 10, 3 );
-		add_filter( 'portier_network_is_user_allowed', array( $this, 'is_user_allowed' ), 10, 2 );
+		// Protection
+		add_filter( 'portier_is_user_allowed',         array( $this, 'is_user_allowed'    ), 10, 3 );
+		add_filter( 'portier_network_is_user_allowed', array( $this, 'is_user_allowed'    ), 10, 2 );
+		add_filter( 'portier_get_protection_details',  array( $this, 'protection_details' ), 10, 2 );
 
 		// Admin
-		add_filter( 'portier_get_protection_details',      array( $this, 'protection_details'  ), 10, 2 );
 		add_filter( 'portier_network_sites_columns',       array( $this, 'sites_columns'       )        );
 		add_action( 'portier_network_sites_custom_column', array( $this, 'sites_custom_column' ), 10, 2 );
 	}
