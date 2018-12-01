@@ -143,8 +143,9 @@ final class Portier {
 		add_action( 'deactivate_' . $this->basename, 'portier_deactivation' );
 
 		// Plugin
-		add_action( 'portier_loaded', array( $this, 'load_textdomain'  ) );
-		add_action( 'portier_loaded', array( $this, 'load_for_network' ) );
+		add_action( 'portier_loaded',   array( $this, 'load_textdomain'  ) );
+		add_action( 'portier_loaded',   array( $this, 'load_for_network' ) );
+		add_action( 'portier_register', array( $this, 'register_scripts' ) );
 
 		// Protection
 		add_action( 'template_redirect', array( $this, 'site_protect'   ), 1 );
@@ -205,6 +206,15 @@ final class Portier {
 
 		// Setup network functionality
 		$this->network = new Portier_Network;
+	}
+
+	/**
+	 * Register plugin scripts and styles
+	 *
+	 * @since 1.3.0
+	 */
+	public function register_scripts() {
+		wp_register_style( 'portier', $this->assets_url . 'css/portier.css', array(), portier_get_version() );
 	}
 
 	/** Protection ************************************************************/
@@ -297,59 +307,9 @@ final class Portier {
 				),
 			) );
 
-			// Hook admin bar styles, after the admin bar is rendered
-			add_action( 'wp_footer',    array( $this, 'admin_bar_scripts' ), 1001 );
-			add_action( 'admin_footer', array( $this, 'admin_bar_scripts' ),   21 );
+			// Enqueue style
+			wp_enqueue_style( 'portier' );
 		}
-	}
-
-	/**
-	 * Output custom scripts
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses is_admin_bar_showing()
-	 */
-	public function admin_bar_scripts() {
-
-		// For the admin bar
-		if ( ! is_admin_bar_showing() )
-			return; ?>
-
-		<style type="text/css">
-			#wpadminbar #wp-admin-bar-portier > .ab-item {
-				padding: 0 9px 0 7px;
-			}
-
-			#wpadminbar #wp-admin-bar-portier > .ab-item .ab-icon {
-				width: 18px;
-				height: 20px;
-				margin-right: 0;
-			}
-
-			#wpadminbar #wp-admin-bar-portier > .ab-item .ab-icon:before {
-				content: '\f334'; /* dashicons-shield-alt */
-				top: 2px;
-				opacity: 0.4;
-			}
-
-				#wpadminbar #wp-admin-bar-portier.site-protected > .ab-item .ab-icon:before {
-					opacity: 1;
-				}
-
-			/* Non-unique specific selector (!) */
-			#wp-pointer-0.wp-pointer-top .wp-pointer-content h3:before {
-				content: '\f334'; /* dashicons-shield-alt */
-			}
-
-			/* Non-unique specific selector (!) */
-			#wp-pointer-0.wp-pointer-top .wp-pointer-arrow {
-				left: auto;
-				right: 27px;
-			}
-		</style>
-
-		<?php
 	}
 }
 
