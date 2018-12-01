@@ -132,6 +132,10 @@ final class Portier_Network {
 		if ( ! portier_is_network_protected() )
 			return;
 
+		// Bail when the main site is allowed
+		if ( portier_network_allow_main_site() && is_main_site() )
+			return;
+
 		// Redirect when the user is not logged in or is not allowed
 		if ( ! is_user_logged_in() || ! portier_network_is_user_allowed() ) {
 

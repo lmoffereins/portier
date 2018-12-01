@@ -68,6 +68,18 @@ function portier_network_get_default_access() {
 }
 
 /**
+ * Return whether the main site should be allowed for all
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_allow_main_site'
+ * @return bool Should main site be allowed for all?
+ */
+function portier_network_allow_main_site() {
+	return (bool) apply_filters( 'portier_network_allow_main_site', get_site_option( '_portier_network_allow_main_site' ) );
+}
+
+/**
  * Return the additionally selected allowed users for the network
  *
  * @since 1.3.0

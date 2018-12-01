@@ -71,6 +71,15 @@ function portier_network_settings() {
 			'sanitize_callback' => 'portier_network_setting_sanitize_access_level'
 		),
 
+		// Allow main site
+		'_portier_network_allow_main_site' => array(
+			'label'             => esc_html__( 'Main Site', 'portier' ),
+			'callback'          => 'portier_network_setting_allow_main_site',
+			'section'           => 'portier-options-access',
+			'page'              => 'portier_network',
+			'sanitize_callback' => 'intval'
+		),
+
 		// Login message
 		'_portier_network_login_message' => array(
 			'label'             => esc_html__( 'Login message', 'portier' ),
@@ -182,6 +191,19 @@ function portier_network_setting_default_access() {
 
 	</select>
 	<label for="_portier_network_default_access"><?php esc_html_e( 'Select which default level of protection should be applied', 'portier' ); ?></label>
+
+	<?php
+}
+
+/**
+ * Output the allow main site input field
+ *
+ * @since 1.3.0
+ */
+function portier_network_setting_allow_main_site() { ?>
+
+	<input type="checkbox" id="_portier_network_allow_main_site" name="_portier_network_allow_main_site" value="1" <?php checked( get_site_option( '_portier_network_allow_main_site' ) ); ?>/>
+	<label for="_portier_network_allow_main_site"><?php esc_html_e( 'When protecting the network, do not apply protection to the main site', 'portier' ); ?></label>
 
 	<?php
 }
