@@ -68,9 +68,10 @@ class Portier_BuddyPress {
 		add_filter( 'portier_network_settings', array( $this, 'register_settings' ) );
 
 		// Protection
-		add_filter( 'portier_is_user_allowed',         array( $this, 'is_user_allowed'    ), 10, 3 );
-		add_filter( 'portier_network_is_user_allowed', array( $this, 'is_user_allowed'    ), 10, 2 );
-		add_filter( 'portier_get_protection_details',  array( $this, 'protection_details' ), 10, 2 );
+		add_filter( 'portier_is_user_allowed',                 array( $this, 'is_user_allowed'    ), 10, 3 );
+		add_filter( 'portier_network_is_user_allowed',         array( $this, 'is_user_allowed'    ), 10, 2 );
+		add_filter( 'portier_get_protection_details',          array( $this, 'protection_details' ), 10, 2 );
+		add_filter( 'portier_network_get_protection_details',  array( $this, 'protection_details' ), 10, 2 );
 
 		// Admin
 		add_filter( 'portier_network_sites_columns',       array( $this, 'sites_columns'       )        );
@@ -202,11 +203,18 @@ class Portier_BuddyPress {
 	 * @param int $site_id Site ID
 	 * @return array Site protection details
 	 */
-	public function protection_details( $details, $site_id ) {
+	public function protection_details( $details, $site_id = 0 ) {
 
 		// Get allowed member type count
 		if ( bp_get_member_types() ) {
-			$type_count = count( portier_bp_get_allowed_member_types( $site_id ) );
+
+			// Get allowed types
+			$getter = current_filter() == 'portier_network_get_protection_details'
+				? 'portier_bp_get_network_allowed_member_types'
+				: 'portier_bp_get_allowed_member_types';
+			$types  = call_user_func_array( $getter, array( $site_id ) );
+
+			$type_count = count( $types );
 			if ( $type_count ) {
 				$details['bp_allowed_member_types'] = sprintf( _n( '%d allowed member type', '%d allowed member types', $type_count, 'portier' ), $type_count );
 			}
@@ -214,7 +222,14 @@ class Portier_BuddyPress {
 
 		// Get allowed group count
 		if ( bp_is_active( 'groups' ) ) {
-			$group_count = count( portier_bp_get_allowed_groups( $site_id ) );
+
+			// Get the allowed groups
+			$getter    = current_filter() == 'portier_network_get_protection_details'
+				? 'portier_bp_get_network_allowed_groups'
+				: 'portier_bp_get_allowed_groups';
+			$group_ids = call_user_func_array( $getter, array( $site_id ) );
+
+			$group_count = count( $group_ids );
 			if ( $group_count ) {
 				$details['bp_allowed_groups'] = sprintf( _n( '%d allowed group', '%d allowed groups', $group_count, 'portier' ), $group_count );
 			}
