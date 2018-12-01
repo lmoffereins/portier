@@ -143,8 +143,8 @@ final class Portier {
 		add_action( 'deactivate_' . $this->basename, 'portier_deactivation' );
 
 		// Plugin
-		add_action( 'plugins_loaded', array( $this, 'load_textdomain'  ) );
-		add_action( 'plugins_loaded', array( $this, 'load_for_network' ) );
+		add_action( 'portier_loaded', array( $this, 'load_textdomain'  ) );
+		add_action( 'portier_loaded', array( $this, 'load_for_network' ) );
 
 		// Protection
 		add_action( 'template_redirect', array( $this, 'site_protect'   ), 1 );
@@ -153,7 +153,7 @@ final class Portier {
 
 		// Admin
 		if ( is_admin() ) {
-			add_action( 'init', 'portier_admin' );
+			add_action( 'portier_init', 'portier_admin' );
 		}
 
 		// Fire plugin loaded hook

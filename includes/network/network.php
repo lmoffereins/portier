@@ -68,7 +68,7 @@ final class Portier_Network {
 	private function setup_actions() {
 
 		// Plugin
-		add_action( 'plugins_loaded', array( $this, 'network_only' ), 20 );
+		add_action( 'portier_loaded', array( $this, 'network_only' ), 20 );
 
 		// Protection
 		add_action( 'template_redirect',    array( $this, 'network_protect'   ), 0     );
