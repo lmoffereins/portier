@@ -51,7 +51,8 @@ final class Portier_Network {
 	 * @since 1.0.0
 	 */
 	private function includes() {
-		require( $this->includes_dir . 'functions.php' );
+		require( $this->includes_dir . 'functions.php'   );
+		require( $this->includes_dir . 'sub-actions.php' );
 
 		// Admin
 		if ( is_admin() ) {
