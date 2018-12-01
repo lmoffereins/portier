@@ -281,7 +281,7 @@ function portier_get_protection_details( $site_id = 0 ) {
 	$level  = portier_get_default_access();
 
 	$details = array(
-		'default_access' => sprintf( esc_html__( 'Default: %s', 'portier' ), isset( $levels[ $level ] )
+		'default_access' => sprintf( esc_html__( 'Site: %s', 'portier' ), isset( $levels[ $level ] )
 			? $levels[ $level ]
 			: esc_html__( 'Allow none', 'portier' )
 		)

@@ -74,10 +74,13 @@ final class Portier_Network {
 		add_action( 'template_redirect',    array( $this, 'network_protect'   ), 0     );
 		add_filter( 'login_message',        array( $this, 'login_message'     ), 0     );
 		add_action( 'portier_site_protect', array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',       array( $this, 'filter_admin_bar'  ), 99    );
+		add_action( 'admin_bar_menu',       array( $this, 'admin_bar_menu'    ), 99    );
 		add_action( 'admin_menu',           array( $this, 'filter_admin_menu' ), 99    );
 		add_action( 'get_blogs_of_user',    array( $this, 'filter_user_sites' ), 10, 3 );
 		add_filter( 'user_has_cap',         array( $this, 'user_has_cap'      ), 10, 3 );
+
+		// Admin
+		add_filter( 'portier_get_protection_details', array( $this, 'protection_details' ), 10, 2 );
 
 		// Admin
 		if ( is_admin() ) {
@@ -263,13 +266,38 @@ final class Portier_Network {
 	}
 
 	/**
-	 * Modify the admin bar for protected sites
+	 * Modify the admin bar for protected sites and add the plugin's admin bar menu item
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
-	public function filter_admin_bar( $wp_admin_bar ) {
+	public function admin_bar_menu( $wp_admin_bar ) {
+
+		// In the network admin and when the user is capable
+		if ( is_network_admin() && current_user_can( 'manage_network_options' ) ) {
+
+			// When protection is active
+			$active = portier_is_network_protected();
+			$status = $active ? esc_html__( 'Network protection is active', 'portier' ) : esc_html__( 'Network protection is not active', 'portier' );
+			$title  = $active ? implode( "\n", portier_network_get_protection_details() ) : $status;
+			$class  = $active ? 'hover site-protected' : '';
+
+			// Add site-is-protected menu notification
+			$wp_admin_bar->add_menu( array(
+				'id'        => 'portier',
+				'parent'    => 'top-secondary',
+				'title'     => '<span class="ab-icon"></span><span class="screen-reader-text">' . $status . '</span>',
+				'href'      => add_query_arg( 'page', 'portier', network_admin_url( 'settings.php' ) ),
+				'meta'      => array(
+					'class' => $class,
+					'title' => $title,
+				),
+			) );
+
+			// Enqueue style
+			wp_enqueue_style( 'portier' );
+		}
 
 		// Hiding 'My Sites'
 		if ( portier_network_hide_my_sites() ) {
@@ -327,6 +355,32 @@ final class Portier_Network {
 		}
 
 		return $allcaps;
+	}
+
+	/**
+	 * Modify the site's protection details
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $details Site protection details
+	 * @param int $site_id Site ID
+	 * @return array Site protection details
+	 */
+	public function protection_details( $details, $site_id ) {
+
+		// Network is protected
+		if ( portier_is_network_protected() ) {
+
+			// Get network details
+			$network_details = portier_network_get_protection_details();
+
+			// Prepend default network access
+			if ( isset( $network_details['default_access'] ) ) {
+				$details = array_merge( array( 'default_network_access' => $network_details['default_access'] ), $details );
+			}
+		}
+
+		return $details;
 	}
 }
 

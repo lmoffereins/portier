@@ -262,6 +262,53 @@ function portier_network_hide_my_sites() {
 	return apply_filters( 'portier_network_hide_my_sites', $hide, $user_id, $sites );
 }
 
+/**
+ * Return basic network protection details
+ *
+ * @since 1.3.0
+ *
+ * @param string $sep Optional. Detail separator. Defaults to '<br/>'.
+ * @return string Protection details
+ */
+function portier_network_the_protection_details( $sep = "<br/>" ) {
+	echo implode( $sep, portier_network_get_protection_details() );
+}
+
+/**
+ * Return basic network protection details
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'portier_network_get_protection_details'
+ * @return array Protection details
+ */
+function portier_network_get_protection_details() {
+
+	// Get default access level
+	$levels = portier_network_default_access_levels();
+	$level  = portier_network_get_default_access();
+
+	// Define default access line
+	$default_access = portier_network_allow_main_site()
+		? esc_html__( 'Network: %s (except the main site)', 'portier' )
+		: esc_html__( 'Network: %s', 'portier' );
+
+	$details = array(
+		'default_access' => sprintf( $default_access, isset( $levels[ $level ] )
+			? $levels[ $level ]
+			: esc_html__( 'Allow none', 'portier' )
+		)
+	);
+
+	// Setup basic protection details: allowed user count
+	$user_count = count( portier_network_get_allowed_users() );
+	if ( $user_count ) {
+		$details['allowed_users'] = sprintf( _n( '%d allowed user', '%d allowed users', $user_count, 'portier' ), $user_count );
+	}
+
+	return (array) apply_filters( 'portier_network_get_protection_details', $details );
+}
+
 /** Admin ************************************************************/
 
 /**
