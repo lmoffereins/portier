@@ -25,6 +25,7 @@ class Portier_BuddyPress {
 	 */
 	public function __construct() {
 		$this->setup_globals();
+		$this->includes();
 		$this->setup_actions();
 	}
 
@@ -34,7 +35,25 @@ class Portier_BuddyPress {
 	 * @since 1.0.0
 	 */
 	public function setup_globals() {
+
+		/** Paths *************************************************************/
+
+		// Includes
+		$this->includes_dir = trailingslashit( portier()->extend_dir . 'buddypress' );
+		$this->includes_url = trailingslashit( portier()->extend_url . 'buddypress' );
+
+		/** Misc **************************************************************/
+
 		$this->bp_group_hierarchy = defined( 'BP_GROUP_HIERARCHY_VERSION' );
+	}
+
+	/**
+	 * Include required files
+	 *
+	 * @since 1.3.0
+	 */
+	public function includes() {
+		require( $this->includes_dir . 'functions.php' );
 	}
 
 	/**
@@ -77,7 +96,7 @@ class Portier_BuddyPress {
 			// Allowed member types
 			$settings['_portier_bp_allowed_member_types'] = array(
 				'label'             => esc_html__( 'Allowed Member Types', 'portier' ),
-				'callback'          => array( $this, 'setting_allowed_member_types' ),
+				'callback'          => 'portier_bp_setting_allowed_member_types',
 				'section'           => 'portier-options-access',
 				'page'              => $network ? 'portier_network' : 'portier',
 				'sanitize_callback' => false
@@ -90,7 +109,7 @@ class Portier_BuddyPress {
 			// Allowed groups
 			$settings['_portier_bp_allowed_groups'] = array(
 				'label'             => esc_html__( 'Allowed groups', 'portier' ),
-				'callback'          => array( $this, 'setting_allowed_groups' ),
+				'callback'          => 'portier_bp_setting_allowed_groups',
 				'section'           => 'portier-options-access',
 				'page'              => $network ? 'portier_network' : 'portier',
 				'sanitize_callback' => 'portier_setting_sanitize_ids'
@@ -98,137 +117,6 @@ class Portier_BuddyPress {
 		}
 
 		return $settings;
-	}
-
-	/**
-	 * Output the settings field for allowed member types
-	 *
-	 * @since 1.2.0
-	 */
-	public function setting_allowed_member_types() {
-
-		// Get available types
-		$types = bp_get_member_types( array(), 'objects' );
-
-		// Get selected types
-		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
-		$selected = (array) call_user_func_array( $getter, array( '_portier_bp_allowed_member_types', array() ) ); ?>
-
-		<select id="_portier_bp_allowed_member_types" name="_portier_bp_allowed_member_types[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php esc_html_e( 'Select a type', 'portier' ); ?>">
-
-			<?php foreach ( $types as $type => $args ) : ?>
-				<option value="<?php echo $type; ?>" <?php selected( in_array( $type, $selected ) ); ?>><?php echo $args->labels['name']; ?></option>
-			<?php endforeach; ?>
-
-		</select>
-		<label for="_portier_bp_allowed_member_types"><?php esc_html_e( 'Select the member types of which users will have access', 'portier' ); ?></label>
-
-		<?php
-	}
-
-	/**
-	 * Output the settings field for allowed groups
-	 *
-	 * @since 1.0.0
-	 */
-	public function setting_allowed_groups() {
-
-		// Get available groups
-		$groups = groups_get_groups( array( 'show_hidden' => true ) );
-		$groups = $groups['groups'];
-
-		// Get selected groups
-		$getter   = is_network_admin() ? 'get_site_option' : 'get_option';
-		$selected = (array) call_user_func_array( $getter, array( '_portier_bp_allowed_groups', array() ) ); ?>
-
-		<select id="_portier_bp_allowed_groups" name="_portier_bp_allowed_groups[]" class="chzn-select" multiple style="width:25em;" data-placeholder="<?php esc_html_e( 'Select a group', 'portier' ); ?>">
-
-			<?php foreach ( $groups as $group ) : ?>
-				<option value="<?php echo $group->id; ?>" <?php selected( in_array( $group->id, $selected ) ); ?>><?php echo $group->name; ?></option>
-			<?php endforeach; ?>
-
-		</select>
-		<label for="_portier_bp_allowed_groups"><?php esc_html_e( 'Select the groups whose members will have access', 'portier' ); ?></label>
-
-		<?php
-	}
-
-	/**
-	 * Return the site's allowed member types
-	 *
-	 * @since 1.2.0
-	 *
-	 * @uses apply_filters() Calls 'portier_bp_get_allowed_member_types'
-	 *
-	 * @param int $site_id Optional. Site ID
-	 * @return array The site's types
-	 */
-	public function get_allowed_member_types( $site_id = 0 ) {
-
-		// Switch site?
-		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
-
-		// Get allowed member types
-		$types = array_filter( (array) get_option( '_portier_bp_allowed_member_types', array() ) );
-
-		// Reset switched site
-		if ( $switched ) {
-			restore_current_blog();
-		}
-
-		return (array) apply_filters( 'portier_bp_get_allowed_member_types', $types, $site_id );
-	}
-
-	/**
-	 * Return the network's allowed member types
-	 *
-	 * @since 1.2.0
-	 *
-	 * @uses apply_filters() Calls 'portier_bp_get_network_allowed_member_types'
-	 * 
-	 * @return array Network's allowed types
-	 */
-	public function get_network_allowed_member_types() {
-		return (array) apply_filters( 'portier_bp_get_network_allowed_member_types', (array) get_site_option( '_portier_bp_allowed_member_types', array() ) );
-	}
-
-	/**
-	 * Return the site's allowed user groups
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'portier_bp_get_allowed_groups'
-	 * 
-	 * @param int $site_id Optional. Site ID
-	 * @return array The site's groups
-	 */
-	public function get_allowed_groups( $site_id = 0 ) {
-
-		// Switch site?
-		$switched = ! empty( $site_id ) && is_multisite() ? switch_to_blog( $site_id ) : false;
-
-		// Get allowed groups
-		$groups = array_filter( (array) get_option( '_portier_bp_allowed_groups', array() ) );
-
-		// Reset switched site
-		if ( $switched ) {
-			restore_current_blog();
-		}
-
-		return (array) apply_filters( 'portier_bp_get_allowed_groups', $groups, $site_id );
-	}
-
-	/**
-	 * Return the network's allowed user groups
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'portier_bp_get_network_allowed_groups'
-	 * 
-	 * @return array Network's allowed groups
-	 */
-	public function get_network_allowed_groups() {
-		return (array) apply_filters( 'portier_bp_get_network_allowed_groups', (array) get_site_option( '_portier_bp_allowed_groups', array() ) );
 	}
 
 	/**
@@ -245,8 +133,10 @@ class Portier_BuddyPress {
 
 		// Check for member types
 		if ( ! $allowed && bp_get_member_types() ) {
-			$getter = current_filter() == 'portier_network_is_user_allowed' ? 'get_network_allowed_member_types' : 'get_allowed_member_types';
-			$types  = call_user_func_array( array( $this, $getter ), array( $site_id ) );
+			$getter = current_filter() == 'portier_network_is_user_allowed'
+				? 'portier_bp_get_network_allowed_member_types'
+				: 'portier_bp_get_allowed_member_types';
+			$types  = call_user_func_array( $getter, array( $site_id ) );
 
 			foreach ( $types as $type ) {
 				if ( bp_has_member_type( $user_id, $type ) ) {
@@ -260,8 +150,10 @@ class Portier_BuddyPress {
 		if ( ! $allowed && bp_is_active( 'groups' ) ) {
 
 			// Get the allowed groups
-			$getter    = current_filter() == 'portier_network_is_user_allowed' ? 'get_network_allowed_groups' : 'get_allowed_groups';
-			$group_ids = call_user_func_array( array( $this, $getter ), array( $site_id ) );
+			$getter    = current_filter() == 'portier_network_is_user_allowed'
+				? 'portier_bp_get_network_allowed_groups'
+				: 'portier_bp_get_allowed_groups';
+			$group_ids = call_user_func_array( $getter, array( $site_id ) );
 
 			// Only check for selected groups
 			if ( ! empty( $group_ids ) ) {
@@ -314,7 +206,7 @@ class Portier_BuddyPress {
 
 		// Get allowed member type count
 		if ( bp_get_member_types() ) {
-			$type_count = count( $this->get_allowed_member_types( $site_id ) );
+			$type_count = count( portier_bp_get_allowed_member_types( $site_id ) );
 			if ( $type_count ) {
 				$details['bp_allowed_member_types'] = sprintf( _n( '%d allowed member type', '%d allowed member types', $type_count, 'portier' ), $type_count );
 			}
@@ -322,7 +214,7 @@ class Portier_BuddyPress {
 
 		// Get allowed group count
 		if ( bp_is_active( 'groups' ) ) {
-			$group_count = count( $this->get_allowed_groups( $site_id ) );
+			$group_count = count( portier_bp_get_allowed_groups( $site_id ) );
 			if ( $group_count ) {
 				$details['bp_allowed_groups'] = sprintf( _n( '%d allowed group', '%d allowed groups', $group_count, 'portier' ), $group_count );
 			}
@@ -368,7 +260,7 @@ class Portier_BuddyPress {
 
 			// Allowed member types
 			case 'allowed_bp-member-types' :
-				$types = $this->get_allowed_member_types( $site_id );
+				$types = portier_bp_get_allowed_member_types( $site_id );
 				$count = count( $types );
 
 				if ( $count ) {
@@ -393,7 +285,7 @@ class Portier_BuddyPress {
 
 			// Allowed groups
 			case 'allowed_bp-groups' :
-				$groups = $this->get_allowed_groups( $site_id );
+				$groups = portier_bp_get_allowed_groups( $site_id );
 				$count  = count( $groups );
 
 				if ( $count ) {
