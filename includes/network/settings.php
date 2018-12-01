@@ -4,7 +4,7 @@
  * Portier Network Settings Functions
  *
  * @package Portier
- * @subpackage Network
+ * @subpackage Multisite
  */
 
 // Exit if accessed directly

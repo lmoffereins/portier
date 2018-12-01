@@ -158,7 +158,7 @@ function portier_is_site_protected( $site_id = 0 ) {
  *
  * @param int $user_id Optional. Defaults to current user
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
- * @return boolean The user is allowed
+ * @return bool Is the user allowed?
  */
 function portier_is_user_allowed( $user_id = 0, $site_id = 0 ) {
 
@@ -207,7 +207,7 @@ function portier_is_user_allowed( $user_id = 0, $site_id = 0 ) {
  *
  * @param int $user_id Optional. Defaults to current user
  * @param int $site_id Optional. Site ID. Defaults to the current site ID
- * @return boolean The user is allowed
+ * @return bool Is the user allowed by default?
  */
 function portier_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
 
@@ -250,7 +250,7 @@ function portier_is_user_allowed_by_default( $user_id = 0, $site_id = 0 ) {
 
 /**
  * Return basic site protection details
- * 
+ *
  * @since 1.3.0
  *
  * @param string $sep Optional. Detail separator. Defaults to '<br/>'.

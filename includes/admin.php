@@ -203,7 +203,7 @@ class Portier_Admin {
 }
 
 /**
- * Setup the extension logic for BuddyPress
+ * Setup the admin class
  *
  * @since 1.2.0
  *

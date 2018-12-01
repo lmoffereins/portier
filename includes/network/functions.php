@@ -4,7 +4,7 @@
  * Portier Network Functions
  *
  * @package Portier
- * @subpackage Network
+ * @subpackage Multisite
  */
 
 // Exit if accessed directly
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_network_redirect'
- * @return bool Network redirect is active
+ * @return bool Is network redirect active?
  */
 function portier_network_redirect() {
 	return (bool) apply_filters( 'portier_network_redirect', get_site_option( '_portier_network_redirect' ) );
@@ -30,7 +30,7 @@ function portier_network_redirect() {
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_is_network_only'
- * @return bool Portier is for the network level only
+ * @return bool Is Portier for the network level only?
  */
 function portier_is_network_only() {
 	return (bool) apply_filters( 'portier_is_network_only', get_site_option( '_portier_network_only' ) );
@@ -99,7 +99,7 @@ function portier_network_get_allowed_users() {
  * @since 1.0.0
  *
  * @uses apply_filters() Calls 'portier_is_network_protected'
- * @return bool Network protection is active
+ * @return bool Is network protection active?
  */
 function portier_is_network_protected() {
 
@@ -112,6 +112,10 @@ function portier_is_network_protected() {
 
 /**
  * Returns whether the given user is allowed access for the network
+ *
+ * The network-defined access restrictions are enforced before any site access
+ * restrictions are evaluated. This means that more strict network restrictions
+ * are favored over less strict site restrictions.
  *
  * @since 1.0.0
  * @since 1.3.0 Added `$site_id` parameter

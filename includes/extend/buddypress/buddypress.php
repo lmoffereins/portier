@@ -121,7 +121,7 @@ class Portier_BuddyPress {
 	}
 
 	/**
-	 * Filter whether the user is allowed based on group membership
+	 * Filter whether the user is allowed when the site or network is protected
 	 *
 	 * @since 1.0.0
 	 * 
@@ -134,6 +134,8 @@ class Portier_BuddyPress {
 
 		// Check for member types
 		if ( ! $allowed && bp_get_member_types() ) {
+
+			// Get the allowed member types
 			$getter = current_filter() == 'portier_network_is_user_allowed'
 				? 'portier_bp_get_network_allowed_member_types'
 				: 'portier_bp_get_allowed_member_types';
@@ -195,7 +197,7 @@ class Portier_BuddyPress {
 	}
 
 	/**
-	 * Modify the site's protection details
+	 * Modify the protection details of the site or network
 	 *
 	 * @since 1.0.0
 	 * 

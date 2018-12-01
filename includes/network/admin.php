@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Portier Admin Functions
+ * Portier Network Admin Functions
  *
  * @package Portier
- * @subpackage Administration
+ * @subpackage Multisite
  */
 
 // Exit if accessed directly
@@ -558,7 +558,7 @@ class Portier_Network_Admin {
 }
 
 /**
- * Setup the extension logic for BuddyPress
+ * Setup the network admin class
  *
  * @since 1.2.0
  *
