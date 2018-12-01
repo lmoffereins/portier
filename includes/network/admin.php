@@ -33,16 +33,15 @@ class Portier_Network_Admin {
 	 * @since 1.2.0
 	 */
 	private function setup_actions() {
-		$admin = portier()->admin;
 
 		// Admin
-		add_action( 'admin_init',                 array( $this,  'register_settings'     ) );
-		add_action( 'network_admin_menu',         array( $this,  'admin_menu'            ) );
-		add_action( 'network_admin_notices',      array( $this,  'admin_notices'         ) );
-		add_action( 'portier_network_load_admin', array( $this,  'load_admin_page_sites' ) );
-		add_action( 'portier_network_admin_head', array( $admin, 'enqueue_admin_scripts' ) );
-		add_action( 'portier_network_admin_head', array( $this,  'admin_head_page_sites' ) );
-		add_action( 'portier_network_page_sites', array( $this,  'admin_page_sites'      ) );
+		add_action( 'admin_init',                 array( $this,           'register_settings'     ) );
+		add_action( 'network_admin_menu',         array( $this,           'admin_menu'            ) );
+		add_action( 'network_admin_notices',      array( $this,           'admin_notices'         ) );
+		add_action( 'portier_network_load_admin', array( $this,           'load_admin_page_sites' ) );
+		add_action( 'portier_network_admin_head', array( 'Portier_Admin', 'enqueue_admin_scripts' ) );
+		add_action( 'portier_network_admin_head', array( $this,           'admin_head_page_sites' ) );
+		add_action( 'portier_network_page_sites', array( $this,           'admin_page_sites'      ) );
 
 		// Plugin links
 		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -599,7 +598,7 @@ class Portier_Network_Admin {
  * @uses Portier_Network_Admin
  */
 function portier_network_admin() {
-	portier()->admin->network = new Portier_Network_Admin;
+	portier()->network->admin = new Portier_Network_Admin;
 }
 
 endif; // class_exists

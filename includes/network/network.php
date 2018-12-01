@@ -114,8 +114,7 @@ final class Portier_Network {
 		remove_action( 'admin_bar_menu',    array( $prtr, 'admin_bar_menu' )    );
 
 		// Admin
-		remove_action( 'admin_init', array( $prtr, 'register_settings' ) );
-		remove_action( 'admin_menu', array( $prtr, 'admin_menu'        ) );
+		remove_action( 'portier_init', 'portier_admin' );
 	}
 
 	/** Protection ***************************************************/

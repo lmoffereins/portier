@@ -115,7 +115,7 @@ class Portier_Admin {
 	 * 
 	 * @since 1.0.0
 	 */
-	public function enqueue_admin_scripts() {
+	public static function enqueue_admin_scripts() {
 		$prtr = portier();
 
 		// Register Chosen when not done already
