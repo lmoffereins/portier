@@ -273,8 +273,11 @@ final class Portier_Network {
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 
+		// Show the menu item for each site when doing network only, else just the in the network admin
+		$show_menu_item = portier_is_network_only() || is_network_admin();
+
 		// In the network admin and when the user is capable
-		if ( is_network_admin() && current_user_can( 'manage_network_options' ) ) {
+		if ( $show_menu_item && current_user_can( 'manage_network_options' ) ) {
 
 			// When protection is active
 			$active = portier_is_network_protected();
