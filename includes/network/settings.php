@@ -117,6 +117,8 @@ function portier_network_access_settings_info() { ?>
 
 	<p><?php esc_html_e( "When you choose to enable network protection, set the default access level to use as the baseline for user access. Any other settings will increase site access rather than decrease it. For example, the 'Allowed users' setting adds selected users to the set of already allowed users. Plugins may add their own access settings here as well.", 'portier' ); ?></p>
 
+	<p><?php esc_html_e( 'Please note that network-defined access restrictions are enforced before any site access restrictions are evaluated. This means that more strict network restrictions are favored over less strict site restrictions.', 'portier' ); ?></p>
+
 	<?php
 }
 
