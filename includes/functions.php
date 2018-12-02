@@ -300,3 +300,15 @@ function portier_get_protection_details( $site_id = 0 ) {
 
 	return (array) apply_filters( 'portier_get_protection_details', $details, $site_id );
 }
+
+/**
+ * Return whether to show the admin bar badge
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_show_admin_bar_badge'
+ * @return bool Shouw the admin bar badge?
+ */
+function portier_show_admin_bar_badge() {
+	return (bool) apply_filters( 'portier_show_admin_bar_badge', ! is_network_admin() && current_user_can( 'manage_options' ) );
+}

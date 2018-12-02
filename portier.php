@@ -143,9 +143,10 @@ final class Portier {
 		add_action( 'deactivate_' . $this->basename, 'portier_deactivation' );
 
 		// Plugin
-		add_action( 'portier_loaded',   array( $this, 'load_textdomain'  ) );
-		add_action( 'portier_loaded',   array( $this, 'load_for_network' ) );
-		add_action( 'portier_register', array( $this, 'register_scripts' ) );
+		add_action( 'portier_loaded',        array( $this, 'load_textdomain'  ) );
+		add_action( 'portier_loaded',        array( $this, 'load_for_network' ) );
+		add_action( 'wp_enqueue_scripts',    array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		// Protection
 		add_action( 'template_redirect', array( $this, 'site_protect'   ), 1 );
@@ -212,9 +213,34 @@ final class Portier {
 	 * Register plugin scripts and styles
 	 *
 	 * @since 1.3.0
+	 *
+	 * @global array $_wp_admin_css_colors
+	 *
+	 * @uses apply_filters() Calls 'portier_enqueue_style'
 	 */
-	public function register_scripts() {
+	public function enqueue_scripts() {
+		global $_wp_admin_css_colors;
+
+		// Register style
 		wp_register_style( 'portier', $this->assets_url . 'css/portier.css', array(), portier_get_version() );
+
+		// Enqueue style when displaying the admin bar badge
+		if ( is_admin_bar_showing() && apply_filters( 'portier_enqueue_style', portier_show_admin_bar_badge() ) ) {
+
+			// Get the icon focus color
+			$color_scheme = get_user_meta( get_current_user_id(), 'admin_color', true );
+			if ( isset( $_wp_admin_css_colors[ $color_scheme ] ) ) {
+				$icon_color = $_wp_admin_css_colors[ $color_scheme ]->icon_colors['focus'];
+			} else {
+				$icon_color = '#00b9eb';
+			}
+
+			// Enqueue style
+			wp_enqueue_style( 'portier' );
+			wp_add_inline_style( 'portier', "
+				#wpadminbar #wp-admin-bar-portier.site-protected > .ab-item .ab-icon:before { color: " . $icon_color . "; }
+			" );
+		}
 	}
 
 	/** Protection ************************************************************/
@@ -286,14 +312,13 @@ final class Portier {
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 
-		// Not in the network admin and when the user is capable
-		if ( ! is_network_admin() && current_user_can( 'manage_options' ) ) {
+		// Show the admin bar badge
+		if ( portier_show_admin_bar_badge() ) {
 
 			// When protection is active
 			$active = portier_is_site_protected();
 			$status = $active ? esc_html__( 'Site protection is active', 'portier' ) : esc_html__( 'Site protection is not active', 'portier' );
-			$title  = $active ? implode( "\n", portier_get_protection_details() ) : $status;
-			$class  = $active ? 'hover site-protected' : '';
+			$class  = $active ? 'site-protected' : 'site-not-protected';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
@@ -303,12 +328,20 @@ final class Portier {
 				'href'      => add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ),
 				'meta'      => array(
 					'class' => $class,
-					'title' => $title,
+					'title' => $status
 				),
 			) );
 
-			// Enqueue style
-			wp_enqueue_style( 'portier' );
+			// Add nodes for details when site protection is active
+			if ( $active ) {
+				foreach ( portier_get_protection_details() as $key => $detail ) {
+					$wp_admin_bar->add_node( array(
+						'id'     => "portier-{$key}",
+						'parent' => 'portier',
+						'title'  => $detail
+					) );
+				}
+			}
 		}
 	}
 }

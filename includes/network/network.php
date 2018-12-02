@@ -72,13 +72,14 @@ final class Portier_Network {
 		add_action( 'portier_loaded', array( $this, 'network_only' ), 20 );
 
 		// Protection
-		add_action( 'template_redirect',    array( $this, 'network_protect'   ), 0     );
-		add_filter( 'login_message',        array( $this, 'login_message'     ), 0     );
-		add_action( 'portier_site_protect', array( $this, 'network_redirect'  )        );
-		add_action( 'admin_bar_menu',       array( $this, 'admin_bar_menu'    ), 99    );
-		add_action( 'admin_menu',           array( $this, 'filter_admin_menu' ), 99    );
-		add_action( 'get_blogs_of_user',    array( $this, 'filter_user_sites' ), 10, 3 );
-		add_filter( 'user_has_cap',         array( $this, 'user_has_cap'      ), 10, 3 );
+		add_action( 'template_redirect',     array( $this, 'network_protect'   ), 0     );
+		add_filter( 'login_message',         array( $this, 'login_message'     ), 0     );
+		add_action( 'portier_site_protect',  array( $this, 'network_redirect'  )        );
+		add_action( 'admin_bar_menu',        array( $this, 'admin_bar_menu'    ), 99    );
+		add_filter( 'portier_enqueue_style', array( $this, 'enqueue_style'     )        );
+		add_action( 'admin_menu',            array( $this, 'filter_admin_menu' ), 99    );
+		add_action( 'get_blogs_of_user',     array( $this, 'filter_user_sites' ), 10, 3 );
+		add_filter( 'user_has_cap',          array( $this, 'user_has_cap'      ), 10, 3 );
 
 		// Admin
 		add_filter( 'portier_get_protection_details', array( $this, 'protection_details' ), 10, 2 );
@@ -274,17 +275,13 @@ final class Portier_Network {
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 
-		// Show the menu item for each site when doing network only, else just the in the network admin
-		$show_menu_item = portier_is_network_only() || is_network_admin();
-
-		// In the network admin and when the user is capable
-		if ( $show_menu_item && current_user_can( 'manage_network_options' ) ) {
+		// Show the network admin bar badge
+		if ( portier_network_show_admin_bar_badge() ) {
 
 			// When protection is active
 			$active = portier_is_network_protected();
 			$status = $active ? esc_html__( 'Network protection is active', 'portier' ) : esc_html__( 'Network protection is not active', 'portier' );
-			$title  = $active ? implode( "\n", portier_network_get_protection_details() ) : $status;
-			$class  = $active ? 'hover site-protected' : '';
+			$class  = $active ? 'site-protected' : 'site-not-protected';
 
 			// Add site-is-protected menu notification
 			$wp_admin_bar->add_menu( array(
@@ -294,12 +291,20 @@ final class Portier_Network {
 				'href'      => add_query_arg( 'page', 'portier', network_admin_url( 'settings.php' ) ),
 				'meta'      => array(
 					'class' => $class,
-					'title' => $title,
+					'title' => $status,
 				),
 			) );
 
-			// Enqueue style
-			wp_enqueue_style( 'portier' );
+			// Add nodes for details when site protection is active
+			if ( $active ) {
+				foreach ( portier_network_get_protection_details() as $key => $detail ) {
+					$wp_admin_bar->add_node( array(
+						'id'     => "portier-{$key}",
+						'parent' => 'portier',
+						'title'  => $detail
+					) );
+				}
+			}
 		}
 
 		// Hiding 'My Sites'
@@ -308,6 +313,18 @@ final class Portier_Network {
 			// Remove admin bar menu top item
 			$wp_admin_bar->remove_menu( 'my-sites' );
 		}
+	}
+
+	/**
+	 * Modify whether to enqueue the admin-bar badge styles
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param bool $enqueue Whether to enqueue the styles
+	 * @return bool
+	 */
+	public function enqueue_style( $enqueue ) {
+		return $enqueue || portier_network_show_admin_bar_badge();
 	}
 
 	/**

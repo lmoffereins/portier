@@ -313,6 +313,20 @@ function portier_network_get_protection_details() {
 	return (array) apply_filters( 'portier_network_get_protection_details', $details );
 }
 
+/**
+ * Return whether to show the network admin bar badge
+ *
+ * @since 1.3.0
+ *
+ * @uses apply_filters() Calls 'portier_network_show_admin_bar_badge'
+ * @return bool Shouw the network admin bar badge?
+ */
+function portier_network_show_admin_bar_badge() {
+	$show_context = portier_is_network_only() || is_network_admin();
+
+	return (bool) apply_filters( 'portier_network_show_admin_bar_badge', $show_context && current_user_can( 'manage_network_options' ) );
+}
+
 /** Admin ************************************************************/
 
 /**
