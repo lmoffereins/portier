@@ -13,9 +13,11 @@ Restrict access to your (multi)site
 
 Restrict access to your site(s) or network for selected users. Additionally show a message at the login screen to notify the user.
 
+The network-activated plugin provides various options to enable network protection, only at the network level or in combination with finegrained site protection.
+
 Supports BuddyPress:
-* provide access for selected user groups
 * provide access for selected member types
+* provide access for selected user groups
 
 == Installation ==
 
@@ -26,6 +28,13 @@ Activate Portier in the "Plugins" admin panel using the "Activate" link. If you'
 This plugin is not hosted in the official WordPress repository. Instead, updating is supported through use of the [GitHub Updater](https://github.com/afragen/github-updater/) plugin by @afragen and friends.
 
 == Changelog ==
+
+= 1.3.0 =
+* Added option to set a baseline default access level for site and network
+* Moved site/network protection details into a admin-bar submenu
+* Multisite: Added option to exclude the main site from active network protection
+* Multisite: Added admin-bar badge for the network protection status
+* Fixed bugs in enforcing the network-only functionality
 
 = 1.2.2 =
 * Fixed feed access restrictions that were applied before the current user was checked

@@ -8,9 +8,11 @@ Limit user access to your (multi)site.
 
 Restrict access to your site(s) or network for selected users. Additionally show a message at the login screen to notify the user.
 
+The network-activated plugin provides various options to enable network protection, only at the network level or in combination with finegrained site protection.
+
 Supports BuddyPress
-* provide access for selected user groups
 * provide access for selected member types
+* provide access for selected user groups
 
 ## Installation ##
 
