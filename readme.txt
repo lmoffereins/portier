@@ -2,8 +2,8 @@
 Contributors: offereins
 Tags: protect, access, restrict, site, blog, user
 Requires at least: 4.6
-Tested up to: 4.9.8
-Stable tag: 1.3.0
+Tested up to: 5.5.1
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,6 +28,11 @@ Activate Portier in the "Plugins" admin panel using the "Activate" link. If you'
 This plugin is not hosted in the official WordPress repository. Instead, updating is supported through use of the [GitHub Updater](https://github.com/afragen/github-updater/) plugin by @afragen and friends.
 
 == Changelog ==
+
+= 1.3.1 =
+* Added network settings link to a site's admin bar menu
+* Changed verbiage of the default access level settings (site and network)
+* Changed how allowed BuddyPress member types and groups are displayed in the network sites list table
 
 = 1.3.0 =
 * Added option to set a baseline default access level for site and network
