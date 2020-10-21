@@ -342,6 +342,16 @@ final class Portier {
 					) );
 				}
 			}
+
+			// Add link to network settings
+			if ( is_plugin_active_for_network( $this->basename ) && current_user_can( 'manage_network_options' ) ) {
+				$wp_admin_bar->add_node( array(
+					'id'     => 'portier-network-settings',
+					'parent' => 'portier',
+					'title'  => esc_html__( 'Manage network', 'portier' ),
+					'href'   => add_query_arg( 'page', 'portier', network_admin_url( 'settings.php' ) )
+				) );
+			}
 		}
 	}
 }
