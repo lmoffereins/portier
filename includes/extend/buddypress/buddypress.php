@@ -292,7 +292,7 @@ class Portier_BuddyPress {
 						$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
 					}
 					?>
-		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d type', '%d types', $count, 'portier' ), $count ); ?></span>
+		<span class="count"><?php echo $title; ?></span>
 					<?php
 				} else {
 					echo '&mdash;';
@@ -316,7 +316,7 @@ class Portier_BuddyPress {
 						$title = sprintf( esc_html__( '%s and %d more', 'portier' ), $title, $count - 5 );
 					}
 					?>
-		<span class="count" title="<?php echo $title; ?>"><?php printf( _n( '%d group', '%d groups', $count, 'portier' ), $count ); ?></span>
+		<span class="count"><?php echo $title; ?></span>
 					<?php
 				} else {
 					echo '&mdash;';
