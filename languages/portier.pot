@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Portier\n"
-"POT-Creation-Date: 2018-12-03 07:25+0000\n"
+"POT-Creation-Date: 2020-10-21 15:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,6 +25,10 @@ msgstr ""
 #: ../../../../src/wp-content/plugins/portier/portier.php:320
 #: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:147
 msgid "Site protection is not active"
+msgstr ""
+
+#: ../../../../src/wp-content/plugins/portier/portier.php:351
+msgid "Manage network"
 msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/admin.php:60
@@ -60,28 +64,24 @@ msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/functions.php:89
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:51
-msgid "Allow site users"
+msgid "Site users"
 msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/functions.php:94
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:52
-msgid "Allow network users"
+msgid "Network users"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:284
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:121
+msgid "None"
+msgstr ""
+
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:296
 #, php-format
 msgid "Site: %s"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:286
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:102
-#: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:182
-#: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:303
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:189
-msgid "Allow none"
-msgstr ""
-
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:293
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:305
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:310
 #, php-format
 msgid "%d allowed user"
@@ -121,29 +121,29 @@ msgstr ""
 msgid "Enable site protection"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:108
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:195
-msgid "Select which default level of protection should be applied"
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:118
+#, php-format
+msgid "By default, access to this site should be allowed for %s"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:123
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:223
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:133
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:233
 msgid "Select a user"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:130
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:230
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:140
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:240
 msgid "Select which users will have access"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:144
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:154
 msgid ""
 "When site protection is active, this message will be shown at the login "
 "screen."
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:145
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:245
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:155
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:255
 #, php-format
 msgid "Allowed HTML tags are: %s, %s and %s."
 msgstr ""
@@ -175,6 +175,10 @@ msgstr ""
 #: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:161
 #: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:76
 msgid "Main Site"
+msgstr ""
+
+#: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:164
+msgid "Navigate to the plugin settings of this site"
 msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:207
@@ -307,11 +311,16 @@ msgid ""
 "Hide the My Sites links and page when a user has access to only one site"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:208
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:205
+#, php-format
+msgid "By default, access to sites in the network should be allowed for %s"
+msgstr ""
+
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:218
 msgid "When protecting the network, do not apply protection to the main site"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:244
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:254
 msgid ""
 "When network protection is active, this message will be shown at the login "
 "screen."
@@ -319,10 +328,11 @@ msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:99
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:255
-msgid "Allowed Member Types"
+msgid "Allowed member types"
 msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:112
+#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:260
 msgid "Allowed groups"
 msgstr ""
 
@@ -337,24 +347,6 @@ msgstr[1] ""
 #, php-format
 msgid "%d allowed group"
 msgid_plural "%d allowed groups"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:260
-msgid "Allowed Groups"
-msgstr ""
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:295
-#, php-format
-msgid "%d type"
-msgid_plural "%d types"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:319
-#, php-format
-msgid "%d group"
-msgid_plural "%d groups"
 msgstr[0] ""
 msgstr[1] ""
 

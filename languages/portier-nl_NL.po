@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portier v1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-03 07:25+0000\n"
-"PO-Revision-Date: 2018-12-03 07:32+0000\n"
-"Last-Translator: Laurens Offereins <lmoffereins@gmail.com>\n"
+"POT-Creation-Date: 2020-10-21 15:12+0000\n"
+"PO-Revision-Date: 2020-10-21 15:17+0000\n"
+"Last-Translator: Laurens Offereins\n"
 "Language-Team: Nederlands\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Textdomain-Support: yes\n"
 "Language: nl_NL\n"
-"X-Loco-Version: 2.2.0; wp-5.1-alpha-20181201.165104"
+"X-Loco-Version: 2.4.3; wp-5.6-alpha-20200827.202441"
 
 #: ../../../../src/wp-content/plugins/portier/portier.php:320
 #: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:147
@@ -33,11 +33,15 @@ msgstr "Sitebescherming is actief"
 msgid "Site protection is not active"
 msgstr "Sitebescherming is niet actief"
 
+#: ../../../../src/wp-content/plugins/portier/portier.php:351
+msgid "Manage network"
+msgstr "Netwerkinstellingen"
+
 #: ../../../../src/wp-content/plugins/portier/includes/admin.php:60
 msgid "Portier Settings"
 msgstr "Portier Instellingen"
 
-#. translators: plugin header field 'Name'
+#. Name of the plugin
 #: ../../../../src/wp-content/plugins/portier/includes/admin.php:61
 #: ../../../../src/wp-content/plugins/portier/includes/admin.php:101
 #: ../../../../src/wp-content/plugins/portier/includes/network/admin.php:63
@@ -68,28 +72,24 @@ msgstr "Instellingen"
 
 #: ../../../../src/wp-content/plugins/portier/includes/functions.php:89
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:51
-msgid "Allow site users"
-msgstr "Toegang voor gebruikers van de site"
+msgid "Site users"
+msgstr "Sitegebruikers"
 
 #: ../../../../src/wp-content/plugins/portier/includes/functions.php:94
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:52
-msgid "Allow network users"
-msgstr "Toegang voor gebruikers van het netwerk"
+msgid "Network users"
+msgstr "Netwerkgebruikers"
 
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:284
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:121
+msgid "None"
+msgstr "Niemand"
+
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:296
 #, php-format
 msgid "Site: %s"
 msgstr "Site: %s"
 
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:286
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:102
-#: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:182
-#: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:303
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:189
-msgid "Allow none"
-msgstr "Toegang voor niemand"
-
-#: ../../../../src/wp-content/plugins/portier/includes/functions.php:293
+#: ../../../../src/wp-content/plugins/portier/includes/functions.php:305
 #: ../../../../src/wp-content/plugins/portier/includes/network/functions.php:310
 #, php-format
 msgid "%d allowed user"
@@ -134,22 +134,22 @@ msgstr ""
 msgid "Enable site protection"
 msgstr "Activeer sitebescherming"
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:108
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:195
-msgid "Select which default level of protection should be applied"
-msgstr "Selecteer welk standaardniveau voor bescherming gebruikt moet worden"
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:118
+#, php-format
+msgid "By default, access to this site should be allowed for %s"
+msgstr "Standaard moet de toegang voor deze site toegestaan zijn voor %s"
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:123
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:223
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:133
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:233
 msgid "Select a user"
 msgstr "Selecteer een gebruiker"
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:130
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:230
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:140
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:240
 msgid "Select which users will have access"
 msgstr "Selecteer de gebruikers die toegang krijgen"
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:144
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:154
 msgid ""
 "When site protection is active, this message will be shown at the login "
 "screen."
@@ -157,8 +157,8 @@ msgstr ""
 "Wanneer sitebescherming actief is, wordt dit bericht getoond op het "
 "loginscherm."
 
-#: ../../../../src/wp-content/plugins/portier/includes/settings.php:145
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:245
+#: ../../../../src/wp-content/plugins/portier/includes/settings.php:155
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:255
 #, php-format
 msgid "Allowed HTML tags are: %s, %s and %s."
 msgstr "Toegestane HTML tags zijn: %s, %s en %s."
@@ -191,6 +191,10 @@ msgstr "Bescherming deactiveren"
 #: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:76
 msgid "Main Site"
 msgstr "Hoofdsite"
+
+#: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:164
+msgid "Navigate to the plugin settings of this site"
+msgstr "Navigeer naar de plugininstellingen van deze site"
 
 #: ../../../../src/wp-content/plugins/portier/includes/classes/class-portier-network-sites-list-table.php:207
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:292
@@ -337,11 +341,17 @@ msgstr ""
 "Verberg de Mijn sites links en pagina's als een gebruiker toegang heeft tot "
 "slechts één site"
 
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:208
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:205
+#, php-format
+msgid "By default, access to sites in the network should be allowed for %s"
+msgstr ""
+"Standaard moet toegang voor sites in het netwerk toegestaan zijn voor %s"
+
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:218
 msgid "When protecting the network, do not apply protection to the main site"
 msgstr "Als netwerkbescherming actief is, negeer dit dan voor de hoofdsite"
 
-#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:244
+#: ../../../../src/wp-content/plugins/portier/includes/network/settings.php:254
 msgid ""
 "When network protection is active, this message will be shown at the login "
 "screen."
@@ -351,10 +361,13 @@ msgstr ""
 
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:99
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:255
-msgid "Allowed Member Types"
-msgstr "Toegestande lidtypen"
+#| msgid "Allowed Member Types"
+msgid "Allowed member types"
+msgstr ""
+"Toegestane lidtypen\n"
 
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:112
+#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:260
 msgid "Allowed groups"
 msgstr "Toegestane groepen"
 
@@ -371,24 +384,6 @@ msgid "%d allowed group"
 msgid_plural "%d allowed groups"
 msgstr[0] "%d toegestane groep"
 msgstr[1] "%d toegestane groepen"
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:260
-msgid "Allowed Groups"
-msgstr "Toegestane groepen"
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:295
-#, php-format
-msgid "%d type"
-msgid_plural "%d types"
-msgstr[0] "%d type"
-msgstr[1] "%d typen"
-
-#: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/buddypress.php:319
-#, php-format
-msgid "%d group"
-msgid_plural "%d groups"
-msgstr[0] "%d groep"
-msgstr[1] "%d groepen"
 
 #: ../../../../src/wp-content/plugins/portier/includes/extend/buddypress/functions.php:107
 msgid "Select a type"
@@ -410,14 +405,14 @@ msgstr "Selecteer de groepen wiens leden toegang krijgen"
 msgid "Limit user access to your (multi)site. Formerly Guard."
 msgstr "Beperk de toegang van gebruikers tot je (multi)site. Voorheen Guard."
 
-#. translators: plugin header field 'PluginURI'
+#. URI of the plugin
 msgid "https://github.com/lmoffereins/portier"
 msgstr "https://github.com/lmoffereins/portier"
 
-#. translators: plugin header field 'Author'
+#. Author of the plugin
 msgid "Laurens Offereins"
 msgstr "Laurens Offereins"
 
-#. translators: plugin header field 'AuthorURI'
+#. Author URI of the plugin
 msgid "https://github.com/lmoffereins"
 msgstr "https://github.com/lmoffereins"
