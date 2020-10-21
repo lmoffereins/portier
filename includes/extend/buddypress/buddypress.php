@@ -96,7 +96,7 @@ class Portier_BuddyPress {
 
 			// Allowed member types
 			$settings['_portier_bp_allowed_member_types'] = array(
-				'label'             => esc_html__( 'Allowed Member Types', 'portier' ),
+				'label'             => esc_html__( 'Allowed member types', 'portier' ),
 				'callback'          => 'portier_bp_setting_allowed_member_types',
 				'section'           => 'portier-options-access',
 				'page'              => $network ? 'portier_network' : 'portier',
@@ -252,12 +252,12 @@ class Portier_BuddyPress {
 
 		// Allowed member types
 		if ( bp_get_member_types() ) {
-			$columns['allowed_bp-member-types'] = esc_html__( 'Allowed Member Types', 'portier' );
+			$columns['allowed_bp-member-types'] = esc_html__( 'Allowed member types', 'portier' );
 		}
 
 		// Allowed groups
 		if ( bp_is_active( 'groups' ) ) {
-			$columns['allowed_bp-groups'] = esc_html__( 'Allowed Groups', 'portier' );
+			$columns['allowed_bp-groups'] = esc_html__( 'Allowed groups', 'portier' );
 		}
 
 		return $columns;
