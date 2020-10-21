@@ -161,7 +161,7 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 		$main_site = is_main_site( $blog['blog_id'] ) ? ' &mdash; <span class="post-state">' . esc_html__( 'Main Site', 'portier' ) . '</span>' : '';
 		?>
 		<strong>
-			<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit"><?php echo get_option( 'blogname' ); ?></a><?php echo $main_site; ?>
+			<a href="<?php echo esc_url( add_query_arg( 'page', 'portier', admin_url( 'options-general.php' ) ) ); ?>" class="edit" title="<?php esc_attr_e( 'Navigate to the plugin settings of this site', 'portier' ); ?>"><?php echo get_option( 'blogname' ); ?></a><?php echo $main_site; ?>
 		</strong>
 		<span class="site-domain"><?php echo $blog['domain']; ?></span>
 		<?php
