@@ -179,7 +179,7 @@ class Portier_Network_Sites_List_Table extends WP_MS_Sites_List_Table {
 		switch_to_blog( $blog['blog_id'] );
 		$levels = portier_default_access_levels();
 		$level  = portier_get_default_access();
-		$title = isset( $levels[ $level ] ) ? $levels[ $level ] : esc_html__( 'Allow none', 'portier' );
+		$title = isset( $levels[ $level ] ) ? $levels[ $level ] : portier_get_none_access_label();
 		?>
 		<span title="<?php echo $title; ?>"><?php echo $title; ?></span>
 		<?php

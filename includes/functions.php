@@ -86,12 +86,12 @@ function portier_default_access_levels() {
 
 	// Define list of levels
 	$levels = array(
-		'site_users' => esc_html__( 'Allow site users', 'portier' )
+		'site_users' => esc_html__( 'Site users', 'portier' )
 	);
 
 	// Network levels
 	if ( is_multisite() ) {
-		$levels['network_users'] = esc_html__( 'Allow network users', 'portier' );
+		$levels['network_users'] = esc_html__( 'Network users', 'portier' );
 	}
 
 	return (array) apply_filters( 'portier_default_access_levels', $levels );
@@ -107,6 +107,18 @@ function portier_default_access_levels() {
  */
 function portier_get_default_access() {
 	return apply_filters( 'portier_get_default_access', get_option( '_portier_default_access' ) );
+}
+
+/**
+ * Return the label for the none access level
+ *
+ * @since 1.3.1
+ *
+ * @uses apply_filters() Calls 'portier_get_none_access_label'
+ * @return string Label for the none access level
+ */
+function portier_get_none_access_label() {
+	return apply_filters( 'portier_get_none_access_label', esc_html__( 'None', 'portier' ) );
 }
 
 /**
@@ -283,7 +295,7 @@ function portier_get_protection_details( $site_id = 0 ) {
 	$details = array(
 		'default_access' => sprintf( esc_html__( 'Site: %s', 'portier' ), isset( $levels[ $level ] )
 			? $levels[ $level ]
-			: esc_html__( 'Allow none', 'portier' )
+			: portier_get_none_access_label()
 		)
 	);
 

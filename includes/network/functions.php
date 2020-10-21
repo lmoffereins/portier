@@ -48,8 +48,8 @@ function portier_network_default_access_levels() {
 
 	// Define list of levels
 	$levels = array(
-		'site_users'    => esc_html__( 'Allow site users', 'portier' ),
-		'network_users' => esc_html__( 'Allow network users', 'portier' )
+		'site_users'    => esc_html__( 'Site users', 'portier' ),
+		'network_users' => esc_html__( 'Network users', 'portier' )
 	);
 
 	return (array) apply_filters( 'portier_network_default_access_levels', $levels );
@@ -300,7 +300,7 @@ function portier_network_get_protection_details() {
 	$details = array(
 		'default_access' => sprintf( $default_access, isset( $levels[ $level ] )
 			? $levels[ $level ]
-			: esc_html__( 'Allow none', 'portier' )
+			: portier_get_none_access_label()
 		)
 	);
 

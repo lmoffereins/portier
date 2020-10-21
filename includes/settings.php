@@ -95,17 +95,27 @@ function portier_setting_protect_site() { ?>
 function portier_setting_default_access() {
 
 	// Get the default access level
-	$level = get_option( '_portier_default_access' ); ?>
+	$level = get_option( '_portier_default_access' );
+
+	// Catch input in a variable
+	ob_start(); ?>
 
 	<select id="_portier_default_access" name="_portier_default_access" style="max-width:25em;">
 
-		<option value="0"><?php esc_html_e( 'Allow none', 'portier' ); ?></option>
+		<option value="0"><?php echo portier_get_none_access_label(); ?></option>
 		<?php foreach ( portier_default_access_levels() as $option => $label ) : ?>
 			<option value="<?php echo $option; ?>" <?php selected( $option, $level ); ?>><?php echo $label; ?></option>
 		<?php endforeach; ?>
 
 	</select>
-	<label for="_portier_default_access"><?php esc_html_e( 'Select which default level of protection should be applied', 'portier' ); ?></label>
+
+	<?php
+
+	$select = ob_get_clean();
+
+	?>
+
+	<label for="_portier_default_access"><?php printf( esc_html__( 'By default, access to this site should be allowed for %s', 'portier' ), $select ); ?></label>
 
 	<?php
 }
